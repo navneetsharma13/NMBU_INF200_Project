@@ -1,4 +1,4 @@
-from src.biosim.animal.herbivore import Herbivore
+from src.biosim.fauna import Herbivore
 
 
 if __name__ == "__main__":
