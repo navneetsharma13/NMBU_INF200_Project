@@ -5,7 +5,8 @@ Lowland, Highland, Desert and Water subclasses
 """
 import random
 
-from ..animal import carnivore, herbivore
+from ..animal.herbivore import Herbivore
+from ..animal.carnivore import Carnivore
 
 
 class Landscape:
@@ -89,7 +90,6 @@ class Landscape:
                     newborns.append(newborn)
             species.extend(newborns)
 
-
     def age_increase(self):
         for species in self.initial_population.values():
             for animal in species:
@@ -107,15 +107,3 @@ class Landscape:
                 if not animal.die_prob():
                     living_animal.append(animal)
             self.initial_population[specie_type] = living_animal
-
-
-
-
-
-
-
-
-
-
-
-
