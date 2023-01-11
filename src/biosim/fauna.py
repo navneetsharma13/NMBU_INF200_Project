@@ -8,6 +8,7 @@ class Fauna:
     """
     Fauna class consisting of subclasses namely for herbivores and carnivores!!
     """
+    fitness = None
     parameters = {}
 
     def __init__(self, weight=None, age=None):

@@ -106,4 +106,3 @@ class Landscape:
                 if not animal.die_prob():
                     living_animal.append(animal)
             self.initial_population[specie_type] = living_animal
-
