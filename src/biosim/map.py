@@ -1,4 +1,4 @@
-from .landscapes import lowland,highland,desert,water
+from .landscape import lowland,highland,desert,water
 from .animal import herbivore,carnivore
 
 class Map:
