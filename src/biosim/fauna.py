@@ -169,7 +169,7 @@ class Carnivore(Fauna):
 
     # def carnivore_consume_herbivore_prob(self,target_herbivore):
     #
-    #     if self._fitness <= target_herbivore.fitness:
+    #     if self.fitness <= target_herbivore.fitness:
     #         self._carnivore_consume_herbivore_prob=0
     #
-    #     elif 0 < self._fitness-target_herbivore.fitness < self.parameters['DeltaPhiMaX']:
+    #     elif 0 < self.fitness-target_herbivore.fitness < self.parameters['DeltaPhiMaX']:
