@@ -56,19 +56,24 @@ class Fauna:
         self._weight = self._weight - (self._weight * self.parameters['eta'])
         self.calculate_fitness()
 
-    def formula_for_fitness(age, weight, parameters):
-        q_plus = 1 / (1 + math.exp(parameters['a_half']) - parameters['phi_age'])
-        q_minus = 1 / (1 + math.exp(parameters['w_half']) - parameters['phi_weight'])
+    def fitness_formula(sign,x,x_half,phi_x):
 
-        return q_plus * q_minus
+        return 1.0/(1+math.exp(sign*phi_x*(x-x_half)))
 
-    def calculate_fitness(self):
+    def calculate_fitness(cls,age,weight,parameters):
 
-        if self.weight == 0:
-            self._fitness = 0
+        if weight == 0:
+            phi = 0
         else:
-            self._fitness = self.formula_for_fitness(self.age, self.weight, self.parameters)
+            phi = cls.fitness_formula(1,age,parameters['a_half'],
+                                      parameters['phi_age'])* cls.fitness_formula(-1,weight,parameters['w_half'],parameters['phi_weight'])
+            cls.check_phi_borders(phi)
+            return phi
 
+    @classmethod
+    def check_phi_borders(cls,phi):
+        if phi>1 or phi<0:
+            raise ValueError("The Parameter 'phi' calculated is not in border 0,1")
     def migrate_prob(self):
 
         migrate_prob = self.parameters['mu'] * self._fitness
@@ -99,7 +104,7 @@ class Fauna:
         if self._fitness == 0:
             return True
         else:
-            return random.random < (self.parameters['omega'] * (1 - self._fitness))
+            return random.random() < (self.parameters['omega'] * (1 - self._fitness))
 
     def weight_increase_on_eat(self, amount):
 
