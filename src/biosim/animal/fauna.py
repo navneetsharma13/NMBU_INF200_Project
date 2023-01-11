@@ -24,17 +24,17 @@ class Fauna:
         if age is None:
             self.age = 0
         else:
-            self.raise_type_error(age)
+            # self.raise_type_error(age)
             self.age = age
 
         if weight is None:
-            self._weight = self.weight_default()
+            self.weight = self.weight_default()
         else:
-            self.raise_type_error(weight)
-            self._weight = weight
+            # self.raise_type_error(weight)
+            self.weight = weight
 
-        self._fitness = None
-        self.calculate_fitness()
+        self.fitness = None
+        self.calculate_fitness(self.age,self.weight,self.parameters)
 
     def raise_type_error(val):
         if isinstance(val, (int, float)) is False:
@@ -53,32 +53,33 @@ class Fauna:
         self.age += 1
 
     def weight_decrease(self):
-        self._weight = self._weight - (self._weight * self.parameters['eta'])
-        self.calculate_fitness()
+        self._weight = self.weight - (self.weight * self.parameters['eta'])
+        self.fitness = self.calculate_fitness(self.age,self.weight,self.parameters)
 
-    def fitness_formula(sign,x,x_half,phi_x):
 
-        return 1.0/(1+math.exp(sign*phi_x*(x-x_half)))
 
     def calculate_fitness(cls,age,weight,parameters):
+        def fitness_formula(sign, x, x_half, phi_x):
+
+            return 1.0/(1 + math.exp(sign * phi_x * (x - x_half)))
 
         if weight == 0:
             phi = 0
         else:
-            phi = cls.fitness_formula(1,age,parameters['a_half'],
-                                      parameters['phi_age'])* cls.fitness_formula(-1,weight,parameters['w_half'],parameters['phi_weight'])
-            cls.check_phi_borders(phi)
+            phi = fitness_formula(1,age,parameters['a_half'],parameters['phi_age'])* fitness_formula(-1,weight,parameters['w_half'],parameters['phi_weight'])
+            # cls.check_phi_borders(phi)
             return phi
 
     @classmethod
-    def check_phi_borders(cls,phi):
-        if phi>1 or phi<0:
-            raise ValueError("The Parameter 'phi' calculated is not in border 0,1")
-    def migrate_prob(self):
+    # def check_phi_borders(cls,phi):
+    #     if phi>1 or phi<0:
+    #         raise ValueError("The Parameter 'phi' calculated is not in border 0,1")
+    # def migrate_prob(self):
+    #
+    #     migrate_prob = self.parameters['mu'] * self.fitness
+    #     if migrate_prob > random.random():
+    #         return True
 
-        migrate_prob = self.parameters['mu'] * self._fitness
-        if migrate_prob > random.random():
-            return True
 
     def birth_prob(self, animal_number):
         zeta = self.parameters['zeta']
@@ -87,7 +88,7 @@ class Fauna:
         gamma = self.parameters['gamma']
         if self.weight >= zeta * (w_birth + sigma_birth):
             return random.random() < min(1, gamma *
-                                         self._fitness * (animal_number))
+                                         self.fitness * (animal_number))
         else:
             return False
 
@@ -101,10 +102,10 @@ class Fauna:
 
     def die_prob(self):
 
-        if self._fitness == 0:
+        if self.fitness == 0:
             return True
         else:
-            return random.random() < (self.parameters['omega'] * (1 - self._fitness))
+            return random.random() < (self.parameters['omega'] * (1 - self.fitness))
 
     def weight_increase_on_eat(self, amount):
 

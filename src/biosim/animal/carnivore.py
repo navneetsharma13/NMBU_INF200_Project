@@ -1,4 +1,4 @@
-from fauna import *
+from fauna import Fauna
 
 class Carnivore(Fauna):
 
