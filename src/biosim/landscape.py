@@ -16,8 +16,18 @@ class Landscape:
         self.initial_population = {'Herbivore': [Herbivore() for _ in range(herb_num)],
                                    'Carnivore': [Carnivore() for _ in range(carn_num)]}
         # self.initial_population = {'Herbivore': [], 'Carnivore': []}
-        self.population_to_add = {'Herbivore': [], 'Carnivore': []}
+        # self.after_migration_population = {'Herbivore': [], 'Carnivore': []}
         self.fodder = 0
+
+    def get_num_herb(self):
+        """Return number of Herbivores"""
+
+        return len(self.initial_population.values())
+
+    def get_num_carn(self):
+        """Return number of Carnivores"""
+
+        return len(self.initial_population.keys(1))
 
     @classmethod
     def verify_parameters(cls, params):
