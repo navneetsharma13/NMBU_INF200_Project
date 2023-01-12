@@ -1,47 +1,86 @@
 import textwrap
+from biosim.landscape import Lowland,Highland,Desert,Water
+from biosim.fauna import Herbivore,Carnivore
 
-from .landscape import lowland,highland,desert,water
-from .animal import herbivore,carnivore
 
 class Map:
-    landscape_classes={
-            'H':highland,
-            'L':lowland,
-            'D':desert,
-            'W':water
-        }
-    animal_classes={'Carnivore':carnivore,'Herbivore':herbivore
-                    }
-    livable_cells={'H':highland,'L':lowland}
-    def __init__(self,island_map):
-        self.map=self.string_to_list_cells(island_map)
-        landscape_classes={
-            'H':highland,
-            'L':lowland,
-            'D':desert,
-            'W':water
-        }
-        animal_classes={'Carnivore':carnivore,
-                              'Herbivore':herbivore
+    landscape_classes = {
+        'H': Highland,
+        'L': Lowland,
+        'D': Desert,
+        'W': Water
+    }
+    animal_classes = {'Carnivore': Carnivore, 'Herbivore': Herbivore
+                      }
+    livable_cells = {'H': Highland, 'L': Lowland}
 
+    def __init__(self, island_map):
+        cells_list = textwrap.dedent(island_map).splitlines()
+        self.map=[list(row.strip()) for row in cells_list]
+        landscape_classes = {
+            'H': Highland,
+            'L': Lowland,
+            'D': Desert,
+            'W': Water
         }
-        self.cells=self.create_cells()
+        animal_classes = {'Carnivore': Carnivore,
+                          'Herbivore': Herbivore
+                          }
+        self.cells = self.create_cells()
+
     def create_cells(self):
+        pos = [(i, j) for i in range(len(self.map))
+               for j in range(len(self.map[0]))]
+        geo = [self.landscape_classes[geo]() for j in range(len(self.map))
+               for geo in self.map[j]]
+        return dict(zip(pos, geo))
+
+    def livable_cell_calculate(self):
+
+         loc=[]
+         loc_object=[]
+         for loc1,loc_object1 in self.cells.items():
+              if type(loc_object1) in self.livable_cells.values():
+                  loc.append(loc1)
+                  loc_object.append(loc_object1)
+         return dict(zip(loc,loc_object))
+
+    def add_population(self,given_population):
+        for population in given_population:
+            location=population['loc']
+            loc_object=self.cells[location]
+            for population_individual in population['pop']:
+                type_animal=population_individual['species']
+                age_weight=(population_individual['age'],population_individual['weight'])
+                pop_object= self.animal_classes[type_animal](*age_weight)
+                #print(pop_object,pop_object.weight,pop_object.age)
+                loc_object.initial_population[type(pop_object).__name__].append(pop_object)
+            print(loc_object.initial_population)
+            print(loc_object)
+
+    def yearly_cycle(self):
+        for loc,loc_object in self.livable_cell_calculate().items():
+            loc_object.feed_herbivore()
+            loc_object.add_newborn()
+            loc_object.weight_decrease()
+            loc_object.age_increase()
+            loc_object.animal_die()
+
+    def get_pop_tot_num(self):
+        pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
+                      'Carnivore': []}
+        for loc, loc_object in self.cells.items():
+            pop['Row_no'].append(loc[0])
+            pop['Col_no'].append(loc[1])
+            pop['Herbivore'].append(
+                len(loc_object.initial_population['Herbivore']))
+            pop['Carnivore'].append(
+                len(loc_object.initial_population['Carnivore']))
+        return pop
 
 
-        pos=[(i,j) for i in range(len(self.map))
-             for j in range(len(self.map[0]))]
-        geo=[self.landscape_classes[geo]() for j in range(len(self.map))
-             for geo in self.map[j]]
-        return dict(zip(pos,geo))
-    def string_to_list_cells(island_map):
 
-        cells_list=textwrap.dedent(island_map).splitlines()
-        return [list(row.strip()) for row in cells_list]
 
-    # def livable_cells(self):
-    #
-    #     loc=[]
-    #     loc_object=[]
-    #     for loc,loc_objects in self.cells.items():
-    #          (loc_object) in self.livable_cells.values():
+
+
+
