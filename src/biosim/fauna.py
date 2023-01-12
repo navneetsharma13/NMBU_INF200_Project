@@ -11,7 +11,7 @@ class Fauna:
     fitness = 0
     parameters = {}
 
-    def __init__(self, weight=None, age=None):
+    def __init__(self,  age=None, weight=None):
 
         """
         Defining a constructor for the weight and age of the animals.
@@ -144,7 +144,7 @@ class Herbivore(Fauna):
                   }
 
     def __init__(self, age=None, weight=None):
-        super().__init__(weight, age)
+        super().__init__(age, weight)
 
 
 class Carnivore(Fauna):
@@ -172,7 +172,7 @@ class Carnivore(Fauna):
                   'omega': omega}
 
     def __init__(self, age=None, weight=None):
-        super().__init__(weight, age)
+        super().__init__(age, weight)
         self._carnivore_consume_herbivore_prob = None
 
     # def carnivore_consume_herbivore_prob(self,target_herbivore):
