@@ -11,23 +11,11 @@ from .fauna import Herbivore, Carnivore
 class Landscape:
     parameters = {}
 
-    def __init__(self, herb_num, carn_num):
+    def __init__(self):
         """Constructor for the landscape cells."""
-        self.initial_population = {'Herbivore': [Herbivore() for _ in range(herb_num)],
-                                   'Carnivore': [Carnivore() for _ in range(carn_num)]}
-        # self.initial_population = {'Herbivore': [], 'Carnivore': []}
-        # self.after_migration_population = {'Herbivore': [], 'Carnivore': []}
+        self.initial_population = {'Herbivore': [], 'Carnivore': []}
+        self.after_migration_population = {'Herbivore': [], 'Carnivore': []}
         self.fodder = 0
-
-    def get_num_herb(self):
-        """Return number of Herbivores"""
-
-        return len(self.initial_population.values())
-
-    def get_num_carn(self):
-        """Return number of Carnivores"""
-
-        return len(self.initial_population.keys(1))
 
     @classmethod
     def verify_parameters(cls, params):
@@ -127,9 +115,9 @@ class Lowland(Landscape):
 
     parameters = {'f_max': 800.0}
 
-    def __init__(self, herb_num=None, carn_num=None):
+    def __init__(self):
         """Constructor for the Lowland."""
-        super().__init__(herb_num, carn_num)
+        super().__init__()
         self.fodder = self.parameters['f_max']
 
     def fodder_grow_and_feeding(self):
@@ -143,9 +131,9 @@ class Highland(Landscape):
     f_max = 800 for Herbivores and Carnivores can prey on Herbivore in this cell."""
     parameters = {'f_max': 300.0}
 
-    def __init__(self, herb_num=None, carn_num=None):
+    def __init__(self):
         """Constructor for the Highland."""
-        super().__init__(herb_num, carn_num)
+        super().__init__()
         self.fodder = self.parameters['f_max']
 
     def grow_fodder_and_feed(self):
@@ -158,9 +146,9 @@ class Desert(Landscape):
     """The Desert is a subclass of the landscape that can receives animals, but there is no fodder
     available for the Herbivores to eat. But Carnivores can prey on Herbivore in this cell."""
 
-    def __init__(self, herb_num=None, carn_num=None):
+    def __init__(self):
         """Constructor for the desert."""
-        super().__init__(herb_num, carn_num)
+        super().__init__()
 
     def grow_fodder_and_feed(self):
         """This method increases the amount of fodder growth,
@@ -175,6 +163,6 @@ class Water(Landscape):
     """The Water is a subclass of the landscape type cell and it a passive cell because, in this
     project,the landscape water does not receive the animals, neither Herbivore nor Carnivore."""
 
-    def __init__(self, herb_num=None, carn_num=None):
+    def __init__(self):
         """Constructor for the ocean."""
-        super().__init__(herb_num, carn_num)
+        super().__init__()
