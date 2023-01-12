@@ -111,7 +111,7 @@ class Landscape:
 class Lowland(Landscape):
     """
     This Lowland is a subclass/child-class of the Landscape. The Lowland landscape cells offer
-    fodder with f_max = 800 for Herbivores and Carnivores can prey on Herbivore in this cell."""
+    fodder with f_max = 800 for Herbivores and Carnivores can prey on Herbivore in this cell.c"""
 
     parameters = {'f_max': 800.0}
 
