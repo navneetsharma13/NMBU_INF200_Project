@@ -4,26 +4,24 @@ from math import isclose
 import numpy as np
 import random
 
-
 random.seed(1223)
 
-@pytest.mark.parametrize('age,weight',[(10,20)])
-def test_fitness(age,weight):
+
+@pytest.mark.parametrize('age,weight', [(10, 20)])
+def test_fitness(age, weight):
     """Test if the method 'calculate_fitness()' correctly communicates to
     the method 'fit_formula()' and returns the correct fitness of the
     animal (pop_object)'"""
 
-    herbivore = Herbivore(age=age,weight=weight)
+    herbivore = Herbivore(age=age, weight=weight)
     assert isclose(herbivore.calculate_fitness(herbivore.age,
-                                                herbivore.weight,
-                                                herbivore.parameters),
-                    0.7292,abs_tol=10**-2)
+                                               herbivore.weight,
+                                               herbivore.parameters),
+                   0.7292, abs_tol=10 ** -2)
     # assert ((carnivore.calculate_fitness(carnivore.age,
     #                                      carnivore.weight,
     #                                      carnivore.parameters),
     #          0.999969))
-
-
 
 
 def test_animal():
@@ -34,15 +32,15 @@ def test_animal():
 
 
 def test_herbivore_parameters():
-    """ Tests that the given parameters are in the list of herbivor
-    parameters"""
+    """ Tests that the given parameters are in the list of herbivore parameters"""
     keys_list = ['w_birth', 'sigma_birth', 'beta', 'eta', 'a_half',
                  'phi_age', 'w_half', 'phi_weight', 'mu', 'lambda',
-                 'gamma', 'zeta', 'xi', 'omega', 'F', 'DeltaPhiMax',]
+                 'gamma', 'zeta', 'xi', 'omega', 'F', 'DeltaPhiMax', ]
     h = Herbivore()
     assert [key in h.parameters for key in keys_list]
 
-@pytest.mark.parametrize('weight',[10,20])
+
+@pytest.mark.parametrize('weight', [10, 20])
 def test_herbivore_non_negative_weight(weight):
     """
     test if animal age is  non-negative
@@ -59,12 +57,13 @@ def test_herbivore_aging():
     """
     herb = Herbivore(10, 50)
     before_age = herb.age
-    len=100
-    for _ in range(len):
+    n = 100
+    for _ in range(n):
         herb.age_increase()
-    assert herb.age == before_age + len
+    assert herb.age == before_age + n
 
-@pytest.mark.parametrize('weight',[10,20,30,40,60,70])
+
+@pytest.mark.parametrize('weight', [10, 20, 30, 40, 60, 70])
 def test_herbivore_weight_loss(weight):
     """
     Test if animal looses weight
