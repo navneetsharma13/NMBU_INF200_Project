@@ -106,3 +106,20 @@ class Landscape:
                 if not animal.die_prob():
                     living_animal.append(animal)
             self.initial_population[specie_type] = living_animal
+
+
+class Lowland(Landscape):
+    """
+    This Class is subclass/child class of the Landscape. The Lowland landscape cells offer fodder
+    with f_max = 800 for Herbivores and Carnivores can prey on Herbivore in this cell."""
+
+    parameters = {'f_max': 800.0}
+
+    def __init__(self):
+        """Constructor for the Lowland."""
+        super().__init__()
+        self.fodder = self.parameters['f_max']
+
+    def fodder_grow_and_feeding(self):
+        self.fodder = self.parameters['f_max']
+        self.feed_herbivore()
