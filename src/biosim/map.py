@@ -55,8 +55,6 @@ class Map:
                 pop_object= self.animal_classes[type_animal](*age_weight)
                 #print(pop_object,pop_object.weight,pop_object.age)
                 loc_object.initial_population[type(pop_object).__name__].append(pop_object)
-            print(loc_object.initial_population)
-            print(loc_object)
 
     def yearly_cycle(self):
         for loc,loc_object in self.livable_cell_calculate().items():

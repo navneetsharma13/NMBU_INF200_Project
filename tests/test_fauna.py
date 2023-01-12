@@ -134,3 +134,18 @@ def test_update_weight_after_birth():
     baby = Herbivore(weight=10)
     herb.weight_decrease_on_birth(baby)
     assert herb.weight < weight_before_birth
+
+def test_animal_certain_survival():
+    herb=Herbivore(10,20)
+    herb.die_prob=0
+    for _ in range(100):
+        assert not herb.die()
+
+# def test_animal_certain_death():
+#     herb=Herbivore(10,20)
+#     herb.die_prob=1
+#     for _ in range(100):
+#         assert herb.die()
+
+
+

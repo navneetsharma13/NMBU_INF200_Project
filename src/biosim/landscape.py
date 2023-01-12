@@ -76,6 +76,7 @@ class Landscape:
                 fodder_intake += fodder_remaining
             herbivore.weight_increase_on_eat(fodder_intake)
             self.fodder = fodder_remaining
+        print("Feed herbivore done")
 
     def add_newborn(self):
         """This method extend a newborn animal population for each specie by adding their
@@ -88,16 +89,19 @@ class Landscape:
                     animal.weight_decrease_on_birth(newborn)
                     newborns.append(newborn)
             species.extend(newborns)
+        print("add newborn done")
 
     def age_increase(self):
         for species in self.initial_population.values():
             for animal in species:
                 animal.age_increase()
+        print("age increase done")
 
     def weight_decrease(self):
         for species in self.initial_population.values():
             for animal in species:
                 animal.weight_decrease()
+        print("weight decrease done")
 
     def animal_die(self):
         for specie_type in self.initial_population.keys():
@@ -106,6 +110,7 @@ class Landscape:
                 if not animal.die_prob():
                     living_animal.append(animal)
             self.initial_population[specie_type] = living_animal
+        print("animal die")
 
 
 class Lowland(Landscape):

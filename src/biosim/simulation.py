@@ -4,6 +4,8 @@ import subprocess
 import matplotlib
 import matplotlib.pyplot as plt
 from .map import Map
+import sys
+import csv
 
 """
 Template for BioSim class.
@@ -101,6 +103,7 @@ class BioSim:
         self.herbivore_population=None
         #carnivore line
         self.herbivore_img_axis=None
+        self.log_file=log_file
 
         if img_base is None:
             self.img_base=None
@@ -116,6 +119,7 @@ class BioSim:
             self.cmax_animals=None
         else:
             self.cmax_animals=cmax_animals
+
 
 
 
@@ -171,6 +175,17 @@ class BioSim:
 
         while self.year_num<self.final_year:
             self.cell.yearly_cycle()
+            self.year_num += 1
+
+        writer = None
+        if self.log_file is not None:
+            csvfile = open(f"{sys.path [1]}/{self.log_file}", 'w', newline="")
+            writer = csv.writer (csvfile, delimiter=',')
+            writer.writerow(["Year", "Herbivore Count"])
+        for year in range (num_years):
+            if self.log_file is not None:
+                writer.writerow([year])
+
     def add_population(self, population):
         """
         Add a population to the island

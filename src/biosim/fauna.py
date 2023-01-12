@@ -98,22 +98,20 @@ class Fauna:
         else:
             prob = min(1, gamma * self.fitness * (animal_number - 1))
 
-        return random.random() < prob and self.weight() >= result
+        return random.random() < prob and self.weight >= result
 
     def weight_decrease_on_birth(self, child):
         if self.weight >= child.weight * child.parameters['xi']:
             self.weight -= child.weight * child.parameters['xi']
 
-    def die(self):
-        if self.weight is None:
-            return True
-
     def die_prob(self):
-
         if self.fitness == 0:
             return True
         else:
             return random.random() < (self.parameters['omega'] * (1 - self.fitness))
+    def die(self):
+        if self.weight is None:
+            return True
 
     def weight_increase_on_eat(self, amount):
 
