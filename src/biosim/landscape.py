@@ -79,11 +79,13 @@ class Landscape:
         print("Feed herbivore done")
 
     def add_newborn(self):
+
         """This method extend a newborn animal population for each specie by adding their
         offspring."""
         for species in self.initial_population.values():
             newborns = []
             for animal in species:
+                animal.calculate_fitness()
                 if animal.birth_prob(len(species)):
                     newborn = type(animal)()
                     animal.weight_decrease_on_birth(newborn)

@@ -12,7 +12,7 @@ if __name__ == "__main__":
               'pop': [{'species': 'Herbivore',
                        'age': 5,
                        'weight': 20}
-                      for _ in range(2)]}]
+                      for _ in range(50)]}]
     m=Map(geogr)
     print(m.create_cells())
     print(m.livable_cell_calculate())

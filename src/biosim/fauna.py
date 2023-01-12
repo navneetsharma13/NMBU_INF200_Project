@@ -8,7 +8,7 @@ class Fauna:
     """
     Fauna class consisting of subclasses namely for herbivores and carnivores!!
     """
-    fitness = 0
+
     parameters = {}
 
     def __init__(self,  age=None, weight=None):
@@ -36,7 +36,8 @@ class Fauna:
             # self.raise_type_error(weight)
             self.weight = weight
 
-        self.fitness = self.calculate_fitness(self.age, self.weight, self.parameters)
+        self.fitness=None
+        self.calculate_fitness()
 
     # def raise_type_error(val):
     #     if isinstance(val, (int, float)) is False:
@@ -58,26 +59,26 @@ class Fauna:
     def weight_decrease(self):
         if self.weight > 0:
             self.weight = self.weight - (self.weight * self.parameters['eta'])
-        self.fitness = self.calculate_fitness(self.age, self.weight, self.parameters)
+        self.calculate_fitness()
 
-    @classmethod
-    def calculate_fitness(cls, age, weight, parameters):
+
+    def calculate_fitness(self):
         def fitness_formula(sign, x, x_half, phi_x):
 
             return 1.0 / (1 + math.exp(sign * phi_x * (x - x_half)))
 
-        if weight == 0:
-            fitness = 0
+        if self.weight == 0:
+            self.fitness = 0
         else:
-            fitness = fitness_formula(1, age, parameters['a_half'],
-                                      parameters['phi_age']) * fitness_formula(-1, weight,
-                                                                               parameters['w_half'],
-                                                                               parameters[
+            self.fitness = fitness_formula(1, self.age, self.parameters['a_half'],
+                                      self.parameters['phi_age']) * fitness_formula(-1, self.weight,
+                                                                               self.parameters['w_half'],
+                                                                               self.parameters[
                                                                                    'phi_weight'])
             # cls.check_phi_borders(fitness)
-        return fitness
 
-    @classmethod
+
+
     # def check_phi_borders(cls,phi):
     #     if phi>1 or phi<0:
     #         raise ValueError("The Parameter 'phi' calculated is not in border 0,1")
@@ -96,7 +97,8 @@ class Fauna:
             prob = 0
 
         else:
-            prob = min(1, gamma * self.fitness * (animal_number - 1))
+            val1 = gamma * self.fitness * (animal_number - 1)
+            prob = min(1, val1)
 
         return random.random() < prob and self.weight >= result
 
@@ -124,21 +126,20 @@ class Herbivore(Fauna):
     beta = 0.9
     w_birth = 8.0
     sigma_birth = 1.5
-    phi_age = 0.2
+    phi_age = 0.6
     phi_weight = 0.1
     a_half = 40
     w_half = 10.0
-    gamma = 0.8
+    gamma = 0.2
     zeta = 3.5
     xi = 1.2
     mu = 0.25
-    lambda_ = 1.0
     omega = 0.4
 
     parameters = {'eta': eta, 'F': F, 'beta': beta, 'w_birth': w_birth,
                   'sigma_birth': sigma_birth, 'phi_age': phi_age, 'phi_weight': phi_weight,
                   'a_half': a_half, 'w_half': w_half, 'gamma': gamma, 'zeta': zeta,
-                  'xi': xi, 'mu': mu, 'lambda': lambda_, 'omega': omega
+                  'xi': xi, 'mu': mu,'omega': omega
                   }
 
     def __init__(self, age=None, weight=None):
@@ -160,14 +161,12 @@ class Carnivore(Fauna):
     xi = 1.1
     mu = 0.4
     DeltaPhiMax = 10.0
-    lambda_ = 1.0
     omega = 0.9
 
     parameters = {'eta': eta, 'F': F, 'beta': beta, 'w_birth': w_birth,
                   'sigma_birth': sigma_birth, 'phi_age': phi_age, 'phi_weight': phi_weight,
                   'a_half': a_half, 'w_half': w_half, 'gamma': gamma, 'zeta': zeta,
-                  'xi': xi, 'mu': mu, 'DeltaPhiMax': DeltaPhiMax, 'lambda': lambda_,
-                  'omega': omega}
+                  'xi': xi, 'mu': mu, 'DeltaPhiMax': DeltaPhiMax,'omega': omega}
 
     def __init__(self, age=None, weight=None):
         super().__init__(age, weight)

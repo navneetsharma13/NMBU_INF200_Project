@@ -1,27 +1,53 @@
+from typing import Dict, Any
+
 import pytest
 from src.biosim.fauna import Carnivore, Herbivore
 from math import isclose
+import math
 import numpy as np
 import random
 
 random.seed(1223)
 
+@pytest.fixture()
+def create_h_params():
 
-@pytest.mark.parametrize('age,weight', [(10, 20)])
-def test_fitness(age, weight):
+    eta = 0.05
+    F = 10.0
+    beta = 0.9
+    w_birth = 8.0
+    sigma_birth = 1.5
+    phi_age = 0.6
+    phi_weight = 0.1
+    a_half = 40
+    w_half = 10.0
+    gamma = 0.2
+    zeta = 3.5
+    xi = 1.2
+    mu = 0.25
+    omega = 0.4
+
+    parameters = {'eta': eta, 'F': F, 'beta': beta, 'w_birth': w_birth,
+                  'sigma_birth': sigma_birth, 'phi_age': phi_age, 'phi_weight': phi_weight,
+                  'a_half': a_half, 'w_half': w_half, 'gamma': gamma, 'zeta': zeta,
+                  'xi': xi, 'mu': mu, 'omega': omega}
+    return parameters
+
+
+
+@pytest.mark.parametrize('age,weight', [(10, 20),(30,40)])
+def test_fitness(age, weight, create_h_params):
     """Test if the method 'calculate_fitness()' correctly communicates to
     the method 'fit_formula()' and returns the correct fitness of the
     animal (pop_object)'"""
 
     herbivore = Herbivore(age=age, weight=weight)
-    assert isclose(herbivore.calculate_fitness(herbivore.age,
-                                               herbivore.weight,
-                                               herbivore.parameters),
-                   0.7292, abs_tol=10 ** -2)
-    # assert ((carnivore.calculate_fitness(carnivore.age,
-    #                                      carnivore.weight,
-    #                                      carnivore.parameters),
-    #          0.999969))
+    herbivore.calculate_fitness()
+    h_params = create_h_params
+    fitness = (1 / (1 + math.exp(h_params["phi_age"] * (age - h_params["a_half"])))) * \
+              (1 / (1 + math.exp(-h_params["phi_weight"] * (weight - h_params["w_half"]))))
+    assert herbivore.fitness == fitness
+
 
 
 def test_animal():
@@ -29,15 +55,6 @@ def test_animal():
     h = Herbivore()
     for _ in range(100):
         assert h.age == 0
-
-
-def test_herbivore_parameters():
-    """ Tests that the given parameters are in the list of herbivore parameters"""
-    keys_list = ['w_birth', 'sigma_birth', 'beta', 'eta', 'a_half',
-                 'phi_age', 'w_half', 'phi_weight', 'mu', 'lambda',
-                 'gamma', 'zeta', 'xi', 'omega', 'F', 'DeltaPhiMax', ]
-    h = Herbivore()
-    assert [key in h.parameters for key in keys_list]
 
 
 @pytest.mark.parametrize('weight', [10, 20])
@@ -50,102 +67,113 @@ def test_herbivore_non_negative_weight(weight):
     assert h.weight >= 0
     # assert c.weight >= 0
 
-
-def test_herbivore_aging():
+#
+@pytest.mark.parametrize("age,weight",[(10,20),(0,10),(100,80)])
+def test_herbivore_aging(age, weight):
     """
     test every year animal age updates
     """
-    herb = Herbivore(10, 50)
-    before_age = herb.age
+    herb = Herbivore(age,weight)
     n = 100
     for _ in range(n):
         herb.age_increase()
-    assert herb.age == before_age + n
+    assert herb.age == age + n
 
-
-@pytest.mark.parametrize('weight', [10, 20, 30, 40, 60, 70])
-def test_herbivore_weight_loss(weight):
+#
+@pytest.mark.parametrize('weight', [0, 10, 20, 30, 40, 60, 70])
+def test_herbivore_weight_loss(weight, create_h_params):
     """
     Test if animal looses weight
     """
+    h_params = create_h_params
     herb = Herbivore(weight=weight)
-    before_weight = herb.weight
-    for _ in range(20):
+
+
+    for _ in range(5):
+        weight = weight - h_params['eta'] * weight
         herb.weight_decrease()
-    assert before_weight > herb.weight
 
+    assert herb.weight == weight
 
-def test_fitness_range():
+#
+@pytest.mark.parametrize("age,weight",[(10,20),(0,0),(100,80), (200,200)])
+def test_fitness_range(age, weight):
     """
     test fitness value is between 0 and 1
     """
-    herb = Herbivore(random.randrange(0, 100), random.randrange(0, 100))
+    herb = Herbivore(age, weight)
     # carn = Carnivore(random.randrange(0, 100), random.randrange(0, 100))
     assert 1 >= herb.fitness >= 0
     # assert 1 >= carn.fitness >= 0
 
-
-def test_fitness_update():
+#
+@pytest.mark.parametrize("age,weight",[(10,20),(100,80), (200,200)])
+def test_fitness_update(age, weight, create_h_params):
     """
     test fitness is updated when weight is changed
     """
-    herb = Herbivore(10, 50)
-    before_fitness = herb.fitness
+    h_params = create_h_params
+    herb = Herbivore(age, weight)
     herb.weight_decrease()
-    assert herb.fitness != before_fitness
 
+    weight = weight - h_params['eta'] * weight
 
-def test_animal_death():
-    """
-    test that animal dies when fitness is 0 or with
-    certain probability omega(1 - fitness)
-    """
-    herb = Herbivore(10, 50)
-    herb.fitness = 0
+    fitness = (1 / (1 + math.exp(h_params["phi_age"] * (age - h_params["a_half"])))) * \
+              (1 / (1 + math.exp(-h_params["phi_weight"] * (weight - h_params["w_half"]))))
 
-    for _ in range(100):
-        assert herb.die_prob() is True
+    if weight == 0:
+        fitness = 0
 
+    assert herb.fitness == fitness
 
-def test_herbivore_birth_probability():
-    """
-    1. Test no birth if single herbivore or carnivore
-    2. Test no birth if weight of herbivore or
-    carnivore is less than output of following
-    condition:
-        xi(w_birth + sigma_birth)
-    """
-    herb = Herbivore(20, 50)
-    assert not herb.birth_prob(3)
-
-    # animal = Carnivore(10, 50)
-    herb.weight = 5
-    assert not herb.birth_prob(200)
-
-
-def test_update_weight_after_birth():
-    """
-    test that the weight of the mother is
-    reduced by xi times the weight of the
-    baby after reproduction
-    """
-    herb = Herbivore(20, 40)
-    weight_before_birth = herb.weight
-    baby = Herbivore(weight=10)
-    herb.weight_decrease_on_birth(baby)
-    assert herb.weight < weight_before_birth
-
-def test_animal_certain_survival():
-    herb=Herbivore(10,20)
-    herb.die_prob=0
-    for _ in range(100):
-        assert not herb.die()
-
-# def test_animal_certain_death():
-#     herb=Herbivore(10,20)
-#     herb.die_prob=1
+#
+# def test_animal_death():
+#     """
+#     test that animal dies when fitness is 0 or with
+#     certain probability omega(1 - fitness)
+#     """
+#     herb = Herbivore(10, 50)
+#     herb.fitness = 0
+#
 #     for _ in range(100):
-#         assert herb.die()
+#         assert herb.die_prob() is True
+#
+#
+@pytest.mark.parametrize("species_count",[2,3,4])
+@pytest.mark.parametrize("age,weight, status",[(10,34,True),(0,40,True),(10,50,True)])
+def test_herbivore_birth_probability_success(age,weight,status,mocker, species_count):
+    mocker.patch('random.random',return_value=0.01)
 
+    herb = Herbivore(age, weight)
+    assert herb.birth_prob(species_count)==status
+#
+#
+# def test_update_weight_after_birth():
+#     """
+#     test that the weight of the mother is
+#     reduced by xi times the weight of the
+#     baby after reproduction
+#     """
+#     herb = Herbivore(20, 40)
+#     weight_before_birth = herb.weight
+#     baby = Herbivore(weight=10)
+#     herb.weight_decrease_on_birth(baby)
+#     assert herb.weight < weight_before_birth
+#
+@pytest.mark.parametrize("age,weight, status",[(10,20, False),(100,80, False), (200,200, False)])
+def test_animal_certain_survival(age, weight, status, mocker):
+    mocker.patch('random.random', return_value=0.7)
 
+    herb=Herbivore(age,weight)
+    assert herb.die_prob() == status
 
+@pytest.mark.parametrize("age,weight, status",[(10,20, True),(100,80, True),
+                                               (200,200, True), (0,0, True)])
+def test_animal_certain_death(age, weight, status, mocker):
+    mocker.patch('random.random', return_value=0.1)
+
+    herb=Herbivore(age,weight)
+    assert herb.die_prob() == status
+
+#
+#

@@ -58,7 +58,7 @@ class Map:
 
     def yearly_cycle(self):
         for loc,loc_object in self.livable_cell_calculate().items():
-            loc_object.feed_herbivore()
+            loc_object.fodder_grow_and_feeding()
             loc_object.add_newborn()
             loc_object.weight_decrease()
             loc_object.age_increase()
@@ -74,7 +74,9 @@ class Map:
                 len(loc_object.initial_population['Herbivore']))
             pop['Carnivore'].append(
                 len(loc_object.initial_population['Carnivore']))
-        return pop
+
+            herbivore_count = sum(pop["Herbivore"])
+        return herbivore_count
 
 
 
