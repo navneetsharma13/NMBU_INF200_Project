@@ -8,7 +8,7 @@ class Fauna:
     """
     Fauna class consisting of subclasses namely for herbivores and carnivores!!
     """
-    fitness = None
+    fitness = 0
     parameters = {}
 
     def __init__(self, weight=None, age=None):
@@ -30,6 +30,8 @@ class Fauna:
 
         if weight is None:
             self.weight = self.weight_default()
+        elif weight<0:
+            raise ValueError("Negative weight is not allowed to enter!!")
         else:
             # self.raise_type_error(weight)
             self.weight = weight
@@ -54,7 +56,8 @@ class Fauna:
         self.age += 1
 
     def weight_decrease(self):
-        self.weight = self.weight - (self.weight * self.parameters['eta'])
+        if self.weight>0:
+            self.weight = self.weight - (self.weight * self.parameters['eta'])
         self.fitness = self.calculate_fitness(self.age, self.weight, self.parameters)
 
     @classmethod
@@ -88,10 +91,15 @@ class Fauna:
         w_birth = self.parameters['w_birth']
         sigma_birth = self.parameters['sigma_birth']
         gamma = self.parameters['gamma']
-        if self.weight >= zeta * (w_birth + sigma_birth):
-            return random.random() < min(1, gamma * self.fitness * (animal_number - 1))
+        result=zeta*(w_birth+sigma_birth)
+        prob=0
+        if animal_number==1:
+            prob=0
+
         else:
-            return False
+            p = min(1,gamma*self.fitness*(animal_number-1))
+
+        return random.random() < prob and self.weight()> result
 
     def weight_decrease_on_birth(self, child):
         if self.weight >= child.weight * child.parameters['xi']:
