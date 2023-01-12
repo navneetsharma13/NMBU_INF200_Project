@@ -7,8 +7,8 @@ if __name__ == "__main__":
     geogr = """\
            WWW
            WLW
-           WWL"""
-    ini_herbs = [{'loc': (1, 1),
+           WWW"""
+    ini_herbs = [{'loc': (2, 2),
               'pop': [{'species': 'Herbivore',
                        'age': 5,
                        'weight': 20}
