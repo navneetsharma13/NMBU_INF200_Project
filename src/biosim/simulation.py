@@ -1,3 +1,4 @@
+import random
 import textwrap
 import subprocess
 import matplotlib
@@ -82,9 +83,10 @@ class BioSim:
 
         - `img_dir` and `img_base` must either be both None or both strings.
         """
-        self.map=island_map
-        self.cell=Map(self.map)
-        #add population
+        # self.map=island_map
+        self.cell=Map(island_map)
+        self.cell.add_population(ini_pop)
+        random.seed(seed)
         self.last_year=0
         self.year_num=0
         self.img_no=0
@@ -155,7 +157,7 @@ class BioSim:
             If invalid parameter values are passed.
         """
 
-    def simulate(self, num_years):
+    def simulate(self, num_years,):
         """
         Run simulation while visualizing the result.
 
@@ -164,7 +166,11 @@ class BioSim:
         num_years : int
             Number of years to simulate
         """
+        self.last_year+=num_years
+        self.final_year=self.year_num+num_years
 
+        while self.year_num<self.final_year:
+            self.cell.yearly_cycle()
     def add_population(self, population):
         """
         Add a population to the island

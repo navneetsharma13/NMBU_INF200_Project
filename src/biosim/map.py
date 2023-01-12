@@ -48,7 +48,6 @@ class Map:
     def add_population(self,given_population):
         for population in given_population:
             location=(int(population['loc'][0])-1,int(population['loc'][1])-1)
-            print(location)
             loc_object=self.cells[location]
             for population_individual in population['pop']:
                 type_animal=population_individual['species']
