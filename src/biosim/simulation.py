@@ -173,9 +173,16 @@ class BioSim:
         self.last_year+=num_years
         self.final_year=self.year_num+num_years
 
+        csvfile = None
+        writer = None
+        csvfile = open(f"{sys.path [1]}/{self.log_file}", 'w', newline="")
+        writer = csv.writer (csvfile, delimiter=',')
+        writer.writerow(["Year", "Herbivore Count"])
         while self.year_num<self.final_year:
             self.cell.yearly_cycle()
             print(self.year_num,self.cell.get_pop_tot_num())
+            writer.writerow([self.year_num,self.cell.get_pop_tot_num()])
+
             self.year_num += 1
 
 
