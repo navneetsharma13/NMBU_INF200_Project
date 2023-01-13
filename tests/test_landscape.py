@@ -5,32 +5,41 @@ This is the geography pytest package which is a test package for the  BioSim pac
 
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
 __email__ = "navneet.sharma@nmbu.no and sushant.kumar.sirvastava@nmbu.no"
+
 import pytest
 import random as rd
-from biosim.simulation import BioSim
-from biosim.geography import Jungle, Savannah
 import numpy as np
+from src.biosim.landscape import Lowland, Highland
 
 
-def test_check_unknown_parameters():
-    """Test method 'check_unknown_parameters()' if it does not
-    identifies the given parameter and returns ValueError"""
+def test_verify_unknown_parameters():
+    """Test method 'verify_parameters()' if it does not identify the given parameter as incorrect
+     and return ValueError"""
     with pytest.raises(ValueError):
-        Jungle.check_unknown_parameters(params={'f_min': 100})
-        Savannah.check_unknown_parameters(params={'f_min': 100})
+        Lowland.verify_parameters(params={'f_min': 100})
+        Highland.verify_parameters(params={'f_min': 100})
 
 
-def test_check_known_parameters():
-    """Test method 'check_unknown_parameters()' if it identifies the
-    given parameter and does not return ValueError"""
-    Jungle.check_unknown_parameters(params={'f_max': 100})
-    Savannah.check_unknown_parameters(params={'f_max': 100})
+def test_verify_known_parameters():
+    """Test method 'verify_parameters()' if it does not identify the given parameter are correct and
+     returns ValueError"""
+    Lowland.verify_parameters(params={'f_max': 100})
+    Highland.verify_parameters(params={'f_max': 100})
 
 
-def test_now_negative_parameters():
-    """Test method 'check_non_negative_parameters(param_key, params)'
-    if it identifies the negative value of a given parameter and returns
-    ValueError"""
-    param_key, params = 'f_max', {'f_max': 1}
-    Jungle.check_non_negative_parameters(param_key, params)
-    Savannah.check_non_negative_parameters(param_key, params)
+def test_negative_parameters():
+    """Test method 'verify_non_valid_parameters(param_key, params)' if it identifies the
+    negative value of a given parameter and returns ValueError"""
+    param_key, params = 'f_max', {'f_max': -344}
+    with pytest.raises(ValueError):
+        Lowland.verify_non_valid_parameters(param_key, params)
+        Highland.verify_non_valid_parameters(param_key, params)
+
+
+def test_string_parameters():
+    """Test method 'verify_non_valid_parameters(param_key, params)' if it identifies the
+    negative value of a given parameter and returns ValueError"""
+    param_key, params = 'f_max', {'f_max': "sadsa"}
+    with pytest.raises(ValueError):
+        Lowland.verify_non_valid_parameters(param_key, params)
+        Highland.verify_non_valid_parameters(param_key, params)

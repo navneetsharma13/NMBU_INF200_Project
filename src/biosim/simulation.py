@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from .map import Map
 import sys
 import csv
+import pandas as pd
 
 """
 Template for BioSim class.
@@ -161,7 +162,7 @@ class BioSim:
             If invalid parameter values are passed.
         """
 
-    def simulate(self, num_years,):
+    def simulate(self, num_years,seed):
         """
         Run simulation while visualizing the result.
 
@@ -173,10 +174,18 @@ class BioSim:
         self.last_year+=num_years
         self.final_year=self.year_num+num_years
 
+        pd_list = []
         while self.year_num<self.final_year:
             self.cell.yearly_cycle()
-            print(self.year_num,self.cell.get_pop_tot_num())
+            yr=self.year_num
+            pop=self.cell.get_pop_tot_num()
+            pd_list.append([yr,pop])
             self.year_num += 1
+
+        print(pd_list)
+        mycsv = csv.writer(open(r'mono_hc_'+str(seed)+'.csv', 'wb'))
+        for row in pd_list:
+            mycsv.writerow(*row)
 
 
 
