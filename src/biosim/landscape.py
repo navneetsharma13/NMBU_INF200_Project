@@ -76,6 +76,53 @@ class Landscape:
             self.fodder = fodder_remaining
         print("Feed herbivore done")
 
+    def feed_carnivore(self):
+        """This method organizes the population of carnivore in order
+           of descending fitness values. Then, we sort the population of herbivore in order of
+           increasing fitness that will be eaten by carnivores. Now, for each carnivore, it is
+           applied the carnivore eating criteria, as given below:
+
+                Formula and conditions:
+                ----------------------
+                    -> Carnivores prey on herbivores on Lowland, Highland and
+                       Desert landscapes, and do not prey on each other;
+                    -> One carnivore tries to kill one herbivore per time, beginning
+                       with the herbivore with the lowest fitness, and then to the
+                       next herbivore until has eaten an amount 'F' of herbivore weight;
+                    -> The probability to kill a herbivore is given by the method
+                       'kill_prob()';
+                    -> The carnivore weight increases by the method 'weight_increase_on_eat()'
+                    which also updates its fitness;
+                    -> Every herbivore killed is removed from the population
+                       by the python's built-in method '.remove()'.
+                """
+        self.population['Carnivore'].sort(key=lambda h: h.fitness,
+                                          reverse=True)
+
+        self.population['Herbivore'].sort(key=lambda h: h.fitness)
+
+        for carnivore in self.population['Carnivore']:
+            appetite = carnivore.parameters['F']
+            amount_eaten = 0
+
+            for herbivore in self.population['Herbivore']:
+
+                if amount_eaten >= appetite:
+                    break
+
+                elif carnivore.will_kill(herbivore.fitness):
+                    food_wanted = appetite - amount_eaten
+
+                    if herbivore.weight <= food_wanted:
+                        amount_eaten += herbivore.weight
+                        self.population['Herbivore'].remove(herbivore)
+
+                    elif herbivore.weight > food_wanted:
+                        amount_eaten += food_wanted
+                        self.population['Herbivore'].remove(herbivore)
+
+            carnivore.gain_weight(amount_eaten)
+
     def add_newborn(self):
 
         """This method extend a newborn animal population for each specie by adding their

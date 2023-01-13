@@ -11,7 +11,7 @@ class Fauna:
 
     parameters = {}
 
-    def __init__(self,  age=None, weight=None):
+    def __init__(self, age=None, weight=None):
 
         """
         Defining a constructor for the weight and age of the animals.
@@ -36,7 +36,7 @@ class Fauna:
             # self.raise_type_error(weight)
             self.weight = weight
 
-        self.fitness=None
+        self.fitness = None
         self.calculate_fitness()
 
     # def raise_type_error(val):
@@ -47,10 +47,10 @@ class Fauna:
         return self.weight()
 
     # @classmethod
-    def weight_default(cls):
-        mu = math.log(cls.parameters['w_birth'] ** 2 / math.sqrt(
-            cls.parameters['w_birth'] ** 2 + cls.parameters['sigma_birth']))
-        sigma = math.log(1 + cls.parameters['sigma_birth'] ** 2 / cls.parameters['w_birth'] ** 2)
+    def weight_default(self):
+        mu = math.log(self.parameters['w_birth'] ** 2 / math.sqrt(
+            self.parameters['w_birth'] ** 2 + self.parameters['sigma_birth']))
+        sigma = math.log(1 + self.parameters['sigma_birth'] ** 2 / self.parameters['w_birth'] ** 2)
         return random.lognormvariate(mu, sigma)
 
     def age_increase(self):
@@ -70,12 +70,14 @@ class Fauna:
         if self.weight == 0:
             self.fitness = 0
         else:
-            self.fitness = fitness_formula(1, self.age, self.parameters['a_half'],
-                                      self.parameters['phi_age']) * fitness_formula(-1, self.weight,
-                                                                               self.parameters['w_half'],
-                                                                               self.parameters[
-                                                                                   'phi_weight'])
+            self.fitness = fitness_formula(1, self.age,
+                                           self.parameters['a_half'],
+                                           self.parameters['phi_age']) * \
+                           fitness_formula(-1, self.weight, self.parameters['w_half'],
+                                           self.parameters['phi_weight'])
+
             # cls.check_phi_borders(fitness)
+
 
 
     # def check_phi_borders(cls,phi):
@@ -104,7 +106,7 @@ class Fauna:
     def weight_decrease_on_birth(self, child):
         if self.weight >= child.weight * child.parameters['xi']:
             self.weight -= child.weight * child.parameters['xi']
-
+        self.calculate_fitness()
     def die_prob(self):
         if self.fitness == 0:
             return True
@@ -118,6 +120,41 @@ class Fauna:
     def weight_increase_on_eat(self, amount):
 
         self.weight += amount * self.parameters['beta']
+        self.calculate_fitness()
+
+    def kill_prob(self, target_fitness):
+        """This method calculates the probablity if a Carnivore will kill an animal (Herbivore)
+         according to the following conditions:
+            Conditions:
+            -----------
+                -> If fitness of the carnivore <= fitness of the herbivore, then p = 0;
+                -> If 0 < ('fitness of the carnivore' -  'fitness of the
+                   herbivore') < 'DeltaPhiMax', then p = ('fitness of the
+                   carnivore' - 'fitness of the herbivore') / 'DeltaPhiMax';
+                -> Otherwise: p =   1.
+                -> The random.random() is used to get a random number and
+                   check if it is less than p, then a herbivore is killed or the herbivore escapes.
+
+            Parameters:
+            ----------
+                target_fitness: int or float
+
+            Returns:
+            ----------
+                True if herbivore is killer else False.
+            """
+        killer_fitness = self.fitness
+        killer_target_diff_fitness = killer_fitness - target_fitness
+        delta_phi_max = self.parameters['DeltaPhiMax']
+
+        if killer_fitness <= target_fitness:
+            p = 0
+        elif 0 < killer_target_diff_fitness < delta_phi_max:
+            p = killer_target_diff_fitness / delta_phi_max
+        else:
+            p = 1
+
+        return random.random() < p
 
 
 class Herbivore(Fauna):
@@ -139,7 +176,7 @@ class Herbivore(Fauna):
     parameters = {'eta': eta, 'F': F, 'beta': beta, 'w_birth': w_birth,
                   'sigma_birth': sigma_birth, 'phi_age': phi_age, 'phi_weight': phi_weight,
                   'a_half': a_half, 'w_half': w_half, 'gamma': gamma, 'zeta': zeta,
-                  'xi': xi, 'mu': mu,'omega': omega
+                  'xi': xi, 'mu': mu, 'omega': omega
                   }
 
     def __init__(self, age=None, weight=None):
@@ -166,7 +203,7 @@ class Carnivore(Fauna):
     parameters = {'eta': eta, 'F': F, 'beta': beta, 'w_birth': w_birth,
                   'sigma_birth': sigma_birth, 'phi_age': phi_age, 'phi_weight': phi_weight,
                   'a_half': a_half, 'w_half': w_half, 'gamma': gamma, 'zeta': zeta,
-                  'xi': xi, 'mu': mu, 'DeltaPhiMax': DeltaPhiMax,'omega': omega}
+                  'xi': xi, 'mu': mu, 'DeltaPhiMax': DeltaPhiMax, 'omega': omega}
 
     def __init__(self, age=None, weight=None):
         super().__init__(age, weight)
