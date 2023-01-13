@@ -58,13 +58,13 @@ class Map:
 
     def yearly_cycle(self):
         for loc, loc_object in self.livable_cell_calculate().items():
-            loc_object.fodder_grow_and_feeding()
             loc_object.add_newborn()
-            loc_object.weight_decrease()
+            loc_object.fodder_grow_and_feeding()
             loc_object.age_increase()
+            loc_object.weight_decrease()
             loc_object.animal_die()
 
-    def get_pop_tot_num(self):
+    def get_pop_tot_num_herb(self):
         pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
                'Carnivore': []}
         for loc, loc_object in self.cells.items():
@@ -77,3 +77,16 @@ class Map:
 
             herbivore_count = sum(pop["Herbivore"])
         return herbivore_count
+    def get_pop_tot_num_carn(self):
+        pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
+               'Carnivore': []}
+        for loc, loc_object in self.cells.items():
+            pop['Row_no'].append(loc[0])
+            pop['Col_no'].append(loc[1])
+            pop['Herbivore'].append(
+                len(loc_object.initial_population['Herbivore']))
+            pop['Carnivore'].append(
+                len(loc_object.initial_population['Carnivore']))
+
+            carnivore_count = sum(pop["Carnivore"])
+        return carnivore_count

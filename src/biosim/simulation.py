@@ -161,7 +161,7 @@ class BioSim:
             If invalid parameter values are passed.
         """
 
-    def simulate(self, num_years,):
+    def simulate(self, num_years):
         """
         Run simulation while visualizing the result.
 
@@ -170,7 +170,7 @@ class BioSim:
         num_years : int
             Number of years to simulate
         """
-        self.last_year+=num_years
+        # self.last_year+=num_years
         self.final_year=self.year_num+num_years
 
         csvfile = None
@@ -180,8 +180,8 @@ class BioSim:
         writer.writerow(["Year", "Herbivore Count"])
         while self.year_num<self.final_year:
             self.cell.yearly_cycle()
-            print(self.year_num,self.cell.get_pop_tot_num())
-            writer.writerow([self.year_num,self.cell.get_pop_tot_num()])
+            print(self.year_num,self.cell.get_pop_tot_num_herb())
+            writer.writerow([self.year_num,self.cell.get_pop_tot_num_herb()])
 
             self.year_num += 1
 

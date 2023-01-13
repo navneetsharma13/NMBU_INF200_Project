@@ -78,7 +78,6 @@ class Fauna:
             # cls.check_phi_borders(fitness)
 
 
-
     # def check_phi_borders(cls,phi):
     #     if phi>1 or phi<0:
     #         raise ValueError("The Parameter 'phi' calculated is not in border 0,1")
@@ -171,7 +170,7 @@ class Carnivore(Fauna):
 
     def __init__(self, age=None, weight=None):
         super().__init__(age, weight)
-        self._carnivore_consume_herbivore_prob = None
+        #self._carnivore_consume_herbivore_prob = None
 
     # def carnivore_consume_herbivore_prob(self,target_herbivore):
     #

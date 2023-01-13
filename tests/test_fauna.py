@@ -33,10 +33,33 @@ def create_h_params():
                   'xi': xi, 'mu': mu, 'omega': omega}
     return parameters
 
+@pytest.fixture()
+def create_c_params():
 
+    eta = 0.125
+    F = 50.0
+    beta = 0.75
+    w_birth = 6.0
+    sigma_birth = 1.0
+    phi_age = 0.3
+    phi_weight = 0.4
+    a_half = 40
+    w_half = 4.0
+    gamma = 0.8
+    zeta = 3.5
+    xi = 1.1
+    mu = 0.4
+    DeltaPhiMax = 10.0
+    omega = 0.8
+
+    parameters = {'eta': eta, 'F': F, 'beta': beta, 'w_birth': w_birth,
+                  'sigma_birth': sigma_birth, 'phi_age': phi_age, 'phi_weight': phi_weight,
+                  'a_half': a_half, 'w_half': w_half, 'gamma': gamma, 'zeta': zeta,
+                  'xi': xi, 'mu': mu, 'DeltaPhiMax': DeltaPhiMax,'omega': omega}
+    return parameters
 
 @pytest.mark.parametrize('age,weight', [(10, 20),(30,40)])
-def test_fitness(age, weight, create_h_params):
+def test_fitness_herbivore(age, weight, create_h_params):
     """Test if the method 'calculate_fitness()' correctly communicates to
     the method 'fit_formula()' and returns the correct fitness of the
     animal (pop_object)'"""
@@ -47,6 +70,19 @@ def test_fitness(age, weight, create_h_params):
     fitness = (1 / (1 + math.exp(h_params["phi_age"] * (age - h_params["a_half"])))) * \
               (1 / (1 + math.exp(-h_params["phi_weight"] * (weight - h_params["w_half"]))))
     assert herbivore.fitness == fitness
+
+@pytest.mark.parametrize('age,weight', [(10, 20),(30,40)])
+def test_fitness_carnivore(age, weight, create_c_params):
+    """Test if the method 'calculate_fitness()' correctly communicates to
+    the method 'fit_formula()' and returns the correct fitness of the
+    animal (pop_object)'"""
+
+    carnivore = Carnivore(age=age, weight=weight)
+    carnivore.calculate_fitness()
+    c_params = create_c_params
+    fitness = (1 / (1 + math.exp(c_params["phi_age"] * (age - c_params["a_half"])))) * \
+              (1 / (1 + math.exp(-c_params["phi_weight"] * (weight - c_params["w_half"]))))
+    assert carnivore.fitness == fitness
 
 
 
