@@ -46,7 +46,7 @@ class Fauna:
     def weight(self):
         return self.weight()
 
-    @classmethod
+    # @classmethod
     def weight_default(cls):
         mu = math.log(cls.parameters['w_birth'] ** 2 / math.sqrt(
             cls.parameters['w_birth'] ** 2 + cls.parameters['sigma_birth']))
@@ -111,6 +111,7 @@ class Fauna:
             return True
         else:
             return random.random() < (self.parameters['omega'] * (1 - self.fitness))
+
     def die(self):
         if self.weight is None:
             return True

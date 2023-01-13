@@ -1,8 +1,7 @@
 """
-Landscape Class and subclasses (Lowland, Highland, Desert and Water).
-Landscape class is a parent class, all objects are instantiated from the
-Lowland, Highland, Desert and Water subclasses
-"""
+Landscape Class and subclasses (Lowland, Highland, Desert and Water). Landscape class is a parent
+ class, all objects are instantiated from the Lowland, Highland, Desert and Water subclasses
+ """
 import random
 
 from .fauna import Herbivore, Carnivore
@@ -19,9 +18,8 @@ class Landscape:
 
     @classmethod
     def verify_parameters(cls, params):
-        """This method verifies for any wrong parameters
-        passed by the user and raises a
-        ValueError, if required.
+        """This method verifies for any wrong parameters passed by the user and raises a ValueError,
+         if required.
 
         Parameters:
         ----------
@@ -35,7 +33,7 @@ class Landscape:
 
     @classmethod
     def verify_non_valid_parameters(cls, param_key, params):
-        if params[param_key] < 0 or isinstance(params[param_key], str):
+        if isinstance(params[param_key], str) or params[param_key] < 0:
             raise ValueError("The parameter *{}* must be "
                              "non-negative and also not string".format(param_key))
 
@@ -113,6 +111,7 @@ class Landscape:
                     living_animal.append(animal)
             self.initial_population[specie_type] = living_animal
         print("animal die")
+
 
 
 class Lowland(Landscape):
