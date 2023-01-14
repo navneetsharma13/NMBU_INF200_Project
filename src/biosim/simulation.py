@@ -180,8 +180,8 @@ class BioSim:
         writer.writerow(["Year", "Herbivore Count"])
         while self.year_num<self.final_year:
             self.cell.yearly_cycle()
-            print(self.year_num,self.cell.get_pop_tot_num_herb())
-            writer.writerow([self.year_num,self.cell.get_pop_tot_num_herb()])
+            print(self.year_num,self.cell.get_pop_tot_num_herb(),self.cell.get_pop_tot_num_carn())
+            writer.writerow([self.year_num,self.cell.get_pop_tot_num_herb(),self.cell.get_pop_tot_num_carn()])
 
             self.year_num += 1
 
@@ -191,11 +191,12 @@ class BioSim:
         """
         Add a population to the island
 
-        Parameters
+        Parametersu
         ----------
         population : List of dictionaries
             See BioSim Task Description, Sec 3.3.3 for details.
         """
+        self.cell.add_population(population)
 
     @property
     def year(self):

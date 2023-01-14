@@ -10,28 +10,31 @@ data = []
 
 
 for logfile in Path().glob('mono_hc_*.csv'):
-    d = pd.read_csv(logfile, skiprows=1, usecols=[0, 1], index_col=0,
-                names=['Year', 'Herbivores'])
+    d = pd.read_csv(logfile, skiprows=1, index_col=0,
+                names=['Year', 'Herbivores','Carnivores'])
     #print(d)
     d['Seed'] = int(re.match(r'.*_(\d+)\.csv', str(logfile)).group(1))
     #print(d)
     data.append(d)
     #print(data)
 hd = pd.concat(data).pivot(columns='Seed')
-hd.head()
+print(hd.tail())
 #print(hd)
-hd.Herbivores.plot(legend=False, alpha=0.5);
-plt.show()
-
-hd_eq = hd.loc[hd.index >= 100, :]
-print(hd_eq.mean())
-
-print(hd_eq.std())
-
-print(hd_eq.unstack().mean())
-
-print(hd_eq.unstack().std())
-
-bins = np.arange(160, 240, 2)
-# plt.hist(hd_eq.Herbivores.unstack(), bins=bins, fc='b', histtype='stepfilled', alpha=0.4);
+# hd.Herbivores.plot(legend=False, alpha=0.5);
 # plt.show()
+#
+# hd_eq = hd.loc[hd.index >= 100, :]
+# print(hd_eq.mean())
+#
+# print(hd_eq.std())
+#
+# print(hd_eq.unstack().mean())
+#
+# print(hd_eq.unstack().std())
+#
+# bins = np.arange(160, 240, 2)
+# # plt.hist(hd_eq.Herbivores.unstack(), bins=bins, fc='b', histtype='stepfilled', alpha=0.4);
+# # plt.show()
+plt.plot(hd.Herbivores, 'b', alpha=0.4);
+plt.plot(hd.Carnivores, 'r', alpha=0.4);
+plt.show()

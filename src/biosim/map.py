@@ -12,7 +12,7 @@ class Map:
     }
     animal_classes = {'Carnivore': Carnivore, 'Herbivore': Herbivore
                       }
-    livable_cells = {'H': Highland, 'L': Lowland}
+    livable_cells = {'H': Highland, 'L': Lowland, 'D':Desert }
 
     def __init__(self, island_map):
         cells_list = textwrap.dedent(island_map).splitlines()
@@ -63,6 +63,7 @@ class Map:
             loc_object.age_increase()
             loc_object.weight_decrease()
             loc_object.animal_die()
+
 
     def get_pop_tot_num_herb(self):
         pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
