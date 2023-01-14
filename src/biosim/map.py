@@ -12,20 +12,20 @@ class Map:
     }
     animal_classes = {'Carnivore': Carnivore, 'Herbivore': Herbivore
                       }
-    livable_cells = {'H': Highland, 'L': Lowland, 'D':Desert }
+    livable_cells = {'H': Highland, 'L': Lowland, 'D': Desert}
 
     def __init__(self, island_map):
         cells_list = textwrap.dedent(island_map).splitlines()
         self.map = [list(row.strip()) for row in cells_list]
-        landscape_classes = {
-            'H': Highland,
-            'L': Lowland,
-            'D': Desert,
-            'W': Water
-        }
-        animal_classes = {'Carnivore': Carnivore,
-                          'Herbivore': Herbivore
-                          }
+        # landscape_classes = {
+        #     'H': Highland,
+        #     'L': Lowland,
+        #     'D': Desert,
+        #     'W': Water
+        # }
+        # animal_classes = {'Carnivore': Carnivore,
+        #                   'Herbivore': Herbivore
+        #                   }
         self.cells = self.create_cells()
 
     def create_cells(self):
@@ -64,8 +64,8 @@ class Map:
             loc_object.weight_decrease()
             loc_object.animal_die()
 
-
     def get_pop_tot_num_herb(self):
+        herbivore_count = 0
         pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
                'Carnivore': []}
         for loc, loc_object in self.cells.items():
@@ -78,7 +78,9 @@ class Map:
 
             herbivore_count = sum(pop["Herbivore"])
         return herbivore_count
+
     def get_pop_tot_num_carn(self):
+        carnivore_count = 0
         pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
                'Carnivore': []}
         for loc, loc_object in self.cells.items():

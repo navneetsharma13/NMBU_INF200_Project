@@ -61,7 +61,6 @@ class Fauna:
             self.weight = self.weight - (self.weight * self.parameters['eta'])
         self.calculate_fitness()
 
-
     def calculate_fitness(self):
         def fitness_formula(sign, x, x_half, phi_x):
 
@@ -76,18 +75,6 @@ class Fauna:
                            fitness_formula(-1, self.weight, self.parameters['w_half'],
                                            self.parameters['phi_weight'])
 
-            # cls.check_phi_borders(fitness)
-
-
-
-    # def check_phi_borders(cls,phi):
-    #     if phi>1 or phi<0:
-    #         raise ValueError("The Parameter 'phi' calculated is not in border 0,1")
-    # def migrate_prob(self):
-    #
-    #     migrate_prob = self.parameters['mu'] * self.fitness
-    #     if migrate_prob > random.random():
-    #         return True
     def birth_prob(self, animal_number):
         zeta = self.parameters['zeta']
         w_birth = self.parameters['w_birth']
@@ -107,6 +94,7 @@ class Fauna:
         if self.weight >= child.weight * child.parameters['xi']:
             self.weight -= child.weight * child.parameters['xi']
         self.calculate_fitness()
+
     def die_prob(self):
         if self.fitness == 0:
             return True
@@ -123,7 +111,7 @@ class Fauna:
         self.calculate_fitness()
 
     def kill_prob(self, target_fitness):
-        """This method calculates the probablity if a Carnivore will kill an animal (Herbivore)
+        """This method calculates the probability if a Carnivore will kill an animal (Herbivore)
          according to the following conditions:
             Conditions:
             -----------
@@ -148,13 +136,18 @@ class Fauna:
         delta_phi_max = self.parameters['DeltaPhiMax']
 
         if killer_fitness <= target_fitness:
-            p = 0
+            kill_prob = 0
         elif 0 < killer_target_diff_fitness < delta_phi_max:
-            p = killer_target_diff_fitness / delta_phi_max
+            kill_prob = killer_target_diff_fitness / delta_phi_max
         else:
-            p = 1
+            kill_prob = 1
 
-        return random.random() < p
+        return random.random() < kill_prob
+
+    def migrate_prob(self):
+
+        migrate_prob = self.parameters['mu'] * self.fitness
+        return random.random() < migrate_prob
 
 
 class Herbivore(Fauna):
@@ -184,7 +177,6 @@ class Herbivore(Fauna):
 
 
 class Carnivore(Fauna):
-
     eta = 0.125
     F = 50.0
     beta = 0.75
@@ -208,11 +200,3 @@ class Carnivore(Fauna):
 
     def __init__(self, age=None, weight=None):
         super().__init__(age, weight)
-        #self._carnivore_consume_herbivore_prob = None
-
-    # def carnivore_consume_herbivore_prob(self,target_herbivore):
-    #
-    #     if self.fitness <= target_herbivore.fitness:
-    #         self._carnivore_consume_herbivore_prob=0
-    #
-    #     elif 0 < self.fitness-target_herbivore.fitness < self.parameters['DeltaPhiMaX']:
