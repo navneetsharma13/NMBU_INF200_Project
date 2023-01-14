@@ -66,7 +66,9 @@ class Landscape:
             fodder_intake = 0
             herb_capacity = herbivore.parameters["F"]
             fodder_remaining = self.fodder
-            if herb_capacity <= fodder_remaining:
+            if fodder_intake >= herb_capacity:
+                continue
+            elif herb_capacity <= fodder_remaining:
                 fodder_intake += herb_capacity
                 fodder_remaining -= herb_capacity
             elif 0 < fodder_remaining < herb_capacity:
@@ -96,32 +98,31 @@ class Landscape:
                     -> Every herbivore killed is removed from the population
                        by the python's built-in method '.remove()'.
                 """
-        self.population['Carnivore'].sort(key=lambda h: h.fitness,
-                                          reverse=True)
+        self.initial_population['Carnivore'].sort(key=lambda h: h.fitness, reverse=True)
 
-        self.population['Herbivore'].sort(key=lambda h: h.fitness)
+        self.initial_population['Herbivore'].sort(key=lambda h: h.fitness)
 
-        for carnivore in self.population['Carnivore']:
-            appetite = carnivore.parameters['F']
-            amount_eaten = 0
+        for carnivore in self.initial_population['Carnivore']:
+            carn_capacity = carnivore.parameters['F']
+            food_intake = 0
 
-            for herbivore in self.population['Herbivore']:
+            for herbivore in self.initial_population['Herbivore']:
 
-                if amount_eaten >= appetite:
+                if food_intake >= carn_capacity:
                     break
 
-                elif carnivore.will_kill(herbivore.fitness):
-                    food_wanted = appetite - amount_eaten
+                elif carnivore.kill_prob(herbivore.fitness):
+                    food_to_eat = carn_capacity - food_intake
 
-                    if herbivore.weight <= food_wanted:
-                        amount_eaten += herbivore.weight
-                        self.population['Herbivore'].remove(herbivore)
+                    if herbivore.weight <= food_to_eat:
+                        food_intake += herbivore.weight
+                        self.initial_population['Herbivore'].remove(herbivore)
 
-                    elif herbivore.weight > food_wanted:
-                        amount_eaten += food_wanted
-                        self.population['Herbivore'].remove(herbivore)
+                    elif herbivore.weight > food_to_eat:
+                        food_intake += food_to_eat
+                        self.initial_population['Herbivore'].remove(herbivore)
 
-            carnivore.gain_weight(amount_eaten)
+            carnivore.weight_increase_on_eat(food_intake)
 
     def add_newborn(self):
 
@@ -158,7 +159,6 @@ class Landscape:
                     living_animal.append(animal)
             self.initial_population[specie_type] = living_animal
         print("animal die")
-
 
 
 class Lowland(Landscape):
