@@ -175,9 +175,9 @@ class BioSim:
 
         csvfile = None
         writer = None
-        csvfile = open(f"{sys.path [1]}/{self.log_file}", 'w', newline="")
+        csvfile = open(f"{sys.path [1]}/{self.log_file}", 'a', newline="")
         writer = csv.writer (csvfile, delimiter=',')
-        writer.writerow(["Year", "Herbivore Count"])
+        # writer.writerow(["Year", "Herbivore Count","Carnivore Count"])
         while self.year_num<self.final_year:
             self.cell.yearly_cycle()
             print(self.year_num,self.cell.get_pop_tot_num_herb(),self.cell.get_pop_tot_num_carn())

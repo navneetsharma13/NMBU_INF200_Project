@@ -20,7 +20,7 @@ ini_carns = [{'loc': (2, 2),
                       for _ in range(20)]}]
 
 
-for seed in range(100,200 ):
+for seed in range(100,200):
     sim = BioSim(geogr, ini_herbs, seed=seed, vis_years=0,
                  log_file=f'data/mono_hc_{seed:05d}.csv')
 
