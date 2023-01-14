@@ -190,7 +190,7 @@ class Carnivore(Fauna):
     zeta = 3.5
     xi = 1.1
     mu = 0.4
-    DeltaPhiMax = 10.0
+    DeltaPhiMax = 15.0
     omega = 0.8
 
     parameters = {'eta': eta, 'F': F, 'beta': beta, 'w_birth': w_birth,

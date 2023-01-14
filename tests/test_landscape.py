@@ -39,7 +39,7 @@ def test_negative_parameters():
 def test_string_parameters():
     """Test method 'verify_non_valid_parameters(param_key, params)' if it identifies the
     negative value of a given parameter and returns ValueError"""
-    param_key, params = 'f_max', {'f_max': "sadsa"}
+    param_key, params = 'f_max', {'f_max': "text"}
     with pytest.raises(ValueError):
         Lowland.verify_non_valid_parameters(param_key, params)
         Highland.verify_non_valid_parameters(param_key, params)

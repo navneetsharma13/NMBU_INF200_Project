@@ -8,18 +8,17 @@ plt.rcParams['figure.figsize'] = (20, 30)
 
 data = []
 
-
 for logfile in Path().glob('mono_hc_*.csv'):
     d = pd.read_csv(logfile, skiprows=1, index_col=0,
-                names=['Year', 'Herbivores','Carnivores'])
-    #print(d)
+                    names=['Year', 'Herbivores', 'Carnivores'])
+    # print(d)
     d['Seed'] = int(re.match(r'.*_(\d+)\.csv', str(logfile)).group(1))
-    #print(d)
+    # print(d)
     data.append(d)
-    #print(data)
+    # print(data)
 hd = pd.concat(data).pivot(columns='Seed')
 print(hd.tail())
-#print(hd)
+# print(hd)
 # hd.Herbivores.plot(legend=False, alpha=0.5);
 # plt.show()
 #
@@ -35,8 +34,8 @@ print(hd.tail())
 # bins = np.arange(160, 240, 2)
 # # plt.hist(hd_eq.Herbivores.unstack(), bins=bins, fc='b', histtype='stepfilled', alpha=0.4);
 # # plt.show()
-plt.plot(hd.Herbivores, 'b', alpha=0.4);
-plt.plot(hd.Carnivores, 'r', alpha=0.4);
+plt.plot(hd.Herbivores, 'b', alpha=0.4)
+plt.plot(hd.Carnivores, 'r', alpha=0.4)
 plt.show()
 
 print(sum(hd.loc[300, 'Carnivores'] == 0))
@@ -46,4 +45,3 @@ with_c15 = (hd.loc[300, 'Herbivores'] > 0) & (hd.loc[300, 'Carnivores'] > 0)
 hc15_eq = hd.loc[hd.index >= 175, np.hstack((with_c15.values, with_c15.values))]
 
 print(hc15_eq.Herbivores.unstack().mean(), hc15_eq.Herbivores.unstack().std())
-
