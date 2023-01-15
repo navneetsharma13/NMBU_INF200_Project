@@ -18,22 +18,22 @@ class Map:
     def __init__(self, island_map):
 
         cells_list = textwrap.dedent(island_map).splitlines()
-        self.map = [list(row.strip()) for row in cells_list]
-        self.cells = self.create_cells()
+        self.cell_list = [list(row.strip()) for row in cells_list]
+        self.cells_dict = self.create_cells()
 
     def create_cells(self):
 
-        pos = [(i, j) for i in range(len(self.map))
-               for j in range(len(self.map[0]))]
-        geo = [self.landscape_classes[geo]() for k in range(len(self.map))
-               for geo in self.map[k]]
+        pos = [(i, j) for i in range(len(self.cell_list))
+               for j in range(len(self.cell_list[0]))]
+        geo = [self.landscape_classes[geo]() for k in range(len(self.cell_list))
+               for geo in self.cell_list[k]]
         return dict(zip(pos, geo))
 
     def livable_cell_calculate(self):
 
         loc = []
         loc_object = []
-        for loc1, loc_object1 in self.cells.items():
+        for loc1, loc_object1 in self.cells_dict.items():
             if type(loc_object1) in self.livable_cells.values():
                 loc.append(loc1)
                 loc_object.append(loc_object1)
@@ -44,7 +44,7 @@ class Map:
         for population in given_population:
 
             location = (int(population['loc'][0]) - 1, int(population['loc'][1]) - 1)
-            loc_object = self.cells[location]
+            loc_object = self.cells_dict[location]
             for population_individual in population['pop']:
 
                 type_animal = population_individual['species']
@@ -68,7 +68,7 @@ class Map:
         herbivore_count = 0
         pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
                'Carnivore': []}
-        for loc, loc_object in self.cells.items():
+        for loc, loc_object in self.cells_dict.items():
 
             pop['Row_no'].append(loc[0])
             pop['Col_no'].append(loc[1])
@@ -85,7 +85,7 @@ class Map:
         carnivore_count = 0
         pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
                'Carnivore': []}
-        for loc, loc_object in self.cells.items():
+        for loc, loc_object in self.cells_dict.items():
 
             pop['Row_no'].append(loc[0])
             pop['Col_no'].append(loc[1])

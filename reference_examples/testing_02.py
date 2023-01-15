@@ -18,7 +18,8 @@ if __name__ == "__main__":
     print(m.livable_cell_calculate())
     print(m.add_population(ini_herbs))
     print(m.yearly_cycle())
-    print(m.get_pop_tot_num())
+    print(m.get_pop_tot_num_herb())
+    print(m.get_pop_tot_num_carn())
 
 
 

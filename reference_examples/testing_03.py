@@ -29,6 +29,6 @@ for seed in range(100, 200):
 
     sim.simulate(50)
     sim.add_population(ini_carns)
-    sim.simulate(250)
+    sim.simulate(251)
 
 print("Simulation took "+str(time.time() - start_time)+" seconds!!")
