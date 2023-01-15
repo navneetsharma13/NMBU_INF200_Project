@@ -1,13 +1,14 @@
-"""
-Landscape Class and subclasses (Lowland, Highland, Desert and Water). Landscape class is a parent
- class, all objects are instantiated from the Lowland, Highland, Desert and Water subclasses
- """
 import random
-
 from .fauna import Herbivore, Carnivore
 
 
 class Landscape:
+
+    """
+    Landscape Class and its subclasses (Lowland, Highland, Desert and Water). Landscape class is a
+    parent class, all objects are instantiated from the Lowland, Highland, Desert and Water
+    subclasses
+     """
     parameters = {}
 
     def __init__(self):

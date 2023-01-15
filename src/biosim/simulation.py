@@ -11,6 +11,7 @@ import csv
 Template for BioSim class.
 """
 
+
 # The material in this file is licensed under the BSD 3-clause license
 # https://opensource.org/licenses/BSD-3-Clause
 # (C) Copyright 2023 Hans Ekkehard Plesser / NMBU
@@ -86,46 +87,39 @@ class BioSim:
         - `img_dir` and `img_base` must either be both None or both strings.
         """
         # self.map=island_map
-        self.cell=Map(island_map)
+        self.cell = Map(island_map)
         self.cell.add_population(ini_pop)
         random.seed(seed)
-        self.last_year=0
-        self.year_num=0
-        self.img_no=0
-        self.final_year=None
-        self.img_fmt= img_fmt
-        self.fig=None
-        self.island_map=None
-        self.img_axis=None
-        self.mean_ax=None
-        self.herbivore_line=None
-        #carnivore line
-        self.herbivore_population=None
-        #carnivore line
-        self.herbivore_img_axis=None
-        self.log_file=log_file
+        self.last_year = 0
+        self.year_num = 0
+        self.img_no = 0
+        self.final_year = None
+        self.img_fmt = img_fmt
+        self.fig = None
+        self.island_map = None
+        self.img_axis = None
+        self.mean_ax = None
+        self.herbivore_line = None
+        # carnivore line
+        self.herbivore_population = None
+        # carnivore line
+        self.herbivore_img_axis = None
+        self.log_file = log_file
 
         if img_base is None:
-            self.img_base=None
+            self.img_base = None
         else:
-            self.img_base=img_base
+            self.img_base = img_base
 
         if ymax_animals is None:
-            self.ymax_animals= None
+            self.ymax_animals = None
         else:
-            self.ymax_animals=ymax_animals
+            self.ymax_animals = ymax_animals
 
         if cmax_animals is None:
-            self.cmax_animals=None
+            self.cmax_animals = None
         else:
-            self.cmax_animals=cmax_animals
-
-
-
-
-
-
-
+            self.cmax_animals = cmax_animals
 
     def set_animal_parameters(self, species, params):
         """
@@ -171,21 +165,20 @@ class BioSim:
             Number of years to simulate
         """
         # self.last_year+=num_years
-        self.final_year=self.year_num+num_years
+        self.final_year = self.year_num + num_years
 
         csvfile = None
         writer = None
-        csvfile = open(f"{sys.path [1]}/{self.log_file}", 'a', newline="")
-        writer = csv.writer (csvfile, delimiter=',')
+        csvfile = open(f"{sys.path[1]}/{self.log_file}", 'a', newline="")
+        writer = csv.writer(csvfile, delimiter=',')
         # writer.writerow(["Year", "Herbivore Count","Carnivore Count"])
-        while self.year_num<self.final_year:
+        while self.year_num < self.final_year:
             self.cell.yearly_cycle()
-            print(self.year_num,self.cell.get_pop_tot_num_herb(),self.cell.get_pop_tot_num_carn())
-            writer.writerow([self.year_num,self.cell.get_pop_tot_num_herb(),self.cell.get_pop_tot_num_carn()])
+            print(self.year_num, self.cell.get_pop_tot_num_herb(), self.cell.get_pop_tot_num_carn())
+            writer.writerow(
+                [self.year_num, self.cell.get_pop_tot_num_herb(), self.cell.get_pop_tot_num_carn()])
 
             self.year_num += 1
-
-
 
     def add_population(self, population):
         """

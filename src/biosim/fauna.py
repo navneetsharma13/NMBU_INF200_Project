@@ -44,24 +44,29 @@ class Fauna:
     #         raise ValueError(str(val) + "cannot be a value type,it has to be int or float")
 
     def weight(self):
+
         return self.weight()
 
     # @classmethod
     def weight_default(self):
+
         mu = math.log(self.parameters['w_birth'] ** 2 / math.sqrt(
             self.parameters['w_birth'] ** 2 + self.parameters['sigma_birth']))
         sigma = math.log(1 + self.parameters['sigma_birth'] ** 2 / self.parameters['w_birth'] ** 2)
         return random.lognormvariate(mu, sigma)
 
     def age_increase(self):
+
         self.age += 1
 
     def weight_decrease(self):
+
         if self.weight > 0:
             self.weight = self.weight - (self.weight * self.parameters['eta'])
         self.calculate_fitness()
 
     def calculate_fitness(self):
+
         def fitness_formula(sign, x, x_half, phi_x):
 
             return 1.0 / (1 + math.exp(sign * phi_x * (x - x_half)))
@@ -76,6 +81,7 @@ class Fauna:
                                            self.parameters['phi_weight'])
 
     def birth_prob(self, animal_number):
+
         zeta = self.parameters['zeta']
         w_birth = self.parameters['w_birth']
         sigma_birth = self.parameters['sigma_birth']
@@ -91,17 +97,20 @@ class Fauna:
         return random.random() < prob and self.weight >= result
 
     def weight_decrease_on_birth(self, child):
+
         if self.weight >= child.weight * child.parameters['xi']:
             self.weight -= child.weight * child.parameters['xi']
         self.calculate_fitness()
 
     def die_prob(self):
+
         if self.fitness == 0:
             return True
         else:
             return random.random() < (self.parameters['omega'] * (1 - self.fitness))
 
     def die(self):
+
         if self.weight is None:
             return True
 
@@ -111,6 +120,7 @@ class Fauna:
         self.calculate_fitness()
 
     def kill_prob(self, target_fitness):
+
         """This method calculates the probability if a Carnivore will kill an animal (Herbivore)
          according to the following conditions:
             Conditions:
@@ -151,6 +161,7 @@ class Fauna:
 
 
 class Herbivore(Fauna):
+
     eta = 0.05
     F = 10.0
     beta = 0.9
@@ -173,10 +184,12 @@ class Herbivore(Fauna):
                   }
 
     def __init__(self, age=None, weight=None):
+
         super().__init__(age, weight)
 
 
 class Carnivore(Fauna):
+
     eta = 0.125
     F = 50.0
     beta = 0.75
@@ -199,4 +212,5 @@ class Carnivore(Fauna):
                   'xi': xi, 'mu': mu, 'DeltaPhiMax': DeltaPhiMax, 'omega': omega}
 
     def __init__(self, age=None, weight=None):
+
         super().__init__(age, weight)
