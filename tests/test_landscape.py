@@ -74,7 +74,7 @@ def test_fauna_aging(age, weight):
         the animal_objects stored in a specific geo_object"""
 
     t_sim, loc = create_map_for_test(age, weight)
-    loc_object = t_sim.cell.livable_cell_calculate()[loc]
+    loc_object = t_sim.map.livable_cell_calculate()[loc]
     for _ in range(len(loc_object.initial_population['Herbivore'])):
         herb_object = loc_object.initial_population['Herbivore'][_]
         herb_age_before = herb_object.age
@@ -82,4 +82,16 @@ def test_fauna_aging(age, weight):
         herb_age_after = herb_object.age
         assert herb_age_after is (herb_age_before + 1)
 
-# def test_herbivore_feeding()
+
+@pytest.mark.parametrize("age, weight", [(10, 20), (100, 80), (200, 200)])
+def test_herbivore_feeding(age, weight):
+    """This test method verifies different cases for the feed_herbivore():
+        a.) To check if the fodder reduces when an animal eats it.
+        b.) To check if the weight of the animal increases after eat.
+        c.) To check if the fitness of the animal gets updated after feeding is done.
+    """
+    t_sim, loc = create_map_for_test(age, weight)
+    # loc_object = t_sim.map.livable_cell_calculate()[loc]
+    old_fodder = t_sim.map
+
+

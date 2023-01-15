@@ -87,8 +87,8 @@ class BioSim:
         - `img_dir` and `img_base` must either be both None or both strings.
         """
         # self.map=island_map
-        self.cell = Map(island_map)
-        self.cell.add_population(ini_pop)
+        self.map = Map(island_map)
+        self.map.add_population(ini_pop)
         random.seed(seed)
         self.last_year = 0
         self.year_num = 0
@@ -173,10 +173,10 @@ class BioSim:
         writer = csv.writer(csvfile, delimiter=',')
         # writer.writerow(["Year", "Herbivore Count","Carnivore Count"])
         while self.year_num < self.final_year:
-            self.cell.yearly_cycle()
-            print(self.year_num, self.cell.get_pop_tot_num_herb(), self.cell.get_pop_tot_num_carn())
+            self.map.yearly_cycle()
+            print(self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn())
             writer.writerow(
-                [self.year_num, self.cell.get_pop_tot_num_herb(), self.cell.get_pop_tot_num_carn()])
+                [self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()])
 
             self.year_num += 1
 
@@ -189,7 +189,7 @@ class BioSim:
         population : List of dictionaries
             See BioSim Task Description, Sec 3.3.3 for details.
         """
-        self.cell.add_population(population)
+        self.map.add_population(population)
 
     @property
     def year(self):

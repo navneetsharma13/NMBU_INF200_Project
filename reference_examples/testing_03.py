@@ -26,4 +26,4 @@ for seed in range(100, 200):
 
     sim.simulate(50)
     sim.add_population(ini_carns)
-    sim.simulate(251)
+    sim.simulate(250)
