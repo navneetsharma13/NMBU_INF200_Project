@@ -194,14 +194,16 @@ class BioSim:
     @property
     def year(self):
         """Last year simulated."""
-
+        return self.last_year
     @property
     def num_animals(self):
         """Total number of animals on island."""
+        return self.cell.get_pop_tot_num_carn()+self.cell.get_pop_tot_num_herb()
 
     @property
     def num_animals_per_species(self):
         """Number of animals per species in island, as dictionary."""
+        return {'Herbivore':self.cell.get_pop_tot_num_herb(),'Carnivore':self.cell.get_pop_tot_num_carn()}
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""
