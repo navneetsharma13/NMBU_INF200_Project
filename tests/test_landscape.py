@@ -91,7 +91,19 @@ def test_herbivore_feeding(age, weight):
         c.) To check if the fitness of the animal gets updated after feeding is done.
     """
     t_sim, loc = create_map_for_test(age, weight)
-    # loc_object = t_sim.map.livable_cell_calculate()[loc]
-    old_fodder = t_sim.map
+    loc_object = t_sim.map.livable_cell_calculate()[loc]
+    old_fodder = loc_object.fodder
+    herb_object = loc_object.initial_population['Herbivore'][0]
+    old_herb_weight = herb_object.weight
+    old_herb_fitness = herb_object.fitness
+    loc_object.feed_herbivore()
+    updated_fodder = loc_object.fodder
+    updated_herb_weight = herb_object.weight
+    updated_herb_fitness = herb_object.fitness
+
+    assert old_fodder > updated_fodder
+    assert old_herb_weight < updated_herb_weight
+    assert old_herb_fitness != updated_herb_fitness
+
 
 
