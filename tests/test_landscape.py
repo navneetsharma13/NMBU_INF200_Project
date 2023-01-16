@@ -61,6 +61,13 @@ def create_map_for_test(age, weight):
             "loc": (2, 2),
             "pop": [{"species": "Herbivore", "age": age, "weight": weight}],
         }]
+
+    ini_carns = [
+        {
+            "loc": (2, 2),
+            "pop": [
+                {"species": "Carnivore", "age": age, "weight": weight}],
+        }]
     seed = 123213
     t_sim = BioSim(geogr, ini_herbs, seed)
     loc = (1, 1)
@@ -106,4 +113,26 @@ def test_herbivore_feeding(age, weight):
     assert old_herb_fitness != updated_herb_fitness
 
 
+@pytest.mark.parametrize("age, weight", [(10, 20), (100, 80), (200, 200)])
+def test_carnivore_feeding(age, weight):
+    """This test method verifies different cases for the feed_herbivore():
+        a.) To check if the fodder reduces when an animal eats it.
+        b.) To check if the weight of the animal increases after eat.
+        c.) To check if the fitness of the animal gets updated after feeding is done.
+    """
+    ini_carns = [
+        {
+            "loc": (2, 2),
+            "pop": [
+                {"species": "Carnivore", "age": 15, "weight": 40}
+                for _ in range(40)],
+        }]
+    t_sim, loc = create_map_for_test(age, weight)
+    loc_object = t_sim.map.livable_cell_calculate()[loc]
+    t_sim.add_population(ini_carns)
+    carn_object = loc_object.initial_population['Carnivore'][0]
+    old_carn_weight = carn_object.weight
+    loc_object.feed_carnivore()
+    updated_carn_weight = carn_object.weight
+    assert old_carn_weight < updated_carn_weight
 
