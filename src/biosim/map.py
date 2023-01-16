@@ -15,11 +15,14 @@ class Map:
                       }
     livable_cells = {'H': Highland, 'L': Lowland, 'D': Desert}
 
-    def __init__(self, island_map):
+    def __init__(self,island_map):
 
-        cells_list = textwrap.dedent(island_map).splitlines()
-        self.cell_list = [list(row.strip()) for row in cells_list]
+        self.cell_list = self.cell_list(island_map)
         self.cells_dict = self.create_cells()
+
+    def cell_list(self,island_map):
+        cells_list = textwrap.dedent(island_map).splitlines()
+        return [list(row.strip()) for row in cells_list]
 
     def create_cells(self):
 

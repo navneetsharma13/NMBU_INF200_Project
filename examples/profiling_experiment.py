@@ -1,8 +1,8 @@
 import textwrap
+import time
 from random import seed
 
 from biosim.simulation import BioSim
-import time
 
 geogr = """\
            WWW
@@ -26,5 +26,5 @@ ini_carns = [{'loc': (2, 2),
 start_time = time.time()
 
 if __name__ == '__main__':
-    sim = BioSim(geogr, ini_herbs, seed=seed)
+    sim = BioSim(geogr, ini_herbs, seed=12345)
     sim.run(cycles=20)

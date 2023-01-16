@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from .map import Map
 import sys
 import csv
+import numpy as np
+
 
 """
 Template for BioSim class.
@@ -207,3 +209,55 @@ class BioSim:
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""
+
+    def run(self,cycles,report_cycles=1,return_counts=False):
+        """
+        Run simulation for given number of cycles.
+
+        Parameters
+        ----------
+        cycles : int
+            number of cycles to simulate
+        report_cycles : int
+            interval between status information updates (== 0: no output)
+        return_counts : int
+            if True, return population counts
+        Returns
+        -------
+        None or tuple
+            If return of counts is requested, a tuple (cycle, nA, nB)
+        """
+        disp=report_cycles>0
+        ret=return_counts
+
+        if ret:
+            data = np.empty((cycles + 1, 3))
+            data[:, 0] = range(cycles + 1)
+            data[1] = self.map.get_pop_tot_num_herb()
+            data[2] = self.map.get_pop_tot_num_carn()
+        else:
+            data = None
+
+        if disp:
+            print('Start: Herbivores', self.map.get_pop_tot_num_herb())
+            print('Start: Carnivores', self.map.get_pop_tot_num_carn())
+
+        for cycle in range(cycles):
+            self.map.yearly_cycle()
+            disp_this_cycle = disp and cycle % report_cycles == 0
+
+            if ret or disp_this_cycle:
+                n_a, n_b = self.map.get_pop_tot_num_herb(),self.map.get_pop_tot_num_carn()
+                if ret:
+                    data[cycle + 1, 1:] = n_a, n_b
+                if disp_this_cycle:
+                    print(n_a, n_b)
+
+        if disp:
+            print('End: Herbivore', self.map.get_pop_tot_num_herb())
+            print('End: Carnivore', self.map.get_pop_tot_num_carn())
+
+        if ret:
+            return data
+
+
