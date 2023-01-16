@@ -249,7 +249,7 @@ class BioSim:
             disp_this_cycle = disp and cycle % report_cycles == 0
 
             if ret or disp_this_cycle:
-                n_a, n_b = self.map.get_pop_tot_num_herb(),self.map.get_pop_tot_num_carn()
+                n_a, n_b = self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()
                 if ret:
                     data[cycle + 1, 1:] = n_a, n_b
                 if disp_this_cycle:
