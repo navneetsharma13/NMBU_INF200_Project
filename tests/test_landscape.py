@@ -50,8 +50,8 @@ def test_string_parameters():
 @pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
 class TestLandscape:
 
-    @pytest.fixture()
-    def create_map_for_test(self, age, weight):
+    @pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
+    def create_map_for(self, age, weight):
         geogr = """\
                    WWW
                    WLW
@@ -75,12 +75,11 @@ class TestLandscape:
 
         return t_sim, loc
 
-    @pytest.fixture(autouse=True)
     def test_fauna_aging(self, age, weight):
         """Test if the method 'age_increase()' correctly increases in 1 year all
             the animal_objects stored in a specific geo_object"""
 
-        t_sim, loc = self.create_map_for_test(age, weight)
+        t_sim, loc = self.create_map_for(age, weight)
         loc_object = t_sim.map.livable_cell_calculate()[loc]
         for _ in range(len(loc_object.initial_population['Herbivore'])):
             herb_object = loc_object.initial_population['Herbivore'][_]
@@ -89,14 +88,14 @@ class TestLandscape:
             herb_age_after = herb_object.age
             assert herb_age_after is (herb_age_before + 1)
 
-    @pytest.fixture(autouse=True)
+
     def test_herbivore_feeding(self, age, weight):
         """This test method verifies different cases for the feed_herbivore():
             a.) To check if the fodder reduces when an animal eats it.
             b.) To check if the weight of the animal increases after eat.
             c.) To check if the fitness of the animal gets updated after feeding is done.
         """
-        t_sim, loc = self.create_map_for_test(age, weight)
+        t_sim, loc = self.create_map_for(age, weight)
         loc_object = t_sim.map.livable_cell_calculate()[loc]
         old_fodder = loc_object.fodder
         herb_object = loc_object.initial_population['Herbivore'][0]
@@ -111,7 +110,7 @@ class TestLandscape:
         assert old_herb_weight < updated_herb_weight
         assert old_herb_fitness != updated_herb_fitness
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture()
     def test_carnivore_feeding(self, age, weight, mocker):
         mocker.patch('random.random', return_value=0.00115)
 
@@ -127,7 +126,7 @@ class TestLandscape:
                     {"species": "Carnivore", "age": 15, "weight": 40}
                     for _ in range(40)],
             }]
-        t_sim, loc = self.create_map_for_test(age, weight)
+        t_sim, loc = self.create_map_for(age, weight)
         loc_object = t_sim.map.livable_cell_calculate()[loc]
         t_sim.add_population(ini_carns)
         carn_object = loc_object.initial_population['Carnivore'][0]

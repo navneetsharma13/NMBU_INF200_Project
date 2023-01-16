@@ -153,7 +153,6 @@ class Fauna:
             kill_prob = 0
         elif 0 < killer_target_diff_fitness < delta_phi_max:
             kill_prob = killer_target_diff_fitness / delta_phi_max
-            print(kill_prob)
         else:
             kill_prob = 1
 
