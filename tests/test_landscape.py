@@ -75,7 +75,7 @@ def create_map_for_test(age, weight):
     return t_sim, loc
 
 
-@pytest.mark.parametrize("age, weight", [(10, 20), (100, 80), (200, 200)])
+@pytest.mark.parametrize("age, weight", [(10, 20), (20, 80), (200, 200)])
 def test_fauna_aging(age, weight):
     """Test if the method 'age_increase()' correctly increases in 1 year all
         the animal_objects stored in a specific geo_object"""
@@ -90,7 +90,7 @@ def test_fauna_aging(age, weight):
         assert herb_age_after is (herb_age_before + 1)
 
 
-@pytest.mark.parametrize("age, weight", [(10, 20), (100, 80), (200, 200)])
+@pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
 def test_herbivore_feeding(age, weight):
     """This test method verifies different cases for the feed_herbivore():
         a.) To check if the fodder reduces when an animal eats it.
@@ -113,7 +113,7 @@ def test_herbivore_feeding(age, weight):
     assert old_herb_fitness != updated_herb_fitness
 
 
-@pytest.mark.parametrize("age, weight", [(10, 20), (100, 80), (200, 200)])
+@pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
 def test_carnivore_feeding(age, weight):
     """This test method verifies different cases for the feed_herbivore():
         a.) To check if the fodder reduces when an animal eats it.

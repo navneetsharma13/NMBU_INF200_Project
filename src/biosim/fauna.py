@@ -52,7 +52,9 @@ class Fauna:
 
         mu = math.log(self.parameters['w_birth'] ** 2 / math.sqrt(
             self.parameters['w_birth'] ** 2 + self.parameters['sigma_birth']))
-        sigma = math.log(1 + self.parameters['sigma_birth'] ** 2 / self.parameters['w_birth'] ** 2)
+        print(mu)
+        sigma = math.sqrt(math.log(1 + self.parameters['sigma_birth'] ** 2 / self.parameters['w_birth'] ** 2))
+        print(sigma)
         return random.lognormvariate(mu, sigma)
 
     def age_increase(self):
