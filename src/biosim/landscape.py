@@ -134,8 +134,8 @@ class Landscape:
                 animal.calculate_fitness()
                 if animal.birth_prob(len(species)):
                     newborn = type(animal)()
-                    animal.weight_decrease_on_birth(newborn)
-                    newborns.append(newborn)
+                    if animal.weight_decrease_on_birth(newborn):
+                        newborns.append(newborn)
             species.extend(newborns)
 
     def age_increase(self):
