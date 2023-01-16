@@ -52,9 +52,7 @@ class Fauna:
 
         mu = math.log(self.parameters['w_birth'] ** 2 / math.sqrt(
             self.parameters['w_birth'] ** 2 + self.parameters['sigma_birth']))
-        print(mu)
         sigma = math.sqrt(math.log(1 + self.parameters['sigma_birth'] ** 2 / self.parameters['w_birth'] ** 2))
-        print(sigma)
         return random.lognormvariate(mu, sigma)
 
     def age_increase(self):
@@ -205,7 +203,7 @@ class Carnivore(Fauna):
     zeta = 3.5
     xi = 1.1
     mu = 0.4
-    DeltaPhiMax = 10.0
+    DeltaPhiMax = 15.0
     omega = 0.8
 
     parameters = {'eta': eta, 'F': F, 'beta': beta, 'w_birth': w_birth,
