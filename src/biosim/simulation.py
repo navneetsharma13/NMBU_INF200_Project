@@ -139,6 +139,7 @@ class BioSim:
         ValueError
             If invalid parameter values are passed.
         """
+        self.map.set_parameters(species,params)
 
     def set_landscape_parameters(self, landscape, params):
         """
@@ -156,6 +157,7 @@ class BioSim:
         ValueError
             If invalid parameter values are passed.
         """
+        self.map.set_parameters(landscape,params)
 
     def simulate(self, num_years):
         """
