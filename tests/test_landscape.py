@@ -8,9 +8,7 @@ __email__ = "navneet.sharma@nmbu.no and sushant.kumar.sirvastava@nmbu.no"
 
 import random
 import textwrap
-
 import pytest
-import random as rd
 import numpy as np
 from src.biosim.landscape import Lowland, Highland
 from src.biosim.simulation import BioSim
@@ -49,7 +47,6 @@ def test_string_parameters():
         Highland.verify_non_valid_parameters(param_key, params)
 
 
-@pytest.mark.parametrize("age, weight", [(10, 20), (100, 80), (200, 200)])
 def create_map_for_test(age, weight):
     geogr = """\
                WWW
@@ -75,7 +72,7 @@ def create_map_for_test(age, weight):
     return t_sim, loc
 
 
-@pytest.mark.parametrize("age, weight", [(10, 20), (20, 80), (200, 200)])
+@pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
 def test_fauna_aging(age, weight):
     """Test if the method 'age_increase()' correctly increases in 1 year all
         the animal_objects stored in a specific geo_object"""
@@ -114,7 +111,9 @@ def test_herbivore_feeding(age, weight):
 
 
 @pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
-def test_carnivore_feeding(age, weight):
+def test_carnivore_feeding(age, weight, mocker):
+    mocker.patch('random.random', return_value=0.00115)
+
     """This test method verifies different cases for the feed_herbivore():
         a.) To check if the fodder reduces when an animal eats it.
         b.) To check if the weight of the animal increases after eat.

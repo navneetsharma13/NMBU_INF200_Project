@@ -52,7 +52,8 @@ class Fauna:
 
         mu = math.log(self.parameters['w_birth'] ** 2 / math.sqrt(
             self.parameters['w_birth'] ** 2 + self.parameters['sigma_birth']))
-        sigma = math.sqrt(math.log(1 + self.parameters['sigma_birth'] ** 2 / self.parameters['w_birth'] ** 2))
+        sigma = math.sqrt(
+            math.log(1 + self.parameters['sigma_birth'] ** 2 / self.parameters['w_birth'] ** 2))
         return random.lognormvariate(mu, sigma)
 
     def age_increase(self):
@@ -100,7 +101,10 @@ class Fauna:
 
         if self.weight >= child.weight * child.parameters['xi']:
             self.weight -= child.weight * child.parameters['xi']
-        self.calculate_fitness()
+            self.calculate_fitness()
+            return True
+        else:
+            return False
 
     def die_prob(self):
 
@@ -149,6 +153,7 @@ class Fauna:
             kill_prob = 0
         elif 0 < killer_target_diff_fitness < delta_phi_max:
             kill_prob = killer_target_diff_fitness / delta_phi_max
+            print(kill_prob)
         else:
             kill_prob = 1
 
@@ -173,7 +178,6 @@ class Fauna:
 
 
 class Herbivore(Fauna):
-
     eta = 0.05
     F = 10.0
     beta = 0.9
@@ -196,12 +200,10 @@ class Herbivore(Fauna):
                   }
 
     def __init__(self, age=None, weight=None):
-
         super().__init__(age, weight)
 
 
 class Carnivore(Fauna):
-
     eta = 0.125
     F = 50.0
     beta = 0.75
@@ -224,5 +226,4 @@ class Carnivore(Fauna):
                   'xi': xi, 'mu': mu, 'DeltaPhiMax': DeltaPhiMax, 'omega': omega}
 
     def __init__(self, age=None, weight=None):
-
         super().__init__(age, weight)
