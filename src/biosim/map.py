@@ -56,6 +56,21 @@ class Map:
                 # print(pop_object,pop_object.weight,pop_object.age)
                 loc_object.initial_population[type(pop_object).__name__].append(pop_object)
 
+    def check_str_type(self,ar):
+        if not isinstance(ar,str):
+            raise TypeError("The Argument is not a string "+str(ar))
+    def check_dict_type(self,ar):
+        if not isinstance(ar,dict):
+            raise TypeError("The Argument is not a dict "+str(ar))
+
+    def set_parameters(self,key,params):
+
+        self.check_str_type(key)
+        self.check_dict_type(params)
+        combined_dict = dict(**self.animal_classes, **self.landscape_classes)
+        combined_dict[key].set_parameters(params)
+
+
     def yearly_cycle(self):
 
         for loc, loc_object in self.livable_cell_calculate().items():

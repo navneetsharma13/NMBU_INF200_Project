@@ -159,6 +159,18 @@ class Fauna:
         migrate_prob = self.parameters['mu'] * self.fitness
         return random.random() < migrate_prob
 
+    @classmethod
+    def check_not_defined_params(cls,params):
+        for p in params.keys():
+            if p not in cls.parameters.keys():
+                raise ValueError("Parameter is not defined "+str(p))
+
+    @classmethod
+    def set_parameters(cls,params):
+
+        cls.check_not_defined_params(params)
+        cls.parameters.update(params)
+
 
 class Herbivore(Fauna):
 

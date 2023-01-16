@@ -6,7 +6,5 @@ import pytest
 from biosim.simulation import BioSim
 from biosim.map import Map
 
-def invalid_island_parameters(self,island_maps):
-    l=
-    land_cells=self.
+
 

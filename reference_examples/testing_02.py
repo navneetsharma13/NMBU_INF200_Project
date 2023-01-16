@@ -20,6 +20,8 @@ if __name__ == "__main__":
     print(m.yearly_cycle())
     print(m.get_pop_tot_num_herb())
     print(m.get_pop_tot_num_carn())
+    #print(m.set_parameters("Herbivore",{'w_birth':300}))
+
 
 
 

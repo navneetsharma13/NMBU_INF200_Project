@@ -1,12 +1,9 @@
-import random
-import textwrap
-import subprocess
-import matplotlib
-import matplotlib.pyplot as plt
 from .map import Map
 import sys
 import csv
 import numpy as np
+from .diffsys import DiffSys
+from .graphics import Graphics
 
 
 """
@@ -24,9 +21,9 @@ class BioSim:
     Top-level interface to BioSim package.
     """
 
-    def __init__(self, island_map, ini_pop, seed,
+    def __init__(self, island_map, ini_pop, sys_size, noise ,seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
-                 img_years=None, img_dir=None, img_base=None, img_fmt='png',
+                 img_years=None, img_dir=None, img_base=None, img_name=None,img_fmt='png',
                  log_file=None):
 
         """
@@ -91,7 +88,7 @@ class BioSim:
         # self.map=island_map
         self.map = Map(island_map)
         self.map.add_population(ini_pop)
-        random.seed(seed)
+        np.random.seed(seed)
         self.last_year = 0
         self.year_num = 0
         self.img_no = 0
@@ -123,6 +120,13 @@ class BioSim:
         else:
             self.cmax_animals = cmax_animals
 
+        self._system = DiffSys(sys_size, noise)
+        self._graphics = Graphics(img_dir, img_name, img_fmt)
+
+        self._step = 0
+
+
+
     def set_animal_parameters(self, species, params):
         """
         Set parameters for animal species.
@@ -139,6 +143,7 @@ class BioSim:
         ValueError
             If invalid parameter values are passed.
         """
+        self.map.set_parameters(species,params)
 
     def set_landscape_parameters(self, landscape, params):
         """
@@ -156,8 +161,9 @@ class BioSim:
         ValueError
             If invalid parameter values are passed.
         """
+        self.map.set_parameters(landscape,params)
 
-    def simulate(self, num_years):
+    def simulate(self, num_years,vis_steps=1,img_steps=None):
         """
         Run simulation while visualizing the result.
 
@@ -166,8 +172,17 @@ class BioSim:
         num_years : int
             Number of years to simulate
         """
+        if img_steps is None:
+            img_steps = vis_steps
+
+        if img_steps % vis_steps != 0:
+            raise ValueError('img_steps must be multiple of vis_steps')
+
+
+
         # self.last_year+=num_years
         self.final_year = self.year_num + num_years
+        #self._graphics.setup(self.final_year, img_steps)
 
         csvfile = None
         writer = None
@@ -181,6 +196,11 @@ class BioSim:
                 [self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()])
 
             self.year_num += 1
+            # if self._step % vis_steps == 0:
+            #     self._graphics.update(self._step,
+            #                           self._system.get_status(),
+            #                           self._system.mean_value())
+
 
     def add_population(self, population):
         """
@@ -207,9 +227,64 @@ class BioSim:
         """Number of animals per species in island, as dictionary."""
         return {'Herbivore':self.cell.get_pop_tot_num_herb(),'Carnivore':self.cell.get_pop_tot_num_carn()}
 
-    def make_movie(self):
-        """Create MPEG4 movie from visualization images saved."""
+    # def save_figure(self):
+    #     if self.img_base is None:
+    #         pass
+    #     else:
+    #         plt.savefig('{}_{:05d}.{}'.format(self.img_base,
+    #                                           self.img_no,
+    #                                           self.img_fmt))
+    #         self.img_no+=1
+    # # def create_mp4(self,mov_fmt='mp4'):
+    #
+    #     if self.img_base is None:
+    #         raise RuntimeError('No Image base defined')
+    #     try:
+    #         subprocess.check_call(['ffmpeg',
+    #                                    '-i',
+    #                                    '{}_%05d.png'.format(
+    #                                        self.img_base),
+    #                                    '-y',
+    #                                    '-profile:v', 'baseline',
+    #                                    '-level', '3.0',
+    #                                    '-pix_fmt', 'yuv420p',
+    #                                    '{}.{}'.format(self.img_base,
+    #                                                   mov_fmt)])
+    #     except subprocess.CalledProcessError as err:
+    #         raise RuntimeError('ffmpeg failed: {}'.format(err))
 
+    # def setup_graphics(self):
+    #     if self.fig is None:
+    #         self.fig=plt.figure(figsize=[12,7])
+    #         self.fig.canvas.set_window_title('Biosim')
+    #     if self.island_map is None:
+    #         self.
+    #
+    # def static_map(self):
+    #
+    #     self.island_map=self.fig.add_subplot(2,2,1)
+    #     self.island_map.imshow(self.)
+
+    # def create_map_list(self):
+    #     l=textwrap.dedent(self.map).splitlines()
+    #     if len(l[-1]) is 0:
+    #         l=l[:-1]
+    #
+    #     cell_num=len(l[0])
+    #     map_list=[]
+    #     for line in l:
+    #         map_list.append([])
+    #         if cell_num is not len(line):
+    #             raise ValueError("Line is not having same no of cells!!")
+    #         for letter in l:
+    #             if letter not in self.
+
+
+
+
+    def make_movie(self,movie_fmt=None):
+        """Create MPEG4 movie from visualization images saved."""
+        self._graphics.make_movie(movie_fmt)
 
     def run(self, cycles, report_cycles=1, return_counts=False):
         """
