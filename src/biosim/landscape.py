@@ -1,6 +1,5 @@
 import random
 import numpy as np
-from .fauna import Herbivore, Carnivore
 
 
 class Landscape:
@@ -140,36 +139,30 @@ class Landscape:
             species.extend(newborns)
 
     @staticmethod
-    def available_fodder(migrating_specie,neighbour):
+    def cumulative_probability(neighbours):
 
-        if migrating_specie is 'Herbivore':
-            return neighbour.fodder
-        elif migrating_specie is 'Carnivore':
-            total_weight_of_herbivore=0
-            herb=neighbour.initial_population['Herbivore']
-            migrated_herb=neighbour.after_migration_population['Herbivore']
-
-            for each_herbivore in herb+migrated_herb:
-                total_weight_of_herbivore+=each_herbivore.weight
-
-            return total_weight_of_herbivore
-
-    # def migrate_probability(self,migrating_specie,neighbours):
-    #
-    #     if migrating_specie is 'Herbivore':
-    #         return self.
-
+        return np.cumsum([1/len(neighbours)]*len(neighbours))
     def migrate(self,neighbours):
 
         np.random.shuffle(neighbours)
         for migrating_specie,fauna in self.initial_population.items():
             if len(neighbours)>0 and len(fauna)>0:
                 for animal in fauna:
-                    if animal.move_prob():
+                    if animal.will_move():
+                        chosen_cell=random.choice(neighbours)
+                        print(chosen_cell)
+                        print(self.initial_population)
+                        print(len(self.initial_population['Herbivore']))
+                        print(self.after_migration_population)
+                        print(len(self.after_migration_population['Herbivore']))
+                        chosen_cell.after_migration_population[migrating_specie].append(animal)
+                        self.initial_population[migrating_specie].remove(animal)
 
-
-
-
+    def add_new_migrated(self):
+        for specie in self.initial_population.keys():
+            specie_list=self.after_migration_population[specie]
+            self.initial_population[specie].extend(specie_list)
+            self.initial_population[specie]=[]
 
     def age_increase(self):
         for species in self.initial_population.values():
