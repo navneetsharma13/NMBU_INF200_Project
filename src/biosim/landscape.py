@@ -138,6 +138,12 @@ class Landscape:
                         newborns.append(newborn)
             species.extend(newborns)
 
+    def reset_animals(self):
+        for species in self.initial_population.values():
+            for animals in species:
+                animals.has_moved=False
+
+
     @staticmethod
     def cumulative_probability(neighbours):
 

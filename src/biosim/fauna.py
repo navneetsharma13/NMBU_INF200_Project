@@ -37,6 +37,7 @@ class Fauna:
             self.weight = weight
 
         self.fitness = None
+        self.has_moved=False
         self.calculate_fitness()
 
     # def raise_type_error(val):
