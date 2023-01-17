@@ -3,8 +3,12 @@ from biosim.landscape import Lowland, Highland, Desert, Water
 from biosim.fauna import Herbivore, Carnivore
 
 
-class Map:
+def geo_list(island_map):
+    cells_list = textwrap.dedent(str(island_map)).splitlines()
+    return [list(row.strip()) for row in cells_list]
 
+
+class Map:
     landscape_classes = {
         'H': Highland,
         'L': Lowland,
@@ -15,14 +19,10 @@ class Map:
                       }
     livable_cells = {'H': Highland, 'L': Lowland, 'D': Desert}
 
-    def __init__(self,island_map):
+    def __init__(self, island_map):
 
-        self.cell_list = self.geo_list(island_map)
+        self.cell_list = geo_list(island_map)
         self.cells_dict = self.create_cells()
-
-    def geo_list(self,island_map):
-        cells_list = textwrap.dedent(str(island_map)).splitlines()
-        return [list(row.strip()) for row in cells_list]
 
     def create_cells(self):
 
@@ -49,41 +49,42 @@ class Map:
             location = (int(population['loc'][0]) - 1, int(population['loc'][1]) - 1)
             loc_object = self.cells_dict[location]
             for population_individual in population['pop']:
-
                 type_animal = population_individual['species']
                 age_weight = (population_individual['age'], population_individual['weight'])
                 pop_object = self.animal_classes[type_animal](*age_weight)
-                # print(pop_object,pop_object.weight,pop_object.age)
                 loc_object.initial_population[type(pop_object).__name__].append(pop_object)
 
-    def check_str_type(self,ar):
-        if not isinstance(ar,str):
-            raise TypeError("The Argument is not a string "+str(ar))
-    def check_dict_type(self,ar):
-        if not isinstance(ar,dict):
-            raise TypeError("The Argument is not a dict "+str(ar))
+    @staticmethod
+    def check_str_type(ar):
+        if not isinstance(ar, str):
+            raise TypeError("The Argument is not a string " + str(ar))
 
-    def set_parameters(self,key,params):
+    @staticmethod
+    def check_dict_type(ar):
+        if not isinstance(ar, dict):
+            raise TypeError("The Argument is not a dict " + str(ar))
+
+    def set_parameters(self, key, params):
 
         self.check_str_type(key)
         self.check_dict_type(params)
         combined_dict = dict(**self.animal_classes, **self.landscape_classes)
         combined_dict[key].set_parameters(params)
 
-    def check_invalid_line_length(self,cell_l):
-        length_count=[len(row) for row in cell_l]
+    @staticmethod
+    def check_invalid_line_length(cell_l):
+        length_count = [len(row) for row in cell_l]
         for i in length_count:
             if i is not length_count[0]:
                 return True
 
-
-    def check_invalid_boundary(self,cell_l):
+    @staticmethod
+    def check_invalid_boundary(cell_l):
         for i in range(len(cell_l)):
-            if cell_l[i][0] != 'W' or cell_l[i][len(cell_l[i])-1]!='W':
+            if cell_l[i][0] != 'W' or cell_l[i][len(cell_l[i]) - 1] != 'W':
                 return True
 
-
-    def check_invalid_character(self,cell_l):
+    def check_invalid_character(self, cell_l):
         for line in cell_l:
             for letter in line:
                 if letter not in self.landscape_classes.keys():
@@ -92,51 +93,49 @@ class Map:
     def yearly_cycle(self):
 
         for loc, loc_object in self.livable_cell_calculate().items():
-
             loc_object.add_newborn()
             loc_object.fodder_grow_and_feeding()
+            loc_object.animal_migrate(self.adjacent_cells(loc))
+        for loc, loc_object in self.livable_cell_calculate().items():
+            loc_object.add_migrated_population()
             loc_object.age_increase()
             loc_object.weight_decrease()
             loc_object.animal_die()
 
-    def get_pop_tot_num_herb(self):
+    def calculate_animal_count(self):
 
-        herbivore_count = 0
         pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
                'Carnivore': []}
         for loc, loc_object in self.cells_dict.items():
-
             pop['Row_no'].append(loc[0])
             pop['Col_no'].append(loc[1])
             pop['Herbivore'].append(
-                len(loc_object.initial_population['Herbivore']))
+                len(loc_object.initial_population['Herbivore']) +
+                len(loc_object.after_migration_population['Herbivore']))
             pop['Carnivore'].append(
-                len(loc_object.initial_population['Carnivore']))
+                len(loc_object.initial_population['Carnivore']) +
+                len(loc_object.after_migration_population['Carnivore']))
+        return pop
 
-            herbivore_count = sum(pop["Herbivore"])
-        return herbivore_count
+    def get_pop_tot_num_herb(self):
+
+        pop = self.calculate_animal_count()
+        return sum(pop["Herbivore"])
 
     def get_pop_tot_num_carn(self):
 
-        carnivore_count = 0
-        pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
-               'Carnivore': []}
-        for loc, loc_object in self.cells_dict.items():
+        pop = self.calculate_animal_count()
+        return sum(pop["Carnivore"])
 
-            pop['Row_no'].append(loc[0])
-            pop['Col_no'].append(loc[1])
-            pop['Herbivore'].append(
-                len(loc_object.initial_population['Herbivore']))
-            pop['Carnivore'].append(
-                len(loc_object.initial_population['Carnivore']))
+    def get_pop_tot_num(self):
 
-            carnivore_count = sum(pop["Carnivore"])
-        return carnivore_count
+        pop = self.calculate_animal_count()
+        return sum(pop["Carnivore"]) + sum(pop["Herbivore"])
 
-    def adjacent_cells(self,pos):
+    def adjacent_cells(self, pos):
 
-        adjacent_pos=[(pos[0],pos[1]-1),(pos[0]-1,pos[1]),(pos[0]+1,pos[1]),(pos[0],pos[1]+1)]
-        adjacent=[self.livable_cell_calculate()[loc] for loc in adjacent_pos if loc in self.livable_cell_calculate().keys()]
-
-        return adjacent
-
+        adjacent_pos = [(pos[0], pos[1] - 1), (pos[0] - 1, pos[1]), (pos[0] + 1, pos[1]),
+                        (pos[0], pos[1] + 1)]
+        neighbours = [self.livable_cell_calculate()[loc] for loc in adjacent_pos if
+                      loc in self.livable_cell_calculate().keys()]
+        return neighbours

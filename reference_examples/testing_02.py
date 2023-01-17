@@ -16,21 +16,19 @@ if __name__ == "__main__":
                       for _ in range(50)]}]
     seed = 123413
     t_sim = BioSim(geogr, ini_herbs, seed)
-    m=Map(geogr)
-    l=Landscape()
+    m = Map(geogr)
+    l = Landscape()
     m.add_population(ini_herbs)
     print(t_sim.map.livable_cell_calculate())
     print(t_sim.map.adjacent_cells((1,1)))
     for i in range(10):
-        print(t_sim.map.livable_cell_calculate()[1,1].migrate((t_sim.map.adjacent_cells((1,1)))))
-    #print(t_sim.map.livable_cell_calculate()[1,1].available_fodder('Herbivore',(t_sim.map.adjacent_cells((2,1)))[0]))
-    # print(m.geo_list(geogr))
-    # print(m.create_cells())
-
-    # print(m.add_population(ini_herbs))
-    # print(m.yearly_cycle())
-    # print(m.get_pop_tot_num_herb())
-    # print(m.get_pop_tot_num_carn())
+        print(t_sim.map.livable_cell_calculate()[1, 1].animal_migrate((t_sim.map.adjacent_cells((1, 1)))))
+        # print(m.geo_list(geogr))
+        print(m.create_cells())
+        print(m.add_population(ini_herbs))
+        print(m.yearly_cycle())
+        print(m.get_pop_tot_num_herb())
+        print(m.get_pop_tot_num_carn())
     #print(m.set_parameters("Herbivore",{'w_birth':300}))
 
 

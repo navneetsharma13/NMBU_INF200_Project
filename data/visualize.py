@@ -41,8 +41,6 @@ plt.show()
 print(sum(hd.loc[300, 'Herbivores'] == 0))
 print(sum(hd.loc[300, 'Carnivores'] == 0))
 
-
-
 with_c15 = (hd.loc[300, 'Herbivores'] > 0) & (hd.loc[300, 'Carnivores'] > 0)
 hc15_eq = hd.loc[hd.index >= 175, np.hstack((with_c15.values, with_c15.values))]
 

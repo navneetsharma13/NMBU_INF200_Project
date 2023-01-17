@@ -21,11 +21,12 @@ class Fauna:
         Parameters:
         age:int
         weight:int,float
+        fitness:float
+        has_migrated:boolean
         """
         if age is None:
             self.age = 0
         else:
-            # self.raise_type_error(age)
             self.age = age
 
         if weight is None:
@@ -33,22 +34,29 @@ class Fauna:
         elif weight < 0:
             raise ValueError("Negative weight is not allowed to enter!!")
         else:
-            # self.raise_type_error(weight)
             self.weight = weight
 
         self.fitness = None
-        self.has_moved=False
+        self.has_migrated = False
         self.calculate_fitness()
 
-    # def raise_type_error(val):
-    #     if isinstance(val, (int, float)) is False:
-    #         raise ValueError(str(val) + "cannot be a value type,it has to be int or float")
+    def calculate_fitness(self):
+        def fitness_formula(sign, x, x_half, phi_x):
+
+            return 1.0 / (1 + math.exp(sign * phi_x * (x - x_half)))
+
+        if self.weight == 0:
+            self.fitness = 0
+        else:
+            self.fitness = fitness_formula(1, self.age,
+                                           self.parameters['a_half'],
+                                           self.parameters['phi_age']) * \
+                           fitness_formula(-1, self.weight, self.parameters['w_half'],
+                                           self.parameters['phi_weight'])
 
     def weight(self):
-
         return self.weight()
 
-    # @classmethod
     def weight_default(self):
 
         mu = math.log(self.parameters['w_birth'] ** 2 / math.sqrt(
@@ -67,20 +75,19 @@ class Fauna:
             self.weight = self.weight - (self.weight * self.parameters['eta'])
         self.calculate_fitness()
 
-    def calculate_fitness(self):
+    def weight_decrease_on_birth(self, child):
 
-        def fitness_formula(sign, x, x_half, phi_x):
-
-            return 1.0 / (1 + math.exp(sign * phi_x * (x - x_half)))
-
-        if self.weight == 0:
-            self.fitness = 0
+        if self.weight >= child.weight * child.parameters['xi']:
+            self.weight -= child.weight * child.parameters['xi']
+            self.calculate_fitness()
+            return True
         else:
-            self.fitness = fitness_formula(1, self.age,
-                                           self.parameters['a_half'],
-                                           self.parameters['phi_age']) * \
-                           fitness_formula(-1, self.weight, self.parameters['w_half'],
-                                           self.parameters['phi_weight'])
+            return False
+
+    def weight_increase_on_eat(self, amount):
+
+        self.weight += amount * self.parameters['beta']
+        self.calculate_fitness()
 
     def birth_prob(self, animal_number):
 
@@ -98,14 +105,10 @@ class Fauna:
 
         return random.random() < prob and self.weight >= result
 
-    def weight_decrease_on_birth(self, child):
+    def die(self):
 
-        if self.weight >= child.weight * child.parameters['xi']:
-            self.weight -= child.weight * child.parameters['xi']
-            self.calculate_fitness()
+        if self.weight is None:
             return True
-        else:
-            return False
 
     def die_prob(self):
 
@@ -113,16 +116,6 @@ class Fauna:
             return True
         else:
             return random.random() < (self.parameters['omega'] * (1 - self.fitness))
-
-    def die(self):
-
-        if self.weight is None:
-            return True
-
-    def weight_increase_on_eat(self, amount):
-
-        self.weight += amount * self.parameters['beta']
-        self.calculate_fitness()
 
     def kill_prob(self, target_fitness):
 
@@ -182,7 +175,7 @@ class Fauna:
                 raise ValueError("Parameter is not defined "+str(p))
 
     @classmethod
-    def set_parameters(cls,params):
+    def set_parameters(cls, params):
 
         cls.check_not_defined_params(params)
         cls.parameters.update(params)

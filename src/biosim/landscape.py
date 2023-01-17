@@ -1,5 +1,5 @@
-import random
-import numpy as np
+
+from biosim.fauna import *
 
 
 class Landscape:
@@ -127,7 +127,8 @@ class Landscape:
     def add_newborn(self):
 
         """This method extend a newborn animal population for each specie by adding their
-        offspring."""
+        offspring.
+        """
         for species in self.initial_population.values():
             newborns = []
             for animal in species:
@@ -141,34 +142,34 @@ class Landscape:
     def reset_animals(self):
         for species in self.initial_population.values():
             for animals in species:
-                animals.has_moved=False
+                animals.has_migrated = False
 
+    def animal_migrate(self, neighbours):
+        """ This method iterates through each animal in the cell and runs migrate process.
+        Animals will only migrate once per year using the flag `has_migrated` property.
+        """
+        for migrating_specie, animals in self.initial_population.items():
 
-    @staticmethod
-    def cumulative_probability(neighbours):
+            if len(neighbours) > 0 and len(animals) > 0:
 
-        return np.cumsum([1/len(neighbours)]*len(neighbours))
-    def migrate(self,neighbours):
+                for animal in animals:
 
-        np.random.shuffle(neighbours)
-        for migrating_specie,fauna in self.initial_population.items():
-            if len(neighbours)>0 and len(fauna)>0:
-                for animal in fauna:
-                    if animal.will_move():
-                        chosen_cell=random.choice(neighbours)
-                        print(chosen_cell)
-                        print(self.initial_population)
-                        print(len(self.initial_population['Herbivore']))
-                        print(self.after_migration_population)
-                        print(len(self.after_migration_population['Herbivore']))
-                        chosen_cell.after_migration_population[migrating_specie].append(animal)
+                    if not animal.has_migrated and animal.move_prob():
+
+                        destination_cell = random.choice(neighbours)
+                        destination_cell.after_migration_population[migrating_specie].append(animal)
                         self.initial_population[migrating_specie].remove(animal)
 
-    def add_new_migrated(self):
-        for specie in self.initial_population.keys():
-            specie_list=self.after_migration_population[specie]
-            self.initial_population[specie].extend(specie_list)
-            self.initial_population[specie]=[]
+        self.reset_animals()
+
+    def add_migrated_population(self):
+        """This method adds the migrated animals to the population of each landscape cell, according
+         to its specie type, and empty the list in 'after_migration_population'.
+         """
+        for specie_type in self.initial_population.keys():
+            migrated_animals = self.after_migration_population[specie_type]
+            self.initial_population[specie_type].extend(migrated_animals)
+            self.after_migration_population[specie_type] = []
 
     def age_increase(self):
         for species in self.initial_population.values():
@@ -187,8 +188,6 @@ class Landscape:
                 if not animal.die_prob():
                     living_animal.append(animal)
             self.initial_population[specie_type] = living_animal
-
-
 
 
 class Lowland(Landscape):
@@ -222,7 +221,7 @@ class Highland(Landscape):
     def grow_fodder_and_feed(self):
         self.fodder = self.parameters['f_max']
         self.feed_herbivore()
-        # self.feed_carnivore()
+        self.feed_carnivore()
 
 
 class Desert(Landscape):
@@ -239,7 +238,7 @@ class Desert(Landscape):
         growth, then fodder is always equal to zero."""
         self.fodder = 0
         self.feed_herbivore()
-        # self.feed_carnivore()
+        self.feed_carnivore()
 
 
 class Water(Landscape):
