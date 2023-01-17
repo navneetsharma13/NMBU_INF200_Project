@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from .fauna import Herbivore, Carnivore
 
 
@@ -138,6 +139,37 @@ class Landscape:
                         newborns.append(newborn)
             species.extend(newborns)
 
+    @staticmethod
+    def available_fodder(migrating_specie,neighbour):
+
+        if migrating_specie is 'Herbivore':
+            return neighbour.fodder
+        elif migrating_specie is 'Carnivore':
+            total_weight_of_herbivore=0
+            herb=neighbour.initial_population['Herbivore']
+            migrated_herb=neighbour.after_migration_population['Herbivore']
+
+            for each_herbivore in herb+migrated_herb:
+                total_weight_of_herbivore+=each_herbivore.weight
+
+            return total_weight_of_herbivore
+
+    # def migrate_probabilty(self,migrating_specie,neighbours):
+    #
+    #     if migrating_specie is 'Herbivore':
+    #         return self.
+
+    def migrate(self,neighbours):
+
+        np.random.shuffle(neighbours)
+        for migrating_specie,fauna in self.initial_population.items():
+            if len(neighbours)>0 and len(fauna)>0:
+                for animal in fauna:
+                    if animal.will_move():
+
+
+
+
     def age_increase(self):
         for species in self.initial_population.values():
             for animal in species:
@@ -155,6 +187,8 @@ class Landscape:
                 if not animal.die_prob():
                     living_animal.append(animal)
             self.initial_population[specie_type] = living_animal
+
+
 
 
 class Lowland(Landscape):

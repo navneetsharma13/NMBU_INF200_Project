@@ -89,9 +89,6 @@ class Map:
                 if letter not in self.landscape_classes.keys():
                     raise ValueError("Invalid Character in the Map!!")
 
-
-
-
     def yearly_cycle(self):
 
         for loc, loc_object in self.livable_cell_calculate().items():
@@ -135,3 +132,11 @@ class Map:
 
             carnivore_count = sum(pop["Carnivore"])
         return carnivore_count
+
+    def adjacent_cells(self,pos):
+
+        adjacent_pos=[(pos[0],pos[1]-1),(pos[0]-1,pos[1]),(pos[0]+1,pos[1]),(pos[0],pos[1]+1)]
+        adjacent=[self.livable_cell_calculate()[loc] for loc in adjacent_pos if loc in self.livable_cell_calculate().keys()]
+
+        return adjacent
+

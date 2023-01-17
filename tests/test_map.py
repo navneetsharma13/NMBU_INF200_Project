@@ -21,7 +21,7 @@ class TestMap():
 
         return """WWW\nWLW\nWWW"""
 
-    @pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
+    @pytest.mark.parametrize("age, weight", [(10, 20)])
     def create_map_for_test(self, age, weight):
         geogr = """\
                    WWW
@@ -83,7 +83,17 @@ class TestMap():
         with pytest.raises(ValueError):
             self.m.check_invalid_character(island_maps)
 
-    # def test_age_weight_stored(self):
+    #needs to be tested
+    def test_age_weight_stored(self):
+        t,loc=self.create_map_for_test()
+        h_weight=t.Map.livable_cells_calculate[loc].initial_population['Herbivore'][0].age
+        assert h_weight is 20
+        h_age=t.Map.livable_cells_calculate[loc].initial_population['Herbivore'][0].weight
+        assert h_age is 15
+
+
+    # def test_get_population_numbers(self):
+
 
 
 

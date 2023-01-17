@@ -158,11 +158,8 @@ class Fauna:
 
         return random.random() < kill_prob
 
-    def migrate_prob(self):
-
-        migrate_prob = self.parameters['mu'] * self.fitness
-        return random.random() < migrate_prob
-
+    def will_move(self):
+        return random.random() < self.parameters['mu'] * self.fitness
     @classmethod
     def check_not_defined_params(cls,params):
         for p in params.keys():
