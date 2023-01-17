@@ -17,11 +17,11 @@ class Map:
 
     def __init__(self,island_map):
 
-        self.cell_list = self.cell_list(island_map)
+        self.cell_list = self.geo_list(island_map)
         self.cells_dict = self.create_cells()
 
-    def cell_list(self,island_map):
-        cells_list = textwrap.dedent(island_map).splitlines()
+    def geo_list(self,island_map):
+        cells_list = textwrap.dedent(str(island_map)).splitlines()
         return [list(row.strip()) for row in cells_list]
 
     def create_cells(self):
@@ -69,6 +69,27 @@ class Map:
         self.check_dict_type(params)
         combined_dict = dict(**self.animal_classes, **self.landscape_classes)
         combined_dict[key].set_parameters(params)
+
+    def check_invalid_line_length(self,cell_l):
+        length_count=[len(row) for row in cell_l]
+        for i in length_count:
+            if i is not length_count[0]:
+                return True
+
+
+    def check_invalid_boundary(self,cell_l):
+        for i in range(len(cell_l)):
+            if cell_l[i][0] != 'W' or cell_l[i][len(cell_l[i])-1]!='W':
+                return True
+
+
+    def check_invalid_character(self,cell_l):
+        for line in cell_l:
+            for letter in line:
+                if letter not in self.landscape_classes.keys():
+                    raise ValueError("Invalid Character in the Map!!")
+
+
 
 
     def yearly_cycle(self):

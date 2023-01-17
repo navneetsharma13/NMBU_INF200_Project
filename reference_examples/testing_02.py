@@ -14,6 +14,7 @@ if __name__ == "__main__":
                        'weight': 20}
                       for _ in range(50)]}]
     m=Map(geogr)
+    print(m.geo_list(geogr))
     print(m.create_cells())
     print(m.livable_cell_calculate())
     print(m.add_population(ini_herbs))
