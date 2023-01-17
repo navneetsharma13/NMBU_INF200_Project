@@ -158,10 +158,24 @@ class Fauna:
 
         return random.random() < kill_prob
 
-    def will_move(self):
+    def move_prob(self):
+        """This method calculates the probability of moving to a habitable neighbour cell.
+        This takes in consideration the parameter 'mu' times the animal fitness. Both species have
+        the chance of migrating, once a year, to north, south, west and east.
+
+        Formula and conditions:
+        ----------
+            -> If random.random() number is less than the migrating
+               probability, then an animal migrates, else does not.
+
+        Returns
+        -------
+            True if an animal migrates else False.
+        """
         return random.random() < self.parameters['mu'] * self.fitness
+
     @classmethod
-    def check_not_defined_params(cls,params):
+    def check_not_defined_params(cls, params):
         for p in params.keys():
             if p not in cls.parameters.keys():
                 raise ValueError("Parameter is not defined "+str(p))

@@ -154,7 +154,7 @@ class Landscape:
 
             return total_weight_of_herbivore
 
-    # def migrate_probabilty(self,migrating_specie,neighbours):
+    # def migrate_probability(self,migrating_specie,neighbours):
     #
     #     if migrating_specie is 'Herbivore':
     #         return self.
@@ -165,7 +165,8 @@ class Landscape:
         for migrating_specie,fauna in self.initial_population.items():
             if len(neighbours)>0 and len(fauna)>0:
                 for animal in fauna:
-                    if animal.will_move():
+                    if animal.move_prob():
+
 
 
 

@@ -9,7 +9,6 @@ __email__ = "navneet.sharma@nmbu.no and sushant.kumar.sirvastava@nmbu.no"
 import random
 import textwrap
 import pytest
-import numpy as np
 from src.biosim.landscape import Lowland, Highland
 from src.biosim.simulation import BioSim
 
@@ -63,12 +62,6 @@ class TestLandscape:
                 "pop": [{"species": "Herbivore", "age": age, "weight": weight}],
             }]
 
-        ini_carns = [
-            {
-                "loc": (2, 2),
-                "pop": [
-                    {"species": "Carnivore", "age": age, "weight": weight}],
-            }]
         seed = 123213
         t_sim = BioSim(geogr, ini_herbs, seed)
         loc = (1, 1)
@@ -189,7 +182,6 @@ class TestLandscape:
             assert herb_weight_after < herb_weight_before
 
 
-
 def test_fauna_count_after_birth():
     """This test that the number of animals in the cell increases after birth or not.
     """
@@ -257,4 +249,3 @@ def test_fauna_weight_after_birth():
 # def test_migration():
 #     """This tests the migration method checking if the animals have
 #     moved to the all 4th neighbour cells."""
-
