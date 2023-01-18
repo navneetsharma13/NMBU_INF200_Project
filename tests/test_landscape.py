@@ -49,7 +49,7 @@ def test_string_parameters():
 @pytest.mark.parametrize("age, weight", [(5, 40), (10, 20), (30, 50), (20, 50)])
 class TestLandscape:
 
-    @pytest.mark.parametrize("age, weight", [(5, 40), (10, 20), (30, 50), (20, 50)])
+    @pytest.fixture(autouse=True)
     def create_map_for_test(self, age, weight):
         geogr = """\
                    WWW

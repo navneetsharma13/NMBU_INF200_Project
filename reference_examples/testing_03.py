@@ -31,8 +31,7 @@ ini_carns = [{'loc': (10, 10),
 
 
 start_time = time.time()
-
-for seed in range(100, 101 ):
+for seed in range(100, 101):
     sim = BioSim(geogr, ini_herbs, seed=seed, vis_years=0,
                  log_file=f'data/mono_hc_{seed:05d}.csv')
 

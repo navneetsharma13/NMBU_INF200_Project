@@ -209,7 +209,10 @@ class BioSim:
             print("##########################")
             print("Year: "+str(self.year_num))
             print(self.map.calculate_animal_count())
-            print("##########################")
+            # print("-----------------------------")
+            # print(num_migrations)
+            #
+            print("-----------------------------")
             # for i in range(len(self.map.calculate_animal_count()['Row_no'])):
             #     a=""
             #     for j in range(len(self.map.calculate_animal_count()['Col_no'])):

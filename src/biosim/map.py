@@ -42,6 +42,16 @@ class Map:
                 loc_object.append(loc_object1)
         return dict(zip(loc, loc_object))
 
+    def migrate_cell_calculate(self):
+
+        loc = []
+        loc_object = []
+        for loc1, loc_object1 in self.cells_dict.items():
+            if type(loc_object1) in self.landscape_classes.values():
+                loc.append(loc1)
+                loc_object.append(loc_object1)
+        return dict(zip(loc, loc_object))
+
     def add_population(self, given_population):
 
         for population in given_population:
@@ -136,6 +146,6 @@ class Map:
 
         adjacent_pos = [(pos[0], pos[1] - 1), (pos[0] - 1, pos[1]), (pos[0] + 1, pos[1]),
                         (pos[0], pos[1] + 1)]
-        neighbours = [self.livable_cell_calculate()[loc] for loc in adjacent_pos if
-                      loc in self.livable_cell_calculate().keys()]
+        neighbours = [self.migrate_cell_calculate()[loc] for loc in adjacent_pos if
+                      loc in self.migrate_cell_calculate().keys()]
         return neighbours

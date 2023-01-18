@@ -38,7 +38,6 @@ class Landscape:
             raise ValueError("The parameter *{}* must be "
                              "non-negative and also not string".format(param_key))
 
-
     @classmethod
     def set_parameters(cls, params):
         """This method sets the parameter for the landscape types.
@@ -157,9 +156,12 @@ class Landscape:
 
                     if not animal.has_migrated and animal.move_prob():
 
-                        destination_cell = random.choice(neighbours)
-                        destination_cell.after_migration_population[migrating_specie].append(animal)
-                        self.initial_population[migrating_specie].remove(animal)
+                        dest_cell = random.choice(neighbours)
+                        if str(type(dest_cell)) == "<class 'biosim.landscape.Water'>":
+                            continue
+                        else:
+                            dest_cell.after_migration_population[migrating_specie].append(animal)
+                            self.initial_population[migrating_specie].remove(animal)
 
         self.reset_animals()
 
@@ -249,4 +251,3 @@ class Water(Landscape):
     def __init__(self):
         """Constructor for the ocean."""
         super().__init__()
-
