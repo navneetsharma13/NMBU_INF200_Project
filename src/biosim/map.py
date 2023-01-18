@@ -23,6 +23,16 @@ class Map:
 
         self.cell_list = geo_list(island_map)
         self.cells_dict = self.create_cells()
+        self.herb_pop_matrix=[[0 for _ in self.unique_colums()] for _ in self.unique_rows()]
+        self.carn_pop_matrix=[[0 for _ in self.unique_colums()] for _ in self.unique_rows()]
+
+    def update_pop_matrix(self):
+        for row in self.unique_rows()[1:-1]:  # First and last cell is water
+            for col in self.unique_colums()[1:-1]:  # First and last cell is water
+                    # print(cell)
+                    self.herb_pop_matrix[row - 1][col - 1] = self.get_pop_tot_num_herb()
+                    self.carn_pop_matrix[row - 1][col - 1] = self.get_pop_tot_num_carn()
+
 
     def create_cells(self):
 
@@ -141,6 +151,11 @@ class Map:
 
         pop = self.calculate_animal_count()
         return sum(pop["Carnivore"]) + sum(pop["Herbivore"])
+
+    def unique_rows(self):
+        return list(set([loc[0] for loc in self.create_cells()]))
+    def unique_colums(self):
+        return list(set([loc[1] for loc in self.create_cells()]))
 
     def adjacent_cells(self, pos):
 

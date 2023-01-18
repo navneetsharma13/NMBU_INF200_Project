@@ -18,9 +18,6 @@ class Plotting:
         self.carn_line = None
         self.herb_fitness_list = None
         self.carn_fitness_list = None
-        self.herb_fitness_line = None
-        self.carn_fitness_line = None
-
         self.ax_main = None
         self.ax_weight = None
         self.ax_fitness = None
@@ -58,6 +55,9 @@ class Plotting:
         self.y_herb = [np.nan for i in range(num_years + 1)]
         self.y_carn = [np.nan for i in range(num_years + 1)]
 
+        print(self.y_herb)
+        print(self.y_carn)
+
         fig = plt.figure(figsize=(10, 7), constrained_layout=True)  # Initiate pyplot
         gs = fig.add_gridspec(4, 6)
 
@@ -70,7 +70,7 @@ class Plotting:
         self.ax_im = fig.add_subplot(gs[3, -2:-1])  # Add map subplot
         self.ax_lg = fig.add_subplot(gs[3, -1])  # Add map legend subplot
         self.plot_map(map_str)
-        self.plot_heatmap()
+        #self.plot_heatmap()
 
         (self.herb_line,) = self.ax_main.plot(self.y_herb)  # Initiate the herbivore line
         (self.carn_line,) = self.ax_main.plot(self.y_carn)  # Initiate the carnivore line
@@ -100,32 +100,32 @@ class Plotting:
             else:
                 self.ax_main.set_ylim([0, max(self.y_carn) + 20])  # Set y-lim
 
-        if self.island.num_carns > 0 or self.island.num_herbs > 0:
-            weight_data = self.island.animal_weights
-            weight_max = int(max(max(weight_data)))
-            weight_min = int(min(min(weight_data)))
-            weight_delta = self.hist_specs["weight"]["delta"]
-            self.ax_weight.clear()
-            self._weight_hist = self.ax_weight.hist(
-                weight_data, range(weight_min, weight_max + int(weight_delta), weight_delta),
-            )
-            self.ax_weight.set_xlim([0, self.hist_specs["weight"]["max"]])
+        # if self.island.get_pop_tot_num_carn() > 0 or self.island.get_pop_tot_num_herb() > 0:
+        #     weight_data = [[12,23,34,12,34,34],[12,23,34,12,34,34]]
+        #     weight_max = int(max(max(weight_data)))
+        #     weight_min = int(min(min(weight_data)))
+        #     weight_delta = self.hist_specs["weight"]["delta"]
+        #     self.ax_weight.clear()
+        #     self._weight_hist = self.ax_weight.hist(
+        #         weight_data, range(weight_min, weight_max + int(weight_delta), weight_delta),
+        #     )
+        #     self.ax_weight.set_xlim([0, self.hist_specs["weight"]["max"]])
 
-            fitness_data = self.island.animal_fitness
-            fitness_delta = self.hist_specs["fitness"]["delta"]
-
-            self.ax_fitness.clear()
-            self.ax_fitness.hist(fitness_data, bins=np.arange(0, 1 + fitness_delta, fitness_delta))
-
-            self.ax_fitness.set_xlim([0, self.hist_specs["fitness"]["max"]])
-
-            age_data = self.island.animal_ages
-            age_max = int(max(max(age_data)))
-            age_min = int(min(min(age_data)))
-            age_delta = self.hist_specs["age"]["delta"]
-            self.ax_age.clear()
-            self.ax_age.hist(age_data, bins=range(age_min, age_max + int(age_delta), age_delta))
-            self.ax_age.set_xlim([0, self.hist_specs["age"]["max"]])
+            # fitness_data = self.island.animal_fitness
+            # fitness_delta = self.hist_specs["fitness"]["delta"]
+            #
+            # self.ax_fitness.clear()
+            # self.ax_fitness.hist(fitness_data, bins=np.arange(0, 1 + fitness_delta, fitness_delta))
+            #
+            # self.ax_fitness.set_xlim([0, self.hist_specs["fitness"]["max"]])
+            #
+            # age_data = self.island.animal_ages
+            # age_max = int(max(max(age_data)))
+            # age_min = int(min(min(age_data)))
+            # age_delta = self.hist_specs["age"]["delta"]
+            # self.ax_age.clear()
+            # self.ax_age.hist(age_data, bins=range(age_min, age_max + int(age_delta), age_delta))
+            # self.ax_age.set_xlim([0, self.hist_specs["age"]["max"]])
 
             self.herb_line.set_ydata(self.y_herb)
             self.herb_line.set_xdata(range(len(self.y_herb)))
@@ -183,8 +183,8 @@ class Plotting:
 
     def plot_heatmap(self):
 
-        self.herb_pop_matrix = [[0 for _ in self.island.unique_colums()] for _ in self.island.unique_rows()]
-        self.carn_pop_matrix = [[0 for _ in self.island.unique_colums()] for _ in self.island.unique_rows()]
+        # self.herb_pop_matrix = [[0 for _ in self.island.unique_colums()] for _ in self.island.unique_rows()]
+        # self.carn_pop_matrix = [[0 for _ in self.island.unique_colums()] for _ in self.island.unique_rows()]
 
 
         self.imax_herb = self.axhm_herb.imshow(
@@ -193,7 +193,7 @@ class Plotting:
             interpolation="nearest",
             vmax=self.cmax_herb,
         )
-        self._imax_carn = self.axhm_carn.imshow(
+        self.imax_carn = self.axhm_carn.imshow(
             self.island.carn_pop_matrix,
             cmap="cividis",
             interpolation="nearest",
@@ -205,6 +205,9 @@ class Plotting:
         plt.colorbar(self.imax_herb, ax=self.axhm_herb, orientation="vertical")
 
         plt.colorbar(self.imax_carn, ax=self.axhm_carn, orientation="vertical")
+
+        plt.show()
+
 
     def save_graphics(self,img_base,img_fmt):
         if img_base is None:

@@ -17,6 +17,7 @@ class Landscape:
         self.after_migration_population = {'Herbivore': [], 'Carnivore': []}
         self.fodder = 0
 
+
     @classmethod
     def verify_parameters(cls, params):
         """This method verifies for any wrong parameters passed by the user and raises a ValueError,

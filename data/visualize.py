@@ -38,10 +38,10 @@ plt.plot(hd.Herbivores, 'b', alpha=0.4)
 plt.plot(hd.Carnivores, 'r', alpha=0.4)
 plt.show()
 
-print(sum(hd.loc[300, 'Herbivores'] == 0))
-print(sum(hd.loc[300, 'Carnivores'] == 0))
+print(sum(hd.loc[299, 'Herbivores'] == 0))
+print(sum(hd.loc[299, 'Carnivores'] == 0))
 
-with_c15 = (hd.loc[300, 'Herbivores'] > 0) & (hd.loc[300, 'Carnivores'] > 0)
+with_c15 = (hd.loc[299, 'Herbivores'] > 0) & (hd.loc[299, 'Carnivores'] > 0)
 hc15_eq = hd.loc[hd.index >= 175, np.hstack((with_c15.values, with_c15.values))]
 
 print(hc15_eq.Herbivores.unstack().mean(), hc15_eq.Herbivores.unstack().std())
