@@ -3,27 +3,36 @@ from biosim.simulation import BioSim
 import time
 
 geogr = """\
-           WWW
-           WLW
-           WWW"""
+               WWWWWWWWWWWWWWWWWWWWW
+               WWWWWWWWHWWWWLLLLLLLW
+               WHHHHHLLLLWWLLLLLLLWW
+               WHHHHHHHHHWWLLLLLLWWW
+               WHHHHHLLLLLLLLLLLLWWW
+               WHHHHHLLLDDLLLHLLLWWW
+               WHHLLLLLDDDLLLHHHHWWW
+               WWHHHHLLLDDLLLHWWWWWW
+               WHHHLLLLLDDLLLLLLLWWW
+               WHHHHLLLLDDLLLLWWWWWW
+               WWHHHHLLLLLLLLWWWWWWW
+               WWWHHHHLLLLLLLWWWWWWW
+               WWWWWWWWWWWWWWWWWWWWW"""
 geogr = textwrap.dedent(geogr)
-print(geogr)
-ini_herbs = [{'loc': (2, 2),
-              'pop': [{'species': 'Herbivore',
-                       'age': 5,
-                       'weight': 20}
-                      for _ in range(50)]}]
 
-ini_carns = [{'loc': (2, 2),
-              'pop': [{'species': 'Carnivore',
-                       'age': 5,
-                       'weight': 20}
-                      for _ in range(20)]}]
+ini_herbs = [{'loc': (10, 10),
+                  'pop': [{'species': 'Herbivore',
+                           'age': 5,
+                           'weight': 20}
+                          for _ in range(150)]}]
+ini_carns = [{'loc': (10, 10),
+                  'pop': [{'species': 'Carnivore',
+                           'age': 5,
+                           'weight': 20}
+                          for _ in range(40)]}]
 
 
 start_time = time.time()
 
-for seed in range(100, 200):
+for seed in range(100, 101 ):
     sim = BioSim(geogr, ini_herbs, seed=seed, vis_years=0,
                  log_file=f'data/mono_hc_{seed:05d}.csv')
 

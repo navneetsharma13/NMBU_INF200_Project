@@ -1,12 +1,9 @@
 import random
-import textwrap
-import subprocess
-import matplotlib
-import matplotlib.pyplot as plt
 from .map import Map
 import sys
 import csv
 import numpy as np
+from src.biosim.visualization import Plotting
 
 
 """
@@ -26,8 +23,7 @@ class BioSim:
 
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
-                 img_years=None, img_dir=None, img_base=None, img_fmt='png',
-                 log_file=None):
+                 img_years=None, img_dir=None, img_base=None, img_fmt='png',plot_graph=True,log_file=None):
 
         """
         Parameters
@@ -88,7 +84,7 @@ class BioSim:
 
         - `img_dir` and `img_base` must either be both None or both strings.
         """
-        # self.map=island_map
+        self.island_map=island_map
         self.map = Map(island_map)
         self.map.add_population(ini_pop)
         random.seed(seed)
@@ -98,10 +94,11 @@ class BioSim:
         self.final_year = None
         self.img_fmt = img_fmt
         self.fig = None
-        self.island_map = None
         self.img_axis = None
         self.mean_ax = None
         self.herbivore_line = None
+        self.plot_bool=plot_graph
+        self.plot=None
         # carnivore line
         self.herbivore_population = None
         # carnivore line
@@ -112,6 +109,8 @@ class BioSim:
             self.img_base = None
         else:
             self.img_base = img_base
+
+        self.hist_specs = hist_specs
 
         if ymax_animals is None:
             self.ymax_animals = None
@@ -159,7 +158,7 @@ class BioSim:
         """
         self.map.set_parameters(landscape,params)
 
-    def simulate(self, num_years):
+    def simulate(self, num_years,vis_years=1,img_years=None):
         """
         Run simulation while visualizing the result.
 
@@ -168,8 +167,21 @@ class BioSim:
         num_years : int
             Number of years to simulate
         """
+
         # self.last_year+=num_years
         self.final_year = self.year_num + num_years
+
+        # if self.plot_bool and self.plot is None:
+        #     self.plot=Plotting(self.island_map,cmax=self.cmax_animals,ymax=self.ymax_animals,hist_specs=self.hist_specs)
+        #     #self.map.get_pop_tot_num_herb()
+        #     self.plot.init_plot(num_years,map_str=self.island_map)
+        #     self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
+        #     self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
+        #
+        # elif self.plot_bool:
+        #     self.plot.set_x_axis(self.final_year)
+        #     self.plot.y_herb+=[np.nan for _ in range(num_years)]
+        #     self.plot.y_herb+=[np.nan for _ in range(num_years)]
 
         csvfile = None
         writer = None
@@ -178,7 +190,34 @@ class BioSim:
         # writer.writerow(["Year", "Herbivore Count","Carnivore Count"])
         while self.year_num < self.final_year:
             self.map.yearly_cycle()
-            print(self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn())
+
+            # if self.plot_bool:
+            #     self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
+            #     self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
+            #     if self.year_num % vis_years ==0:
+            #         self.plot.update_plot()
+            #
+            # if self.img_base is not None:
+            #     if img_years is None:
+            #         if self.year_num % vis_years==0:
+            #             self.plot.save_graphics(self.img_base,self.img_fmt)
+            #     else:
+            #         if self.year_num % img_years ==0:
+            #             self.plot.save_graphics(self.img_base,self.img_fmt)
+
+            # print(self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn())
+            print("##########################")
+            print("Year: "+str(self.year_num))
+            print(self.map.calculate_animal_count())
+            print("##########################")
+            # for i in range(len(self.map.calculate_animal_count()['Row_no'])):
+            #     a=""
+            #     for j in range(len(self.map.calculate_animal_count()['Col_no'])):
+            #         a+=str(self.map.calculate_animal_count()["Herbivore"][j]+self.map.calculate_animal_count()["Carnivore"][j])+" "
+            #         if j % 4 == 1:
+            #             a+='\n'
+            # print(a)
+            #print(self.map.calculate_animal_count())
             writer.writerow(
                 [self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()])
 

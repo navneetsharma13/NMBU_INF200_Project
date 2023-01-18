@@ -38,6 +38,7 @@ class Landscape:
             raise ValueError("The parameter *{}* must be "
                              "non-negative and also not string".format(param_key))
 
+
     @classmethod
     def set_parameters(cls, params):
         """This method sets the parameter for the landscape types.
@@ -218,7 +219,7 @@ class Highland(Landscape):
         super().__init__()
         self.fodder = self.parameters['f_max']
 
-    def grow_fodder_and_feed(self):
+    def fodder_grow_and_feeding(self):
         self.fodder = self.parameters['f_max']
         self.feed_herbivore()
         self.feed_carnivore()
@@ -232,7 +233,7 @@ class Desert(Landscape):
         """Constructor for the desert."""
         super().__init__()
 
-    def grow_fodder_and_feed(self):
+    def fodder_grow_and_feeding(self):
         """This method increases the amount of fodder growth,
         although, for desert landscape cells, there is no fodder
         growth, then fodder is always equal to zero."""
@@ -248,3 +249,4 @@ class Water(Landscape):
     def __init__(self):
         """Constructor for the ocean."""
         super().__init__()
+
