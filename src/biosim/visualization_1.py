@@ -49,7 +49,7 @@ class Plotting:
             self.hist_specs = hist_specs
 
         self.ax_carn=None
-    def plot_map(self, island_str):
+    def plot_map(self, island_str,total_years=0):
 
         """Author: Hans E. Plasser
         :param map_str: Multi-line string containing letters symbolizing the landscape
@@ -96,28 +96,36 @@ class Plotting:
                                                facecolor=rgb_value[name[0]]))
             self.ax_lg.text(0.35, ix * 0.2, name, transform=self.ax_lg.transAxes)
 
-
-
-
-
-    def plot_population(self,pop=0,years=0):
-
-        num_year=300
-        step_size=1
-        linestyle='b-'
+        num_year=total_years
         self.ax_carn.set_title("Population")
         self.ax_carn.set_xlim(0,num_year)
         self.ax_carn.set_ylim(0,15000)
-
+        step_size=1
+        linestyle='b-'
         carn_xdata=np.arange(0,num_year,step_size)
-        line = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle)[0]
-        line = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle)[0]
-        for n in range(0,num_year,step_size):
-            idx= int(n/step_size)
-            ydata=line.get_ydata()
-            ydata[idx]=5000
-            line.set_ydata(ydata)
-            plt.pause(0.1)
+        self.line1 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle)[0]    #for defining the line and its properties for herb
+        self.line2 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle,c='r')[0]  #for defining the line and its properties for carn
+
+
+
+
+    def plot_population(self,pop_herb=0,pop_carn=0,years=0,step_size=1,current_year=0):
+
+        n=current_year
+        #print(current_year)
+        idx= int(n/step_size)
+        #print(idx)
+
+        ydata=self.line1.get_ydata()#plotting of ydata for herb
+        ydata[idx]=pop_herb
+        self.line1.set_ydata(ydata)
+
+        y1data=self.line2.get_ydata()#plotting of ydata for carn
+        y1data[idx]=pop_carn
+        self.line2.set_ydata(y1data)
+
+        #print(ydata)
+        plt.pause(0.1)
 
     def show_plot(self):
         plt.show()

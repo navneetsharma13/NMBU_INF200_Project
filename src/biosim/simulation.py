@@ -172,20 +172,12 @@ class BioSim:
         self.final_year = self.year_num + num_years
 
 
-        if self.plot_bool and self.plot is None:
-            self.plot=Plotting(self.island_map,cmax=self.cmax_animals,ymax=self.ymax_animals,hist_specs=self.hist_specs)
-            #self.map.get_pop_tot_num_herb()
-            #self.map.update_pop_matrix()
-            #self.plot.init_plot(num_years,map_str=self.island_map)
-            self.plot.plot_map(self.island_map)
-            self.plot.plot_population(pop=self.map.get_pop_tot_num_herb(),years=self.year_num)
-            # self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
-            # self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
+        #if self.plot_bool and self.plot is None:
+
+
 
         # elif self.plot_bool:
-        #     self.plot.set_x_axis(self.final_year)
-        #     self.plot.y_herb+=[np.nan for _ in range(num_years)]
-        #     self.plot.y_herb+=[np.nan for _ in range(num_years)]
+
 
 
 
@@ -194,19 +186,14 @@ class BioSim:
         writer = None
         csvfile = open(f"{sys.path[1]}/{self.log_file}", 'a', newline="")
         writer = csv.writer(csvfile, delimiter=',')
-        # writer.writerow(["Year", "Herbivore Count","Carnivore Count"])
         while self.year_num < self.final_year:
 
 
             self.map.yearly_cycle()
-            self.plot.plot_map(self.island_map)
-            #self.plot.plot_population(pop=self.map.get_pop_tot_num_herb(),years=self.year_num)
+            self.plot.plot_population(pop_herb=self.map.get_pop_tot_num_herb(),pop_carn=self.map.get_pop_tot_num_carn(),step_size=1,current_year=self.year_num)
 
             # if self.plot_bool:
-            #     self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
-            #     self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
-            #     if self.year_num % vis_years ==0:
-            #         self.plot.update_plot()
+
 
             # if self.img_base is not None:
             #     if img_years is None:
@@ -217,29 +204,20 @@ class BioSim:
             #             self.plot.save_graphics(self.img_base,self.img_fmt)
 
             # print(self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn())
-            print("##########################")
-            print("Year: "+str(self.year_num))
-            print(self.map.calculate_animal_count())
-            # self.plot.init_plot(self.map.get_pop_tot_num_carn(),self.year_num)
-            print("##########################")
-            # print("-----------------------------")
-            # print(num_migrations)
-            #
-            print("-----------------------------")
-            # for i in range(len(self.map.calculate_animal_count()['Row_no'])):
-            #     a=""
-            #     for j in range(len(self.map.calculate_animal_count()['Col_no'])):
-            #         a+=str(self.map.calculate_animal_count()["Herbivore"][j]+self.map.calculate_animal_count()["Carnivore"][j])+" "
-            #         if j % 4 == 1:
-            #             a+='\n'
-            # print(a)
-            #print(self.map.calculate_animal_count())
+            # print("##########################")
+            # print("Year: "+str(self.year_num))
+            # print(self.map.calculate_animal_count())
+
             writer.writerow(
                 [self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()])
 
             self.year_num += 1
+    def create_plot(self,total_year=0):
+        self.plot=Plotting(self.island_map,cmax=self.cmax_animals,ymax=self.ymax_animals,hist_specs=self.hist_specs)
+        self.plot.plot_map(self.island_map,total_years=total_year)
 
-            self.plot.show_plot()
+    def plot_show_sim(self):
+        self.plot.show_plot()
     def add_population(self, population):
         """
         Add a population to the island

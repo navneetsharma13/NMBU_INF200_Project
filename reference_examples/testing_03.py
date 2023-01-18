@@ -34,9 +34,11 @@ start_time = time.time()
 for seed in range(100, 101):
     sim = BioSim(geogr, ini_herbs, seed=seed, vis_years=0,
                  log_file=f'data/mono_hc_{seed:05d}.csv')
-
+    total_years=300
+    sim.create_plot(total_years)
     sim.simulate(51)
     sim.add_population(ini_carns)
     sim.simulate(250)
+    sim.plot_show_sim()
 
 print("Simulation took "+str(time.time() - start_time)+" seconds!!")
