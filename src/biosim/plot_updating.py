@@ -130,6 +130,6 @@ if __name__ == '__main__':
     style = 'b-'
     replot(total_steps, stepping, style)
     #update_in_place_v1(total_steps, stepping, style)
-    update_in_place(total_steps, stepping, style)
+    #update_in_place(total_steps, stepping, style)
 
     plt.show()

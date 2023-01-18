@@ -37,4 +37,5 @@ for ix, name in enumerate(('Water', 'Lowland',
                                   facecolor=rgb_value[name[0]]))
     ax_lg.text(0.35, ix * 0.2, name, transform=ax_lg.transAxes)
 
+
 plt.show()

@@ -178,6 +178,7 @@ class BioSim:
             #self.map.update_pop_matrix()
             #self.plot.init_plot(num_years,map_str=self.island_map)
             self.plot.plot_map(self.island_map)
+            self.plot.plot_population()
             # self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
             # self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
 

@@ -48,6 +48,7 @@ class Plotting:
         else:
             self.hist_specs = hist_specs
 
+        self.ax_carn=None
     def plot_map(self, island_str):
 
         """Author: Hans E. Plasser
@@ -65,8 +66,8 @@ class Plotting:
 
         fig = plt.figure()
         self.ax_im = fig.add_subplot(2, 2, 1)
-        self.ax_lg = fig.add_subplot(2, 2,2)
-        self.ax2 = fig.add_subplot(2, 2, 3)
+        self.ax_carn = fig.add_subplot(2, 2,2)
+        self.ax_herb = fig.add_subplot(2, 2, 3)
         self.ax3 = fig.add_subplot(2, 2, 4)
         # self.ax4 = fig.add_subplot(2, 3, 5)
         # self.ax5 = fig.add_subplot(2, 3, 6)
@@ -94,5 +95,27 @@ class Plotting:
                                                edgecolor='none',
                                                facecolor=rgb_value[name[0]]))
             self.ax_lg.text(0.35, ix * 0.2, name, transform=self.ax_lg.transAxes)
+
+
+
+
+
+    def plot_population(self):
+
+        num_year=300
+        step_size=1
+        linestyle='b-'
+        self.ax_carn.set_title("Population")
+        self.ax_carn.set_xlim(0,num_year)
+        self.ax_carn.set_ylim(0,15000)
+
+        carn_xdata=np.arange(0,num_year,step_size)
+        line = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle)[0]
+        for n in range(0,num_year,step_size):
+            idx=n/step_size
+            ydata=line.get_ydata()
+            ydata[idx]=random.random()
+            line.set_ydata(ydata)
+            plt.pause(1e-6)
 
         plt.show()

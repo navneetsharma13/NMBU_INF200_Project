@@ -40,13 +40,12 @@ line = ax2.plot(xdata, np.full_like(xdata, np.nan, dtype=float), 'b-')[0]
 random.seed(12345)
 year_num=5
 car_num=5
-# for n in range(0, max_step, step_size):
-txt.set_text(template.format(year_num))
-idx = year_num // step_size  # integer division to get correct array location
-ydata = line.get_ydata()
-ydata[idx] = 5
-print(car_num)
-line.set_ydata(ydata)
-plt.pause(0.1)  # pause required to make update visible
+for n in range(0, max_step, step_size):
+    txt.set_text(template.format(year_num))
+    idx = year_num // step_size  # integer division to get correct array location
+    ydata = line.get_ydata()
+    ydata[idx] = 5
+    line.set_ydata(ydata)
+    plt.pause(0.1)  # pause required to make update visible
 
-plt.show()
+    plt.show()
