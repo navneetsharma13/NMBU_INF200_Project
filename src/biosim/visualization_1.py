@@ -72,7 +72,7 @@ class Plotting:
         # self.ax5 = fig.add_subplot(2, 3, 6)
 
 
-        #self.ax_im = fig.add_axes([0.1, 0.1, 0.7, 0.8])  # llx, lly, w, h
+        #self.ax_im = fig.add_axes([0.05, 0.2, 0.6, 0.6])  # llx, lly, w, h
 
         self.ax_im.imshow(plot_rgb)
         self.ax_im.set_xticks(range(len(plot_rgb[0])))
@@ -81,11 +81,12 @@ class Plotting:
         self.ax_im.set_yticks(range(len(plot_rgb)))
         self.ax_im.set_yticklabels(range(1, 1 + len(plot_rgb)))
 
-        for label in self.ax_im.xaxis.get_ticklabels()[1::2]:
+        self.ax_im.axis("off") #for removing the axes coordinates
+        for label in self.ax_im.xaxis.get_ticklabels()[1::28]:
             label.set_visible(False)
 
-        self.ax_lg = fig.add_axes([0.85, 0.1, 0.1, 0.8])  # llx, lly, w, h
-        self.ax_lg.axis('off')
+        self.ax_lg = fig.add_axes([0.01,0.58, 0.04, 0.4])  # llx, lly, w, h
+        self.ax_lg.axis('off') #for removing the axe coordinates
 
         for ix, name in enumerate(('Water', 'Lowland',
                                    'Highland', 'Desert')):
