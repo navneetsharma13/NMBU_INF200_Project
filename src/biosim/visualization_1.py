@@ -100,7 +100,7 @@ class Plotting:
 
 
 
-    def plot_population(self):
+    def plot_population(self,pop=0,years=0):
 
         num_year=300
         step_size=1
@@ -115,8 +115,9 @@ class Plotting:
         for n in range(0,num_year,step_size):
             idx= int(n/step_size)
             ydata=line.get_ydata()
-            ydata[idx]=5
+            ydata[idx]=5000
             line.set_ydata(ydata)
             plt.pause(0.1)
 
+    def show_plot(self):
         plt.show()
