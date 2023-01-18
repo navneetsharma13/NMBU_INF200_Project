@@ -112,9 +112,9 @@ class Plotting:
         carn_xdata=np.arange(0,num_year,step_size)
         line = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle)[0]
         for n in range(0,num_year,step_size):
-            idx=n/step_size
+            idx= int(n/step_size)
             ydata=line.get_ydata()
-            ydata[idx]=random.random()
+            ydata[idx]=5
             line.set_ydata(ydata)
             plt.pause(1e-6)
 
