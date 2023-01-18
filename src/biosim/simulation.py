@@ -3,8 +3,7 @@ from .map import Map
 import sys
 import csv
 import numpy as np
-from src.biosim.time_counter import Plot
-from src.biosim.visualization import Plotting
+from src.biosim.visualization_1 import Plotting
 
 
 """
@@ -176,15 +175,16 @@ class BioSim:
         if self.plot_bool and self.plot is None:
             self.plot=Plotting(self.island_map,cmax=self.cmax_animals,ymax=self.ymax_animals,hist_specs=self.hist_specs)
             #self.map.get_pop_tot_num_herb()
-            self.map.update_pop_matrix()
-            self.plot.init_plot(num_years,map_str=self.island_map)
-            self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
-            self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
+            #self.map.update_pop_matrix()
+            #self.plot.init_plot(num_years,map_str=self.island_map)
+            self.plot.plot_map(self.island_map)
+            # self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
+            # self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
 
-        elif self.plot_bool:
-            self.plot.set_x_axis(self.final_year)
-            self.plot.y_herb+=[np.nan for _ in range(num_years)]
-            self.plot.y_herb+=[np.nan for _ in range(num_years)]
+        # elif self.plot_bool:
+        #     self.plot.set_x_axis(self.final_year)
+        #     self.plot.y_herb+=[np.nan for _ in range(num_years)]
+        #     self.plot.y_herb+=[np.nan for _ in range(num_years)]
 
 
 
@@ -199,12 +199,12 @@ class BioSim:
 
             self.map.yearly_cycle()
 
-            # if self.plot_bool:
-            #     self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
-            #     self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
-            #     if self.year_num % vis_years ==0:
-            #         self.plot.update_plot()
-            #
+            if self.plot_bool:
+                self.plot.y_herb[self.year_num]=self.map.get_pop_tot_num_herb()
+                self.plot.y_carn[self.year_num]=self.map.get_pop_tot_num_carn()
+                if self.year_num % vis_years ==0:
+                    self.plot.update_plot()
+
             # if self.img_base is not None:
             #     if img_years is None:
             #         if self.year_num % vis_years==0:
