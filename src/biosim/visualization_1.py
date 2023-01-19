@@ -113,7 +113,7 @@ class Plotting:
         linestyle='b-'
         carn_xdata=np.arange(0,num_year,step_size)
         self.line1 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle)[0]    #for defining the line and its properties for herb
-        self.line2 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle, c='r')[0]  #for defining the line and its properties for carn
+        self.line2 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle, color ='r')[0]  #for defining the line and its properties for carn
 
 
         #self.axt = fig.add_axes([0.3, 0.82, 0.2, 0.2])  # llx, lly, w, h
@@ -155,19 +155,22 @@ class Plotting:
     def heatmap_plot_carnivore(self,pop_matrix_carn):
         self.ax_hm_carn.imshow(pop_matrix_carn,cmap='cividis',interpolation='nearest')
 
-    def plot_fauna_weight(self,weight_dict):
+    def plot_fauna_weight(self, weight_dict):
+        self.ax_weight.clear()
         herb_dict=weight_dict['Herbivore']
         carn_dict=weight_dict['Carnivore']
         self.ax_weight.hist(herb_dict,color='b',histtype='step')
         self.ax_weight.hist(carn_dict,color='r',histtype='step')
 
-    def plot_fauna_age(self,age_dict):
+    def plot_fauna_age(self, age_dict):
+        self.ax_age.clear()
         herb_dict=age_dict['Herbivore']
         carn_dict=age_dict['Carnivore']
         self.ax_age.hist(herb_dict,color='b',histtype='step')
         self.ax_age.hist(carn_dict,color='r',histtype='step')
 
-    def plot_fauna_fitness(self,fitness_dict):
+    def plot_fauna_fitness(self, fitness_dict):
+        self.ax_fitness.clear()
         herb_dict=fitness_dict['Herbivore']
         carn_dict=fitness_dict['Carnivore']
         self.ax_fitness.hist(herb_dict,color='b',histtype='step')
