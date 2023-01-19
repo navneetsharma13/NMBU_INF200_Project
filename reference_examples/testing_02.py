@@ -11,13 +11,13 @@ if __name__ == "__main__":
            WWW"""
     ini_herbs = [{'loc': (2, 3),
               'pop': [{'species': 'Herbivore',
-                       'age': 5,
+                       'age': 7,
                        'weight': 20}
                       for _ in range(50)]},
                  {'loc': (1, 1),
-              'pop': [{'species': 'Herbivore',
-                       'age': 5,
-                       'weight': 20}
+              'pop': [{'species': 'Carnivore',
+                       'age': 15,
+                       'weight': 30}
                       for _ in range(50)]}]
     seed = 123413
     t_sim = BioSim(geogr, ini_herbs, seed)
@@ -25,7 +25,12 @@ if __name__ == "__main__":
     l = Landscape()
     m.create_cells()
     m.add_population(ini_herbs)
-    print(m.get_pop_matrix())
+    print(m.get_pop_age_herb())
+    print(m.get_pop_age_carn())
+    print(m.get_pop_weight_herb())
+    print(m.get_pop_weight_carn())
+    print(m.get_pop_fitness_herb())
+    print(m.get_pop_fitness_carn())
     # print(t_sim.map.livable_cell_calculate())
     # print(t_sim.map.adjacent_cells((1,1)))
     # for i in range(10):

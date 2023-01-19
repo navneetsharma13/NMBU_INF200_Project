@@ -53,7 +53,6 @@ class Fauna:
                                            self.parameters['phi_age']) * \
                            fitness_formula(-1, self.weight, self.parameters['w_half'],
                                            self.parameters['phi_weight'])
-
     def weight(self):
         return self.weight()
 

@@ -183,8 +183,8 @@ class Plotting:
 
     def plot_heatmap(self):
 
-        # self.herb_pop_matrix = [[0 for _ in self.island.unique_colums()] for _ in self.island.unique_rows()]
-        # self.carn_pop_matrix = [[0 for _ in self.island.unique_colums()] for _ in self.island.unique_rows()]
+        # self.herb_pop_matrix = [[0 for _ in self.island.unique_columns()] for _ in self.island.unique_rows()]
+        # self.carn_pop_matrix = [[0 for _ in self.island.unique_columns()] for _ in self.island.unique_rows()]
 
 
         self.imax_herb = self.axhm_herb.imshow(

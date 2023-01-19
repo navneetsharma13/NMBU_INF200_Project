@@ -158,7 +158,7 @@ class BioSim:
         """
         self.map.set_parameters(landscape,params)
 
-    def simulate(self, num_years,vis_years=1,img_years=None):
+    def simulate(self, num_years, is_years=1, img_years=None):
         """
         Run simulation while visualizing the result.
 
@@ -171,16 +171,9 @@ class BioSim:
         # self.last_year+=num_years
         self.final_year = self.year_num + num_years
 
-
         #if self.plot_bool and self.plot is None:
 
-
-
         # elif self.plot_bool:
-
-
-
-
 
         csvfile = None
         writer = None
@@ -188,11 +181,9 @@ class BioSim:
         writer = csv.writer(csvfile, delimiter=',')
         while self.year_num < self.final_year:
 
-
             self.map.yearly_cycle()
             self.plot.plot_population(pop_herb=self.map.get_pop_tot_num_herb(),pop_carn=self.map.get_pop_tot_num_carn(),step_size=1,current_year=self.year_num,pop_matrix_herb=self.map.get_pop_matrix_herb(),pop_matrix_carn=self.map.get_pop_matrix_carn())
             # if self.plot_bool:
-
 
             # if self.img_base is not None:
             #     if img_years is None:
@@ -243,6 +234,21 @@ class BioSim:
         """Number of animals per species in island, as dictionary."""
         return {'Herbivore': self.map.get_pop_tot_num_herb(),
                 'Carnivore': self.map.get_pop_tot_num_carn()}
+
+    def age_animals_per_species(self):
+        """Number of animals per species in island, as dictionary."""
+        return {'Herbivore': self.map.get_pop_age_herb(),
+                'Carnivore': self.map.get_pop_age_carn()}
+
+    def weight_animals_per_species(self):
+        """Number of animals per species in island, as dictionary."""
+        return {'Herbivore': self.map.get_pop_weight_herb(),
+                'Carnivore': self.map.get_pop_weight_carn()}
+
+    def fitness_animals_per_species(self):
+        """Number of animals per species in island, as dictionary."""
+        return {'Herbivore': self.map.get_pop_fitness_herb(),
+                'Carnivore': self.map.get_pop_fitness_carn()}
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""

@@ -1,4 +1,5 @@
 import textwrap
+import collections
 from biosim.landscape import Lowland, Highland, Desert, Water
 from biosim.fauna import Herbivore, Carnivore
 
@@ -23,10 +24,8 @@ class Map:
 
         self.cell_list = geo_list(island_map)
         self.cells_dict = self.create_cells()
-        self.herb_pop_matrix=[[0 for _ in self.unique_colums()] for _ in self.unique_rows()]
-        self.carn_pop_matrix=[[0 for _ in self.unique_colums()] for _ in self.unique_rows()]
-
-
+        self.herb_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
+        self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
 
     def create_cells(self):
 
@@ -150,26 +149,25 @@ class Map:
 
     def unique_rows(self):
         return list(set([loc[0] for loc in self.create_cells()]))
-    def unique_colums(self):
+
+    def unique_columns(self):
         return list(set([loc[1] for loc in self.create_cells()]))
 
     def get_pop_matrix_herb(self):
-        pos=0
+        pos = 0
         for row in (self.unique_rows()):
-            for col in (self.unique_colums()):
+            for col in (self.unique_columns()):
                 self.herb_pop_matrix[row][col] = self.calculate_animal_count()['Herbivore'][pos]
-                pos+=1
-        pos=0
+                pos += 1
 
         return self.herb_pop_matrix
 
     def get_pop_matrix_carn(self):
-        pos=0
+        pos = 0
         for row in (self.unique_rows()):
-            for col in (self.unique_colums()):
+            for col in (self.unique_columns()):
                 self.carn_pop_matrix[row][col] = self.calculate_animal_count()['Carnivore'][pos]
-                pos+=1
-        pos=0
+                pos += 1
 
         return self.carn_pop_matrix
 
@@ -180,3 +178,47 @@ class Map:
         neighbours = [self.migrate_cell_calculate()[loc] for loc in adjacent_pos if
                       loc in self.migrate_cell_calculate().keys()]
         return neighbours
+
+    def get_pop_age_herb(self):
+        herb_age = []
+        for loc, loc_object in self.cells_dict.items():
+            for animal in loc_object.initial_population['Herbivore']:
+                herb_age.append(animal.age)
+        return dict(collections.Counter(herb_age))
+
+    def get_pop_age_carn(self):
+        carn_age = []
+        for loc, loc_object in self.cells_dict.items():
+            for animal in loc_object.initial_population['Carnivore']:
+                carn_age.append(animal.age)
+        return dict(collections.Counter(carn_age))
+
+    def get_pop_weight_herb(self):
+        herb_weight = []
+        for loc, loc_object in self.cells_dict.items():
+            for animal in loc_object.initial_population['Herbivore']:
+                herb_weight.append(animal.weight)
+        return dict(collections.Counter(herb_weight))
+
+    def get_pop_weight_carn(self):
+        carn_weight = []
+        for loc, loc_object in self.cells_dict.items():
+            for animal in loc_object.initial_population['Carnivore']:
+                carn_weight.append(animal.weight)
+        return dict(collections.Counter(carn_weight))
+
+    def get_pop_fitness_herb(self):
+        herb_fitness = []
+        for loc, loc_object in self.cells_dict.items():
+            for animal in loc_object.initial_population['Herbivore']:
+                animal.calculate_fitness()
+                herb_fitness.append(round(animal.fitness, 2))
+        return dict(collections.Counter(herb_fitness))
+
+    def get_pop_fitness_carn(self):
+        carn_fitness = []
+        for loc, loc_object in self.cells_dict.items():
+            for animal in loc_object.initial_population['Carnivore']:
+                animal.calculate_fitness()
+                carn_fitness.append(round(animal.fitness, 2))
+        return dict(collections.Counter(carn_fitness))
