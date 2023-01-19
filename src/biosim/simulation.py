@@ -190,8 +190,7 @@ class BioSim:
 
 
             self.map.yearly_cycle()
-            self.plot.plot_population(pop_herb=self.map.get_pop_tot_num_herb(),pop_carn=self.map.get_pop_tot_num_carn(),step_size=1,current_year=self.year_num)
-
+            self.plot.plot_population(pop_herb=self.map.get_pop_tot_num_herb(),pop_carn=self.map.get_pop_tot_num_carn(),step_size=1,current_year=self.year_num,pop_matrix_herb=self.map.get_pop_matrix_herb(),pop_matrix_carn=self.map.get_pop_matrix_carn())
             # if self.plot_bool:
 
 

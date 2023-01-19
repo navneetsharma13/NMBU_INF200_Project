@@ -26,12 +26,6 @@ class Map:
         self.herb_pop_matrix=[[0 for _ in self.unique_colums()] for _ in self.unique_rows()]
         self.carn_pop_matrix=[[0 for _ in self.unique_colums()] for _ in self.unique_rows()]
 
-    def update_pop_matrix(self):
-        for row in self.unique_rows()[1:-1]:  # First and last cell is water
-            for col in self.unique_colums()[1:-1]:  # First and last cell is water
-                    # print(cell)
-                    self.herb_pop_matrix[row - 1][col - 1] = self.get_pop_tot_num_herb()
-                    self.carn_pop_matrix[row - 1][col - 1] = self.get_pop_tot_num_carn()
 
 
     def create_cells(self):
@@ -156,6 +150,26 @@ class Map:
         return list(set([loc[0] for loc in self.create_cells()]))
     def unique_colums(self):
         return list(set([loc[1] for loc in self.create_cells()]))
+
+    def get_pop_matrix_herb(self):
+        pos=0
+        for row in (self.unique_rows()):
+            for col in (self.unique_colums()):
+                self.herb_pop_matrix[row][col] = self.calculate_animal_count()['Herbivore'][pos]
+                pos+=1
+        pos=0
+
+        return self.herb_pop_matrix
+
+    def get_pop_matrix_carn(self):
+        pos=0
+        for row in (self.unique_rows()):
+            for col in (self.unique_colums()):
+                self.carn_pop_matrix[row][col] = self.calculate_animal_count()['Carnivore'][pos]
+                pos+=1
+        pos=0
+
+        return self.carn_pop_matrix
 
     def adjacent_cells(self, pos):
 

@@ -6,20 +6,15 @@ import textwrap
 
 if __name__ == "__main__":
     geogr = """\
-               WWWWWWWWWWWWWWWWWWWWW
-               WWWWWWWWHWWWWLLLLLLLW
-               WHHHHHLLLLWWLLLLLLLWW
-               WHHHHHHHHHWWLLLLLLWWW
-               WHHHHHLLLLLLLLLLLLWWW
-               WHHHHHLLLDDLLLHLLLWWW
-               WHHLLLLLDDDLLLHHHHWWW
-               WWHHHHLLLDDLLLHWWWWWW
-               WHHHLLLLLDDLLLLLLLWWW
-               WHHHHLLLLDDLLLLWWWWWW
-               WWHHHHLLLLLLLLWWWWWWW
-               WWWHHHHLLLLLLLWWWWWWW
-               WWWWWWWWWWWWWWWWWWWWW"""
-    ini_herbs = [{'loc': (2, 2),
+           WWW
+           WLW
+           WWW"""
+    ini_herbs = [{'loc': (2, 3),
+              'pop': [{'species': 'Herbivore',
+                       'age': 5,
+                       'weight': 20}
+                      for _ in range(50)]},
+                 {'loc': (1, 1),
               'pop': [{'species': 'Herbivore',
                        'age': 5,
                        'weight': 20}
@@ -28,8 +23,9 @@ if __name__ == "__main__":
     t_sim = BioSim(geogr, ini_herbs, seed)
     m = Map(geogr)
     l = Landscape()
+    m.create_cells()
     m.add_population(ini_herbs)
-    print(m.unique_rows(),m.unique_colums())
+    print(m.get_pop_matrix())
     # print(t_sim.map.livable_cell_calculate())
     # print(t_sim.map.adjacent_cells((1,1)))
     # for i in range(10):
