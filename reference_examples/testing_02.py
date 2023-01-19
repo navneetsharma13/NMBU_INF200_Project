@@ -31,6 +31,8 @@ if __name__ == "__main__":
     print(m.get_pop_weight_carn())
     print(m.get_pop_fitness_herb())
     print(m.get_pop_fitness_carn())
+    print(m.get_pop_matrix_herb())
+    print(m.get_pop_matrix_carn())
     # print(t_sim.map.livable_cell_calculate())
     # print(t_sim.map.adjacent_cells((1,1)))
     # for i in range(10):

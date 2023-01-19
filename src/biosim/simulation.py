@@ -193,11 +193,6 @@ class BioSim:
             #         if self.year_num % img_years ==0:
             #             self.plot.save_graphics(self.img_base,self.img_fmt)
 
-            # print(self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn())
-            # print("##########################")
-            # print("Year: "+str(self.year_num))
-            # print(self.map.calculate_animal_count())
-
             writer.writerow(
                 [self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()])
 

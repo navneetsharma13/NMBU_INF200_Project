@@ -78,23 +78,13 @@ class Plotting:
         self.ax_age=fig.add_subplot(gs[-1,1])
         self.ax_weight=fig.add_subplot(gs[-1,-1])
 
-
-
-        # self.ax5 = fig.add_subplot(2, 3, 6)
-
-
-        #self.ax_im = fig.add_axes([0.05, 0.2, 0.6, 0.6])  # llx, lly, w, h
-
         self.ax_im.imshow(plot_rgb)
         self.ax_im.set_xticks(range(len(plot_rgb[0])))
         self.ax_im.set_xticklabels(range(1, 1 + len(plot_rgb[0])))
-
         self.ax_im.set_yticks(range(len(plot_rgb)))
         self.ax_im.set_yticklabels(range(1, 1 + len(plot_rgb)))
 
         self.ax_im.axis("off") #for removing the axes coordinates
-        for label in self.ax_im.xaxis.get_ticklabels()[1::28]:
-            label.set_visible(False)
 
         self.ax_lg = fig.add_axes([0.01,0.7, 0.04, 0.4])  # llx, lly, w, h
         self.ax_lg.axis('off') #for removing the axe coordinates
@@ -123,7 +113,7 @@ class Plotting:
         linestyle='b-'
         carn_xdata=np.arange(0,num_year,step_size)
         self.line1 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle)[0]    #for defining the line and its properties for herb
-        self.line2 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle,c='r')[0]  #for defining the line and its properties for carn
+        self.line2 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle, c='r')[0]  #for defining the line and its properties for carn
 
 
         #self.axt = fig.add_axes([0.3, 0.82, 0.2, 0.2])  # llx, lly, w, h
@@ -132,29 +122,20 @@ class Plotting:
         self.txt = self.axt.text(0.5, 0.5, self.template.format(0),horizontalalignment='center',verticalalignment='center',transform=self.axt.transAxes)
 
 
-    def plot_population(self,pop_herb=0,pop_carn=0,years=0,step_size=1,current_year=0,pop_matrix_herb=None,pop_matrix_carn=None,weight_dict=None,age_dict=None,fitness_dict=None):
+    def plot_population(self,pop_herb=0,pop_carn=0,step_size=1,current_year=0,pop_matrix_herb=None,pop_matrix_carn=None,weight_dict=None,age_dict=None,fitness_dict=None):
 
         self.txt.set_text(self.template.format(current_year))
 
         n=current_year
         #print(current_year)
-        idx= int(n/step_size)
-        #print(idx)
-        #self.ax_carn.set_ylim(0,pop_herb+5000)
-        ydata=self.line1.get_ydata()#plotting of ydata for herb
-        ydata[idx]=pop_herb
+        idx= n//step_size
+        ydata=self.line1.get_ydata() #plotting of ydata for herb
+        ydata[idx] = pop_herb
         self.line1.set_ydata(ydata)
 
-
-
-
-        y1data=self.line2.get_ydata()#plotting of ydata for carn
+        y1data=self.line2.get_ydata() #plotting of ydata for carn
         y1data[idx]=pop_carn
         self.line2.set_ydata(y1data)
-
-
-        #print(ydata)
-        plt.pause(0.01)
 
         self.heatmap_plot_herbivore(pop_matrix_herb=pop_matrix_herb)
         self.heatmap_plot_carnivore(pop_matrix_carn=pop_matrix_carn)
@@ -162,6 +143,8 @@ class Plotting:
         self.plot_fauna_weight(weight_dict=weight_dict)
         self.plot_fauna_age(age_dict=age_dict)
         self.plot_fauna_fitness(fitness_dict=fitness_dict)
+
+        plt.pause(0.1)
 
 
     def close_plot(self):
