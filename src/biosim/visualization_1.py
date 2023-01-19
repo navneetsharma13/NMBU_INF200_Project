@@ -65,7 +65,7 @@ class Plotting:
 
         plot_rgb = [[rgb_value[column] for column in row.strip()] for row in island_str.splitlines()]
 
-        fig = plt.figure(figsize=(10,8))
+        fig = plt.figure(constrained_layout=True)
 
         gs = GridSpec(3,3,figure=fig)
 
@@ -96,7 +96,7 @@ class Plotting:
         for label in self.ax_im.xaxis.get_ticklabels()[1::28]:
             label.set_visible(False)
 
-        self.ax_lg = fig.add_axes([0.01,0.58, 0.04, 0.4])  # llx, lly, w, h
+        self.ax_lg = fig.add_axes([0.01,0.7, 0.04, 0.4])  # llx, lly, w, h
         self.ax_lg.axis('off') #for removing the axe coordinates
 
         for ix, name in enumerate(('Water', 'Lowland',
@@ -114,6 +114,9 @@ class Plotting:
 
         self.ax_hm_herb.set_title('Herbivore Distribution')
         self.ax_hm_carn.set_title('Carnivore Distribution')
+        self.ax_weight.set_title('Weight')
+        self.ax_fitness.set_title('Fitness')
+        self.ax_age.set_title('Age')
 
 
         step_size=1
@@ -129,7 +132,7 @@ class Plotting:
         self.txt = self.axt.text(0.5, 0.5, self.template.format(0),horizontalalignment='center',verticalalignment='center',transform=self.axt.transAxes)
 
 
-    def plot_population(self,pop_herb=0,pop_carn=0,years=0,step_size=1,current_year=0,pop_matrix_herb=None,pop_matrix_carn=None,weight_dict=None):
+    def plot_population(self,pop_herb=0,pop_carn=0,years=0,step_size=1,current_year=0,pop_matrix_herb=None,pop_matrix_carn=None,weight_dict=None,age_dict=None,fitness_dict=None):
 
         self.txt.set_text(self.template.format(current_year))
 
@@ -157,6 +160,12 @@ class Plotting:
         self.heatmap_plot_carnivore(pop_matrix_carn=pop_matrix_carn)
 
         self.plot_fauna_weight(weight_dict=weight_dict)
+        self.plot_fauna_age(age_dict=age_dict)
+        self.plot_fauna_fitness(fitness_dict=fitness_dict)
+
+
+    def close_plot(self):
+        plt.close()
     def heatmap_plot_herbivore(self,pop_matrix_herb):
         self.ax_hm_herb.imshow(pop_matrix_herb,cmap='viridis',interpolation='nearest')
 
@@ -164,7 +173,22 @@ class Plotting:
         self.ax_hm_carn.imshow(pop_matrix_carn,cmap='cividis',interpolation='nearest')
 
     def plot_fauna_weight(self,weight_dict):
-        self.ax_weight.bar(list(weight_dict.keys()),weight_dict.values(),color='g')
+        herb_dict=weight_dict['Herbivore']
+        carn_dict=weight_dict['Carnivore']
+        self.ax_weight.hist(herb_dict,color='b',histtype='step')
+        self.ax_weight.hist(carn_dict,color='r',histtype='step')
+
+    def plot_fauna_age(self,age_dict):
+        herb_dict=age_dict['Herbivore']
+        carn_dict=age_dict['Carnivore']
+        self.ax_age.hist(herb_dict,color='b',histtype='step')
+        self.ax_age.hist(carn_dict,color='r',histtype='step')
+
+    def plot_fauna_fitness(self,fitness_dict):
+        herb_dict=fitness_dict['Herbivore']
+        carn_dict=fitness_dict['Carnivore']
+        self.ax_fitness.hist(herb_dict,color='b',histtype='step')
+        self.ax_fitness.hist(carn_dict,color='r',histtype='step')
 
     def show_plot(self):
         plt.show()

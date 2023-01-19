@@ -182,7 +182,7 @@ class BioSim:
         while self.year_num < self.final_year:
 
             self.map.yearly_cycle()
-            self.plot.plot_population(pop_herb=self.map.get_pop_tot_num_herb(),pop_carn=self.map.get_pop_tot_num_carn(),step_size=1,current_year=self.year_num,pop_matrix_herb=self.map.get_pop_matrix_herb(),pop_matrix_carn=self.map.get_pop_matrix_carn())
+            self.plot.plot_population(pop_herb=self.map.get_pop_tot_num_herb(),pop_carn=self.map.get_pop_tot_num_carn(),step_size=1,current_year=self.year_num,pop_matrix_herb=self.map.get_pop_matrix_herb(),pop_matrix_carn=self.map.get_pop_matrix_carn(),weight_dict=self.weight_animals_per_species(),age_dict=self.age_animals_per_species(),fitness_dict=self.fitness_animals_per_species())
             # if self.plot_bool:
 
             # if self.img_base is not None:
@@ -208,6 +208,9 @@ class BioSim:
 
     def plot_show_sim(self):
         self.plot.show_plot()
+
+    def plot_close_sim(self):
+        self.plot.close_plot()
     def add_population(self, population):
         """
         Add a population to the island
