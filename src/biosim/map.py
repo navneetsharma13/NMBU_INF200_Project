@@ -68,6 +68,8 @@ class Map:
                 pop_object = self.animal_classes[type_animal](*age_weight)
                 loc_object.initial_population[type(pop_object).__name__].append(pop_object)
 
+
+
     @staticmethod
     def check_str_type(ar):
         if not isinstance(ar, str):

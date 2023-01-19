@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
 import numpy as np
 import random
 from src.biosim.map import Map
@@ -65,11 +66,20 @@ class Plotting:
         plot_rgb = [[rgb_value[column] for column in row.strip()] for row in island_str.splitlines()]
 
         fig = plt.figure(figsize=(10,8))
-        self.ax_im = fig.add_subplot(2, 2, 1)
-        self.ax_carn = fig.add_subplot(2, 2,2)
-        self.ax_hm_herb = fig.add_subplot(2, 2, 3)
-        self.ax_hm_carn = fig.add_subplot(2, 2, 4)
-        # self.ax4 = fig.add_subplot(2, 3, 5)
+
+        gs = GridSpec(3,3,figure=fig)
+
+        self.ax_im = fig.add_subplot(gs[0,0])
+        self.axt=fig.add_subplot(gs[0,1])
+        self.ax_carn = fig.add_subplot(gs[0,-1])
+        self.ax_hm_herb = fig.add_subplot(gs[1,0])
+        self.ax_hm_carn = fig.add_subplot(gs[1,-1])
+        self.ax_fitness = fig.add_subplot(gs[-1,0])
+        self.ax_age=fig.add_subplot(gs[-1,1])
+        self.ax_weight=fig.add_subplot(gs[-1,-1])
+
+
+
         # self.ax5 = fig.add_subplot(2, 3, 6)
 
 
@@ -102,7 +112,6 @@ class Plotting:
         self.ax_carn.set_ylim(0,20000)
 
 
-
         self.ax_hm_herb.set_title('Herbivore Distribution')
         self.ax_hm_carn.set_title('Carnivore Distribution')
 
@@ -114,15 +123,13 @@ class Plotting:
         self.line2 = self.ax_carn.plot(carn_xdata,np.full_like(carn_xdata, np.nan, dtype=float), linestyle,c='r')[0]  #for defining the line and its properties for carn
 
 
-        self.axt = fig.add_axes([0.3, 0.82, 0.2, 0.2])  # llx, lly, w, h
+        #self.axt = fig.add_axes([0.3, 0.82, 0.2, 0.2])  # llx, lly, w, h
         self.axt.axis('off')  # turn off coordinate system
         self.template = 'Year: {:5d}'
         self.txt = self.axt.text(0.5, 0.5, self.template.format(0),horizontalalignment='center',verticalalignment='center',transform=self.axt.transAxes)
 
 
-
-
-    def plot_population(self,pop_herb=0,pop_carn=0,years=0,step_size=1,current_year=0,pop_matrix_herb=None,pop_matrix_carn=None):
+    def plot_population(self,pop_herb=0,pop_carn=0,years=0,step_size=1,current_year=0,pop_matrix_herb=None,pop_matrix_carn=None,weight_dict=None):
 
         self.txt.set_text(self.template.format(current_year))
 
@@ -144,15 +151,21 @@ class Plotting:
 
 
         #print(ydata)
-        plt.pause(0.1)
+        plt.pause(0.01)
 
         self.heatmap_plot_herbivore(pop_matrix_herb=pop_matrix_herb)
         self.heatmap_plot_carnivore(pop_matrix_carn=pop_matrix_carn)
+
+        self.plot_fauna_weight(weight_dict=weight_dict)
     def heatmap_plot_herbivore(self,pop_matrix_herb):
         self.ax_hm_herb.imshow(pop_matrix_herb,cmap='viridis',interpolation='nearest')
 
     def heatmap_plot_carnivore(self,pop_matrix_carn):
         self.ax_hm_carn.imshow(pop_matrix_carn,cmap='cividis',interpolation='nearest')
 
+    def plot_fauna_weight(self,weight_dict):
+        self.ax_weight.bar(list(weight_dict.keys()),weight_dict.values(),color='g')
+
+    def
     def show_plot(self):
         plt.show()
