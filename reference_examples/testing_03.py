@@ -31,10 +31,10 @@ ini_carns = [{'loc': (5, 7),
 
 
 start_time = time.time()
-for seed in range(100, 101):
+for seed in range(134, 135):
     sim = BioSim(geogr, ini_herbs, seed=seed, vis_years=0,
                  log_file=f'data/mono_hc_{seed:05d}.csv')
-    total_years=300
+    total_years = 300
     sim.create_plot(total_years)
     sim.simulate(51)
     sim.add_population(ini_carns)

@@ -166,6 +166,5 @@ class Plotting:
     def plot_fauna_weight(self,weight_dict):
         self.ax_weight.bar(list(weight_dict.keys()),weight_dict.values(),color='g')
 
-    def
     def show_plot(self):
         plt.show()

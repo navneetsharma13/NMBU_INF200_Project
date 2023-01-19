@@ -184,41 +184,41 @@ class Map:
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Herbivore']:
                 herb_age.append(animal.age)
-        return dict(collections.Counter(herb_age))
+        return herb_age
 
     def get_pop_age_carn(self):
         carn_age = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Carnivore']:
                 carn_age.append(animal.age)
-        return dict(collections.Counter(carn_age))
+        return carn_age
 
     def get_pop_weight_herb(self):
         herb_weight = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Herbivore']:
                 herb_weight.append(animal.weight)
-        return dict(collections.Counter(herb_weight))
+        return herb_weight
 
     def get_pop_weight_carn(self):
         carn_weight = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Carnivore']:
                 carn_weight.append(animal.weight)
-        return dict(collections.Counter(carn_weight))
+        return carn_weight
 
     def get_pop_fitness_herb(self):
         herb_fitness = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Herbivore']:
                 animal.calculate_fitness()
-                herb_fitness.append(round(animal.fitness, 2))
-        return dict(collections.Counter(herb_fitness))
+                herb_fitness.append(animal.fitness)
+        return herb_fitness
 
     def get_pop_fitness_carn(self):
         carn_fitness = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Carnivore']:
                 animal.calculate_fitness()
-                carn_fitness.append(round(animal.fitness, 2))
-        return dict(collections.Counter(carn_fitness))
+                carn_fitness.append(animal.fitness)
+        return carn_fitness
