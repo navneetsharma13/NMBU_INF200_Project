@@ -187,7 +187,7 @@ class BioSim:
         self.final_year = self.year_num + num_years
         self.csvfile = open(f"{sys.path[1]}/{self.log_file}", 'a', newline="")
         self.writer = csv.writer(self.csvfile, delimiter=',')
-        while self.year_num < self.final_year:
+        while self.year_num <= self.final_year:
             self.map.yearly_cycle()
             self.visualize.update_plot_population(pop_herb=self.map.get_pop_tot_num_herb(),
                                            pop_carn=self.map.get_pop_tot_num_carn(),

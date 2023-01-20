@@ -88,17 +88,17 @@ class Visualization:
     def draw_layout(self):
 
         fig = plt.figure(constrained_layout=True)  # Setup pyplot
-        gs = fig.add_gridspec(6, 7)
+        gs = fig.add_gridspec(5, 7)
 
-        self.ax_lg = fig.add_subplot(gs[0:2, 0:2])  # Add map legend subplot
-        self.ax_im = fig.add_subplot(gs[0:2, 2:4])
-        self.axt = fig.add_subplot(gs[2, 5])
-        self.ax_animal_count = fig.add_subplot(gs[0:2, 4:])
-        self.ax_hm_herb = fig.add_subplot(gs[2:4, 0:2])
-        self.ax_hm_carn = fig.add_subplot(gs[2:4, 2:4])
-        self.ax_fitness = fig.add_subplot(gs[5:, 1:3])
-        self.ax_age = fig.add_subplot(gs[5:, 3:5])
-        self.ax_weight = fig.add_subplot(gs[5:, 5:])
+        self.ax_lg = fig.add_subplot(gs[0, 0])  # Add map legend subplot
+        self.ax_im = fig.add_subplot(gs[0:2, 1:3])
+        self.ax_animal_count = fig.add_subplot(gs[0:2, 3:])
+        self.ax_hm_herb = fig.add_subplot(gs[2:4, 1:3])
+        self.axt = fig.add_subplot(gs[0, 4])
+        self.ax_hm_carn = fig.add_subplot(gs[2:4, 3:5])
+        self.ax_fitness = fig.add_subplot(gs[4:, 1:3])
+        self.ax_age = fig.add_subplot(gs[4:, 3:5])
+        self.ax_weight = fig.add_subplot(gs[4:, 5:])
 
         self.draw_map()
         self.draw_animal_count_plot()
@@ -229,14 +229,12 @@ class Visualization:
     def draw_heatmap(self):
 
         self.herb_hm_axis = self.ax_hm_herb.imshow(self.pop_matrix_herb, interpolation='nearest',
-                                                   cmap='viridis')
-        plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical', fraction=0.028,
-                     pad=0.04)
+                                                   cmap='viridis', vmin=0, vmax=200)
+        plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical', fraction=0.028,)
 
         self.carn_hm_axis = self.ax_hm_carn.imshow(self.pop_matrix_carn, interpolation='nearest',
-                                                   cmap='plasma')
-        plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', fraction=0.028,
-                     pad=0.04)
+                                                   cmap='plasma', vmin=0, vmax=60)
+        plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', fraction=0.028)
 
     def update_plot_population(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
                                pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
