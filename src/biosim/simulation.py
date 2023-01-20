@@ -185,11 +185,13 @@ class BioSim:
             raise ValueError('img_years must be multiple of vis_years')
 
         self.final_year = self.year_num + num_years
-        self.csvfile = open(f"{sys.path[1]}/{self.log_file}", 'a', newline="")
-        self.writer = csv.writer(self.csvfile, delimiter=',')
+        if self.plot_bool:
+            self.csvfile = open(f"{sys.path[1]}/{self.log_file}", 'a', newline="")
+            self.writer = csv.writer(self.csvfile, delimiter=',')
         while self.year_num <= self.final_year:
             self.map.yearly_cycle()
-            self.visualize.update_plot_population(pop_herb=self.map.get_pop_tot_num_herb(),
+            if self.plot_bool:
+                self.visualize.update_plot_population(pop_herb=self.map.get_pop_tot_num_herb(),
                                            pop_carn=self.map.get_pop_tot_num_carn(),
                                            step_size=1,
                                            current_year=self.year_num,
@@ -207,8 +209,8 @@ class BioSim:
             #         if self.year_num % img_years ==0:
             #             self.plot.save_graphics(self.img_base,self.img_fmt)
 
-            self.writer.writerow(
-                [self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()])
+                self.writer.writerow(
+                    [self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()])
 
             self.year_num += 1
 

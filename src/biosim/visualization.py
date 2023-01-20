@@ -10,7 +10,6 @@ class Visualization:
                  pop_matrix_herb=None, pop_matrix_carn=None):
 
         self.island_map = island_map
-        self.map = Map(island_map)
         self.img_base = None
         self.img_ctr = 0
         self._img_year = 1
@@ -253,6 +252,14 @@ class Visualization:
 
         self.txt.set_text(self.template.format(current_year))
 
+        self.update_animal_count(pop_herb=pop_herb, pop_carn=pop_carn,
+                                 step_size=step_size, current_year=current_year)
+        self.update_frequency_graphs()
+        self.update_heatmap()
+        plt.pause(0.1)
+
+    def update_animal_count(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0):
+
         n = current_year
         idx = n // step_size
         herb_ydata = self.herb_line.get_ydata()  # plotting of ydata for herb
@@ -262,10 +269,6 @@ class Visualization:
         carn_ydata = self.carn_line.get_ydata()  # plotting of ydata for carn
         carn_ydata[idx] = pop_carn
         self.carn_line.set_ydata(carn_ydata)
-
-        self.update_frequency_graphs()
-        self.update_heatmap()
-        plt.pause(0.1)
 
     def update_frequency_graphs(self):
 
