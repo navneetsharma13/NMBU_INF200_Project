@@ -3,8 +3,7 @@ from .map import Map
 import sys
 import csv
 import numpy as np
-from src.biosim.visualization_1 import Plotting
-
+from src.biosim.visualization import Visualization
 
 """
 Template for BioSim class.
@@ -23,7 +22,8 @@ class BioSim:
 
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
-                 img_years=None, img_dir=None, img_base=None, img_fmt='png',plot_graph=True,log_file=None):
+                 img_years=None, img_dir=None, img_base=None, img_fmt='png', plot_graph=True,
+                 log_file=None, total_years=0):
 
         """
         Parameters
@@ -84,7 +84,7 @@ class BioSim:
 
         - `img_dir` and `img_base` must either be both None or both strings.
         """
-        self.island_map=island_map
+        self.island_map = island_map
         self.map = Map(island_map)
         self.map.add_population(ini_pop)
         random.seed(seed)
@@ -97,20 +97,16 @@ class BioSim:
         self.img_axis = None
         self.mean_ax = None
         self.herbivore_line = None
-        self.plot_bool=plot_graph
-        self.plot=None
-        # carnivore line
-        self.herbivore_population = None
-        # carnivore line
-        self.herbivore_img_axis = None
+        self.plot_bool = plot_graph
         self.log_file = log_file
+        self.hist_specs = hist_specs
+        self.csvfile = None
+        self.writer = None
 
         if img_base is None:
             self.img_base = None
         else:
             self.img_base = img_base
-
-        self.hist_specs = hist_specs
 
         if ymax_animals is None:
             self.ymax_animals = None
@@ -121,6 +117,15 @@ class BioSim:
             self.cmax_animals = None
         else:
             self.cmax_animals = cmax_animals
+
+        if self.plot_bool:
+            self.visualize = Visualization(self.island_map, cmax=self.cmax_animals,
+                                           ymax=self.ymax_animals,
+                                           hist_specs=self.hist_specs,
+                                           total_years=total_years,
+                                           pop_matrix_herb=self.map.get_pop_matrix_herb(),
+                                           pop_matrix_carn=self.map.get_pop_matrix_carn())
+            self.visualize.draw_layout()
 
     def set_animal_parameters(self, species, params):
         """
@@ -138,7 +143,7 @@ class BioSim:
         ValueError
             If invalid parameter values are passed.
         """
-        self.map.set_parameters(species,params)
+        self.map.set_parameters(species, params)
 
     def set_landscape_parameters(self, landscape, params):
         """
@@ -156,9 +161,9 @@ class BioSim:
         ValueError
             If invalid parameter values are passed.
         """
-        self.map.set_parameters(landscape,params)
+        self.map.set_parameters(landscape, params)
 
-    def simulate(self, num_years, is_years=1, img_years=None):
+    def simulate(self, num_years, vis_years=1, img_years=None):
         """
         Run simulation while visualizing the result.
 
@@ -166,24 +171,33 @@ class BioSim:
         ----------
         num_years : int
             Number of years to simulate
+        vis_years : interval between visualization updates
+        img_years: interval between visualizations saved to files
+                          (default: vis_years)
+
+        .. note:: Image files will be numbered consecutively.
         """
 
-        # self.last_year+=num_years
+        if img_years is None:
+            img_years = vis_years
+
+        if img_years % vis_years != 0:
+            raise ValueError('img_years must be multiple of vis_years')
+
         self.final_year = self.year_num + num_years
-
-        #if self.plot_bool and self.plot is None:
-
-        # elif self.plot_bool:
-
-        csvfile = None
-        writer = None
-        csvfile = open(f"{sys.path[1]}/{self.log_file}", 'a', newline="")
-        writer = csv.writer(csvfile, delimiter=',')
+        self.csvfile = open(f"{sys.path[1]}/{self.log_file}", 'a', newline="")
+        self.writer = csv.writer(self.csvfile, delimiter=',')
         while self.year_num < self.final_year:
-
             self.map.yearly_cycle()
-            self.plot.plot_population(pop_herb=self.map.get_pop_tot_num_herb(),pop_carn=self.map.get_pop_tot_num_carn(),step_size=1,current_year=self.year_num,pop_matrix_herb=self.map.get_pop_matrix_herb(),pop_matrix_carn=self.map.get_pop_matrix_carn(),weight_dict=self.weight_animals_per_species(),age_dict=self.age_animals_per_species(),fitness_dict=self.fitness_animals_per_species())
-            # if self.plot_bool:
+            self.visualize.update_plot_population(pop_herb=self.map.get_pop_tot_num_herb(),
+                                           pop_carn=self.map.get_pop_tot_num_carn(),
+                                           step_size=1,
+                                           current_year=self.year_num,
+                                           pop_matrix_herb=self.map.get_pop_matrix_herb(),
+                                           pop_matrix_carn=self.map.get_pop_matrix_carn(),
+                                           weight_list=self.weight_animals_per_species(),
+                                           age_list=self.age_animals_per_species(),
+                                           fitness_list=self.fitness_animals_per_species())
 
             # if self.img_base is not None:
             #     if img_years is None:
@@ -193,19 +207,17 @@ class BioSim:
             #         if self.year_num % img_years ==0:
             #             self.plot.save_graphics(self.img_base,self.img_fmt)
 
-            writer.writerow(
+            self.writer.writerow(
                 [self.year_num, self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()])
 
             self.year_num += 1
-    def create_plot(self,total_year=0):
-        self.plot=Plotting(self.island_map,cmax=self.cmax_animals,ymax=self.ymax_animals,hist_specs=self.hist_specs)
-        self.plot.plot_map(self.island_map,total_years=total_year)
 
     def plot_show_sim(self):
-        self.plot.show_plot()
+        self.visualize.show_plot()
 
     def plot_close_sim(self):
-        self.plot.close_plot()
+        self.visualize.close_plot()
+
     def add_population(self, population):
         """
         Add a population to the island
