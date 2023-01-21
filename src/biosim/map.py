@@ -4,9 +4,7 @@ from biosim.landscape import Lowland, Highland, Desert, Water
 from biosim.fauna import Herbivore, Carnivore
 
 
-def geo_list(island_map):
-    cells_list = textwrap.dedent(str(island_map)).splitlines()
-    return [list(row.strip()) for row in cells_list]
+
 
 
 class Map:
@@ -22,10 +20,67 @@ class Map:
 
     def __init__(self, island_map):
 
-        self.cell_list = geo_list(island_map)
-        self.cells_dict = self.create_cells()
+
+        self.island_map=island_map
+        self.cell_list = self.geo_list()
+        self.check_invalid_map()
         self.herb_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
         self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
+        self.cells_dict = self.create_cells()
+
+    def geo_list(self):
+        cells_list = textwrap.dedent(str(self.island_map)).splitlines()
+        return [list(row.strip()) for row in cells_list]
+    def check_invalid_map(self):
+
+        rows,cols=len(self.cell_list),len(self.cell_list[0])
+
+        for i in range(rows):
+
+            if len(self.cell_list[i])!=cols:
+                raise ValueError("The given Map is not Valid,The row length is not equal.")
+
+            for k in range(len(self.cell_list[i])):
+                if self.cell_list[i][k] not in self.landscape_classes.keys():
+                    raise ValueError("Invalid Character in the Map at pos:"+str(i+1)+','+str(k+1))
+
+
+            if self.cell_list[i][0]!='W':
+                raise ValueError("The given Map is not Valid,The edges of Map has to be Water at pos :"+str(i+1)+','+str(1))
+
+            if self.cell_list[i][cols-1]!='W':
+                raise ValueError("The given Map is not Valid,The edges of Map has to be Water at pos :"+str(i+1)+','+str(cols))
+
+            if i==0 or i==rows-1:
+                cell_l=(self.cell_list[i][:cols])
+                for j in range(len(cell_l)):
+                    if cell_l[j]!='W':
+                        raise ValueError("The given Map is not Valid,The edges of Map has to be Water at pos :"+str(i+1)+','+str(j+1))
+
+
+
+
+
+
+
+    @staticmethod
+    def check_dict_type(ar):
+        if not isinstance(ar, dict):
+            raise TypeError("The Argument is not a dict " + str(ar))
+
+    def set_parameters(self, key, params):
+
+        self.check_str_type(key)
+        self.check_dict_type(params)
+        combined_dict = dict(**self.animal_classes, **self.landscape_classes)
+        combined_dict[key].set_parameters(params)
+
+
+    def check_invalid_character(self, cell_l):
+        for line in cell_l:
+            for letter in line:
+                if letter not in self.landscape_classes.keys():
+                    raise ValueError("Invalid Character in the Map!!")
 
     def create_cells(self):
 
@@ -68,42 +123,6 @@ class Map:
                 loc_object.initial_population[type(pop_object).__name__].append(pop_object)
 
 
-
-    @staticmethod
-    def check_str_type(ar):
-        if not isinstance(ar, str):
-            raise TypeError("The Argument is not a string " + str(ar))
-
-    @staticmethod
-    def check_dict_type(ar):
-        if not isinstance(ar, dict):
-            raise TypeError("The Argument is not a dict " + str(ar))
-
-    def set_parameters(self, key, params):
-
-        self.check_str_type(key)
-        self.check_dict_type(params)
-        combined_dict = dict(**self.animal_classes, **self.landscape_classes)
-        combined_dict[key].set_parameters(params)
-
-    @staticmethod
-    def check_invalid_line_length(cell_l):
-        length_count = [len(row) for row in cell_l]
-        for i in length_count:
-            if i is not length_count[0]:
-                return True
-
-    @staticmethod
-    def check_invalid_boundary(cell_l):
-        for i in range(len(cell_l)):
-            if cell_l[i][0] != 'W' or cell_l[i][len(cell_l[i]) - 1] != 'W':
-                return True
-
-    def check_invalid_character(self, cell_l):
-        for line in cell_l:
-            for letter in line:
-                if letter not in self.landscape_classes.keys():
-                    raise ValueError("Invalid Character in the Map!!")
 
     def yearly_cycle(self):
 

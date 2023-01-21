@@ -228,7 +228,7 @@ class Visualization:
     def draw_heatmap(self):
 
         self.herb_hm_axis = self.ax_hm_herb.imshow(self.pop_matrix_herb, interpolation='nearest',
-                                                   cmap='viridis', vmin=0, vmax=200)
+                                                   cmap='viridis', vmin=0, vmax=150)
         plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical', fraction=0.028,)
 
         self.carn_hm_axis = self.ax_hm_carn.imshow(self.pop_matrix_carn, interpolation='nearest',

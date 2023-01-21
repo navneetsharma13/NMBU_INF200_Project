@@ -1,14 +1,15 @@
 from src.biosim.simulation import BioSim
 from src.biosim.map import Map
 from src.biosim.landscape import Landscape
+from tests.test_map import TestMap
 import textwrap
 
 
 if __name__ == "__main__":
     geogr = """\
-           WWW
-           WLW
-           WWW"""
+           WWWWW
+           WLWWW
+           WWWWW"""
     ini_herbs = [{'loc': (2, 3),
               'pop': [{'species': 'Herbivore',
                        'age': 3,
@@ -24,15 +25,17 @@ if __name__ == "__main__":
     m = Map(geogr)
     l = Landscape()
     m.create_cells()
-    m.add_population(ini_herbs)
-    print(m.get_pop_age_herb())
-    print(m.get_pop_age_carn())
-    print(m.get_pop_weight_herb())
-    print(m.get_pop_weight_carn())
-    print(m.get_pop_fitness_herb())
-    print(m.get_pop_fitness_carn())
-    print(m.get_pop_matrix_herb())
-    print(m.get_pop_matrix_carn())
+    # test_map=TestMap()
+    # print(test_map.test_check_string_type())
+    # m.add_population(ini_herbs)
+    # print(m.get_pop_age_herb())
+    # print(m.get_pop_age_carn())
+    # print(m.get_pop_weight_herb())
+    # print(m.get_pop_weight_carn())
+    # print(m.get_pop_fitness_herb())
+    # print(m.get_pop_fitness_carn())
+    # print(m.get_pop_matrix_herb())
+    # print(m.get_pop_matrix_carn())
     # print(t_sim.map.livable_cell_calculate())
     # print(t_sim.map.adjacent_cells((1,1)))
     # for i in range(10):
