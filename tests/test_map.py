@@ -15,81 +15,88 @@ def geo_list(island_map):
     return [list(row.strip()) for row in cells_list]
 
 
-@pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
-class TestMap():
+# @pytest.mark.parametrize("age, weight", [(10, 20), (30, 50), (20, 50)])
+# class TestMap():
 
-    @pytest.fixture()
-    def island_maps(self):
+@pytest.mark.parametrize('map_str', ["""\
+           WWWWL
+           WLWWW
+           WWWWW""", """\
+           WWWWW
+           DLWWW
+           WWWWW""","""\
+           LWWWWWWWWWWWW
+           WLWWWLLLLLLLL
+           WWWWWDDDDDDDD"""])
+def test_check_invalid_boundaries(map_str):
 
-        return """WWW\nWLW\nWWW"""
+    with pytest.raises(ValueError):
+        m = Map(map_str)
+        # assert err.type is ValueError
+@pytest.mark.parametrize('map_str', ["""\
+           WWWW
+           WLWWW
+           WWWWW""", """\
+           WWWWW
+           WW
+           WWWWW""","""\
+           WWWWWWWWWWWWWWWWWWWWW
+           WLWWW
+           WWWWW"""])
+def test_check_invalid_line_length(map_str):
 
-    @pytest.mark.parametrize("age, weight", [(10, 20)])
-    def create_map_for_test(self, age, weight):
-        geogr = """\
-                   WWW
-                   WLW
-                   WWW"""
-        geogr = textwrap.dedent(geogr)
-        ini_herbs = [
-            {
-                "loc": (2, 2),
-                "pop": [{"species": "Herbivore", "age": age, "weight": weight}],
-            }]
+    with pytest.raises(ValueError):
+        m = Map(map_str)
 
-        seed = 123213
-        t_sim = BioSim(geogr, ini_herbs, seed)
-        loc = (1, 1)
+@pytest.mark.parametrize('map_str', ["""\
+           WWWW@
+           WLWWW
+           WWWWW""", """\
+           WWWWW
+           D.WWW
+           WWWWW""","""\
+           LWWWWWWWWWWWW
+           WLWWWLL?LLLLL
+           WWWWWDDDDDDDD"""])
+def test_check_invalid_character(map_str):
 
-        return t_sim, loc
+    with pytest.raises(ValueError):
+        m = Map(map_str)
 
-    @pytest.fixture()
-    def multiple_island_maps(self):
+@pytest.mark.parametrize("age, weight", [(10, 20)])
+def create_map_for_test(self, age, weight):
+    geogr = """\
+               WWW
+               WLW
+               WWW"""
+    geogr = textwrap.dedent(geogr)
+    ini_herbs = [
+        {
+            "loc": (2, 2),
+            "pop": [{"species": "Herbivore", "age": age, "weight": weight}],
+        }]
 
-        return ["LWWW\nWLW\nWWWL", "LWWWW\nWWLW\nWLWLW", "LWWWLW\nWLLWW\nWWWLW"]
+    seed = 123213
+    t_sim = BioSim(geogr, ini_herbs, seed)
+    loc = (1, 1)
 
-    def test_check_string_type(self):
+    return t_sim, loc
 
-        with pytest.raises(TypeError):
-            Map.check_str_type()
 
-    def test_check_dict_type(self):
-        with pytest.raises(TypeError):
-            Map.check_dict_type()
+def test_cell_list():
+    island_maps="""\
+               WWW
+               WLW
+               WWW"""
+    m = Map(island_maps)
+    list_of_cells = geo_list(island_maps)
+    assert list_of_cells[1][1] is 'L'
 
-    def test_cell_list(self, island_maps):
-        self.m = Map(island_maps)
-        self.list_of_cells = geo_list(island_maps)
-        assert self.list_of_cells[1][1] is 'L'
+def test_age_weight_stored(self):
+    t, loc = self.create_map_for_test()
+    h_weight = t.Map.livable_cells_calculate[loc].initial_population['Herbivore'][0].age
+    assert h_weight is 20
+    h_age = t.Map.livable_cells_calculate[loc].initial_population['Herbivore'][0].weight
+    assert h_age is 15
 
-    # this method needs to be tested and modified!!!
-    def test_invalid_line_lengths(self, multiple_island_maps):
-
-        for island_maps in multiple_island_maps:
-            self.m = Map(island_maps)
-            island_maps = geo_list(island_maps)
-            if self.m.check_invalid_line_length(island_maps):
-                assert ValueError("The Map cannot have invalid row lengths!!")
-
-    # this method needs to be tested and modified!!!
-    def test_invalid_boundary(self, multiple_island_maps):
-
-        for island_maps in multiple_island_maps:
-            self.m = Map(island_maps)
-            island_maps = textwrap.dedent(str(island_maps)).splitlines()
-            if self.m.check_invalid_boundary(island_maps):
-                assert ValueError("The Map cannot have invalid boundary!!")
-
-    def test_invalid_character(self, island_maps):
-        self.m = Map(island_maps)
-        with pytest.raises(ValueError):
-            self.m.check_invalid_character(island_maps)
-
-    # needs to be tested
-    def test_age_weight_stored(self):
-        t, loc = self.create_map_for_test()
-        h_weight = t.Map.livable_cells_calculate[loc].initial_population['Herbivore'][0].age
-        assert h_weight is 20
-        h_age = t.Map.livable_cells_calculate[loc].initial_population['Herbivore'][0].weight
-        assert h_age is 15
-
-    # def test_get_population_numbers(self):
+# def test_get_population_numbers(self):
