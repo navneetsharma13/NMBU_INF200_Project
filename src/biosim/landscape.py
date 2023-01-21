@@ -152,17 +152,21 @@ class Landscape:
 
             if len(neighbours) > 0 and len(animals) > 0:
 
+                not_migrated_animal = []
                 for animal in animals:
 
                     if not animal.has_migrated and animal.move_prob():
 
                         dest_cell = random.choice(neighbours)
                         if str(type(dest_cell)) == "<class 'biosim.landscape.Water'>":
+                            not_migrated_animal.append(animal)
                             continue
                         else:
                             dest_cell.after_migration_population[migrating_specie].append(animal)
-                            self.initial_population[migrating_specie].remove(animal)
-
+                            # self.initial_population[migrating_specie].remove(animal)
+                    else:
+                        not_migrated_animal.append(animal)
+                self.initial_population[migrating_specie] = not_migrated_animal
         self.reset_animals()
 
     def add_migrated_population(self):

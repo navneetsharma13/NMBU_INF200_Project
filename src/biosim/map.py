@@ -3,10 +3,6 @@ import collections
 from biosim.landscape import Lowland, Highland, Desert, Water
 from biosim.fauna import Herbivore, Carnivore
 
-
-
-
-
 class Map:
     landscape_classes = {
         'H': Highland,
@@ -20,17 +16,18 @@ class Map:
 
     def __init__(self, island_map):
 
-
-        self.island_map=island_map
+        self.island_map = island_map
         self.cell_list = self.geo_list()
         self.check_invalid_map()
         self.herb_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
         self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
         self.cells_dict = self.create_cells()
+        self.neighbours_dict = self.create_neighbours_dict()
 
     def geo_list(self):
         cells_list = textwrap.dedent(str(self.island_map)).splitlines()
         return [list(row.strip()) for row in cells_list]
+
     def check_invalid_map(self):
 
         rows,cols=len(self.cell_list),len(self.cell_list[0])
@@ -44,7 +41,6 @@ class Map:
                 if self.cell_list[i][k] not in self.landscape_classes.keys():
                     raise ValueError("Invalid Character in the Map at pos:"+str(i+1)+','+str(k+1))
 
-
             if self.cell_list[i][0]!='W':
                 raise ValueError("The given Map is not Valid,The edges of Map has to be Water at pos :"+str(i+1)+','+str(1))
 
@@ -57,12 +53,6 @@ class Map:
                     if cell_l[j]!='W':
                         raise ValueError("The given Map is not Valid,The edges of Map has to be Water at pos :"+str(i+1)+','+str(j+1))
 
-
-
-
-
-
-
     @staticmethod
     def check_dict_type(ar):
         if not isinstance(ar, dict):
@@ -70,11 +60,9 @@ class Map:
 
     def set_parameters(self, key, params):
 
-        self.check_str_type(key)
         self.check_dict_type(params)
         combined_dict = dict(**self.animal_classes, **self.landscape_classes)
         combined_dict[key].set_parameters(params)
-
 
     def check_invalid_character(self, cell_l):
         for line in cell_l:
@@ -90,25 +78,47 @@ class Map:
                for geo in self.cell_list[k]]
         return dict(zip(pos, geo))
 
-    def livable_cell_calculate(self):
-
+    def find_cell_object(self):
         loc = []
         loc_object = []
+
+        m_loc = []
+        migrate_loc_object = []
         for loc1, loc_object1 in self.cells_dict.items():
             if type(loc_object1) in self.livable_cells.values():
                 loc.append(loc1)
                 loc_object.append(loc_object1)
-        return dict(zip(loc, loc_object))
+
+            if type(loc_object1) in self.livable_cells.values():
+                m_loc.append(loc1)
+                migrate_loc_object.append(loc_object1)
+
+        return dict(zip(loc, loc_object)), dict(zip(m_loc, migrate_loc_object))
+
+    def livable_cell_calculate(self):
+
+        livable_cells, _ = self.find_cell_object()
+        return livable_cells
 
     def migrate_cell_calculate(self):
 
-        loc = []
-        loc_object = []
-        for loc1, loc_object1 in self.cells_dict.items():
-            if type(loc_object1) in self.landscape_classes.values():
-                loc.append(loc1)
-                loc_object.append(loc_object1)
-        return dict(zip(loc, loc_object))
+        _, migrate_cells = self.find_cell_object()
+        return migrate_cells
+
+    def create_neighbours_dict(self):
+
+        own_loc = []
+        neighbours = []
+        for loc, _ in self.cells_dict.items():
+
+            own_loc.append(loc)
+            neighbour_pos = [(loc[0], loc[1] - 1), (loc[0] - 1, loc[1]),
+                             (loc[0] + 1, loc[1]), (loc[0], loc[1] + 1)]
+            neighbours_loc = [self.migrate_cell_calculate()[loc] for loc in neighbour_pos if
+                              loc in self.migrate_cell_calculate().keys()]
+            neighbours.append(neighbours_loc)
+
+        return dict(zip(own_loc, neighbours))
 
     def add_population(self, given_population):
 
@@ -122,14 +132,12 @@ class Map:
                 pop_object = self.animal_classes[type_animal](*age_weight)
                 loc_object.initial_population[type(pop_object).__name__].append(pop_object)
 
-
-
     def yearly_cycle(self):
 
         for loc, loc_object in self.livable_cell_calculate().items():
             loc_object.add_newborn()
             loc_object.fodder_grow_and_feeding()
-            loc_object.animal_migrate(self.adjacent_cells(loc))
+            loc_object.animal_migrate(self.neighbours_dict[loc])
         for loc, loc_object in self.livable_cell_calculate().items():
             loc_object.add_migrated_population()
             loc_object.age_increase()
@@ -189,14 +197,6 @@ class Map:
                 pos += 1
 
         return self.carn_pop_matrix
-
-    def adjacent_cells(self, pos):
-
-        adjacent_pos = [(pos[0], pos[1] - 1), (pos[0] - 1, pos[1]), (pos[0] + 1, pos[1]),
-                        (pos[0], pos[1] + 1)]
-        neighbours = [self.migrate_cell_calculate()[loc] for loc in adjacent_pos if
-                      loc in self.migrate_cell_calculate().keys()]
-        return neighbours
 
     def get_pop_age_herb(self):
         herb_age = []

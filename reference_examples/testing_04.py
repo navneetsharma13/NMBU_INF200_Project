@@ -38,15 +38,15 @@ ini_carns = [{'loc': (2, 7),
                        'weight': 20}
                       for _ in range(50)]}]
 
-
 start_time = time.time()
 for seed in range(100, 101):
-    sim = BioSim(geogr, ini_herbs+ini_carns, hist_specs={'fitness': {'max': 1.0, 'delta': 0.05},
-                             'age': {'max': 60.0, 'delta': 2},
-                             'weight': {'max': 60, 'delta': 2}},
-                 cmax_animals={'Herbivore': 200, 'Carnivore': 50}, seed=seed, vis_years=1,
-                 log_file=f'data/mono_hc_{seed:05d}.csv', total_years=401)
+    sim = BioSim(geogr, ini_herbs + ini_carns, hist_specs={'fitness': {'max': 1.0, 'delta': 0.05},
+                                                           'age': {'max': 60.0, 'delta': 2},
+                                                           'weight': {'max': 60, 'delta': 2}},
+                 plot_graph=True,
+                 cmax_animals={'Herbivore': 200, 'Carnivore': 50}, seed=seed,
+                 vis_years=1, total_years=401)
 
     sim.simulate(400)
 
-print("Simulation took "+str(time.time() - start_time)+" seconds!!")
+print("Simulation took " + str(time.time() - start_time) + " seconds!!")
