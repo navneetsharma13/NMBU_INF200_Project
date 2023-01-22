@@ -206,7 +206,6 @@ class BioSim:
             Number of years to simulate
         .. note:: Image files will be numbered consecutively.
         """
-
         if self.img_years is None:
             self.img_years = self.vis_years
 

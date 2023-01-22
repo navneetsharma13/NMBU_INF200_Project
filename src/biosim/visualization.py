@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 
 
@@ -248,6 +249,8 @@ class Visualization:
         self.pop_matrix_carn = pop_matrix_carn
 
         self.txt.set_text(self.template.format(current_year))
+
+
 
         self.update_animal_count(pop_herb=pop_herb, pop_carn=pop_carn,
                                  step_size=step_size, current_year=current_year)
