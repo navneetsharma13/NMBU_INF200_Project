@@ -212,21 +212,24 @@ class Visualization:
 
     def draw_heatmap(self):
 
-
-        self.herb_hm_axis = self.ax_hm_herb.imshow(self.pop_matrix_herb, interpolation='nearest',
-                                                   cmap='viridis', vmin=0, vmax=self.cmax["Herbivore"])
+        self.herb_hm_axis = self.ax_hm_herb.imshow(self.pop_matrix_herb,
+                                                   interpolation='nearest',
+                                                   cmap='viridis', vmin=0,
+                                                   vmax=self.cmax["Herbivore"])
 
         divider = make_axes_locatable(self.ax_hm_herb)
-        cax = divider.append_axes("right", size="5%", pad=0.1)
+        cax = divider.append_axes("right", size="5%", pad=0.3)
 
         plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical',
                      cax=cax)
 
-        self.carn_hm_axis = self.ax_hm_carn.imshow(self.pop_matrix_carn, interpolation='nearest',
-                                                   cmap='plasma', vmin=0, vmax=self.cmax["Carnivore"])
+        self.carn_hm_axis = self.ax_hm_carn.imshow(self.pop_matrix_carn,
+                                                   interpolation='nearest',
+                                                   cmap='plasma', vmin=0,
+                                                   vmax=self.cmax["Carnivore"])
 
         divider = make_axes_locatable(self.ax_hm_carn)
-        cax = divider.append_axes("right", size="5%", pad=0.1)
+        cax = divider.append_axes("right", size="5%", pad=0.3)
 
         plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', cax=cax)
 
@@ -246,8 +249,6 @@ class Visualization:
         self.pop_matrix_carn = pop_matrix_carn
 
         self.txt.set_text(self.template.format(current_year))
-
-
 
         self.update_animal_count(pop_herb=pop_herb, pop_carn=pop_carn,
                                  step_size=step_size, current_year=current_year)
