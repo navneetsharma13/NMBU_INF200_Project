@@ -29,7 +29,7 @@ ini_carns = [{'loc': (10, 10),
                       for _ in range(40)]}]
 
 
-sim = BioSim(island_map=geogr, ini_pop=ini_herbs, plot_graph=False,
+sim = BioSim(island_map=geogr, ini_pop=ini_herbs, plot_graph=True,
              seed=123456,
              hist_specs={'fitness': {'max': 1.0, 'delta': 0.05},
                          'age': {'max': 60.0, 'delta': 2},

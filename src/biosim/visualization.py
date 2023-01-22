@@ -6,13 +6,13 @@ import numpy as np
 class Visualization:
 
     def __init__(self, island_map=None, cmax=None, ymax=None, hist_specs=None, total_years=None,
-                 pop_matrix_herb=None, pop_matrix_carn=None,img_base=None,img_fmt=None):
+                 pop_matrix_herb=None, pop_matrix_carn=None, img_base=None, img_fmt=None):
 
         self.island_map = island_map
         self.img_base = img_base
         self.img_ctr = 0
         self.img_year = 1
-        self.img_fmt=img_fmt
+        self.img_fmt = img_fmt
         self.total_years = None
         self.y_herb = None
         self.y_carn = None
@@ -63,34 +63,29 @@ class Visualization:
             self.total_years = total_years
 
         if ymax is None:
-            self.ymax = 20000
+            self.ymax = 0
         else:
             self.ymax = ymax
 
         if cmax is None:
-            self.cmax = {"Herbivore": 200, "Carnivore": 80}
+            self.cmax = {"Herbivore": 150, "Carnivore": 60}
         else:
             self.cmax = cmax
-
-        self.cmax_herb = self.cmax["Herbivore"]
-        self.cmax_carn = self.cmax["Carnivore"]
 
         if hist_specs is None:
             self.hist_specs = {
                 "weight": {"max": 80, "delta": 2},
                 "fitness": {"max": 1.0, "delta": 0.05},
-                "age": {"max": 80, "delta": 2},
+                "age": {"max": 60, "delta": 2},
             }
         else:
             self.hist_specs = hist_specs
 
-
-
     def draw_layout(self):
 
-        fig = plt.figure(constrained_layout=True)  # Setup pyplot
+        fig = plt.figure(figsize=(12, 8), constrained_layout=True)  # Setup pyplot
 
-        plt.get_current_fig_manager().full_screen_toggle() # maximizing plot size to fullscreen
+        plt.get_current_fig_manager().full_screen_toggle()  # maximizing plot size to fullscreen
 
         gs = fig.add_gridspec(5, 7)
 
@@ -98,7 +93,7 @@ class Visualization:
         self.ax_im = fig.add_subplot(gs[0:2, 1:3])
         self.ax_animal_count = fig.add_subplot(gs[0:2, 3:])
         self.ax_hm_herb = fig.add_subplot(gs[2:4, 1:3])
-        self.axt = fig.add_subplot(gs[0, 4])
+        self.axt = fig.add_subplot(gs[2, 5])
         self.ax_hm_carn = fig.add_subplot(gs[2:4, 3:5])
         self.ax_fitness = fig.add_subplot(gs[4:, 1:3])
         self.ax_age = fig.add_subplot(gs[4:, 3:5])
@@ -124,7 +119,7 @@ class Visualization:
             "L": (0.0, 0.6, 0.0),  # dark green
             "H": (0.5, 1.0, 0.5),  # light green
             "D": (1.0, 1.0, 0.5),  # light yellow
-            }
+        }
 
         plot_rgb = [[rgb_value[column] for column in row.strip()] for row in
                     self.island_map.splitlines()]
@@ -150,15 +145,15 @@ class Visualization:
 
         self.axt.axis('off')
         self.template = 'Year: {:5d}'
-        self.txt = self.axt.text(0.5, 0.5, self.template.format(0), horizontalalignment='center',
-                                 verticalalignment='center', transform=self.axt.transAxes)
+        self.txt = self.axt.text(1.3, 0.1, self.template.format(0), horizontalalignment='center',
+                                 verticalalignment='center', transform=self.axt.transAxes,
+                                 fontsize=20)
 
     def draw_animal_count_plot(self):
 
         num_years = self.total_years
         self.ax_animal_count.set_title("Animal Count")
         self.ax_animal_count.set_xlim(0, num_years)
-        self.ax_animal_count.set_ylim([0, self.ymax])
 
         step_size = 1
         linestyle = 'b-'
@@ -178,9 +173,8 @@ class Visualization:
     def draw_frequency_graphs(self):
 
         # fitness Frequency Graph
-        bin_max_fitness = 1  # histogram spans [0, bin_max]
-        bin_width_fitness = 0.05  # width of individual bin
-        y_max_fitness = 5000
+        bin_max_fitness = self.hist_specs["fitness"]["max"]  # histogram spans [0, bin_max]
+        bin_width_fitness = self.hist_specs["fitness"]["delta"]  # width of individual bin
         self.bin_edges_fitness = np.arange(0, bin_max_fitness + bin_width_fitness / 2,
                                            bin_width_fitness)
         hist_counts_fitness = np.zeros_like(self.bin_edges_fitness[:-1], dtype=float)
@@ -192,12 +186,10 @@ class Visualization:
                                                         color='r',
                                                         lw=2,
                                                         label='Carnivore')
-        self.ax_fitness.set_ylim([0, y_max_fitness])
 
         # age Frequency Graph
-        bin_max_age = 60  # histogram spans [0, bin_max]
-        bin_width_age = 3  # width of individual bin
-        y_max_age = 5000
+        bin_max_age = self.hist_specs["age"]["max"]  # histogram spans [0, bin_max]
+        bin_width_age = self.hist_specs["age"]["delta"]  # width of individual bin
         self.bin_edges_age = np.arange(0, bin_max_age + bin_width_age / 2, bin_width_age)
         hist_counts_age = np.zeros_like(self.bin_edges_age[:-1], dtype=float)
         self.age_hist_herb = self.ax_age.stairs(hist_counts_age, self.bin_edges_age,
@@ -206,11 +198,10 @@ class Visualization:
         self.age_hist_carn = self.ax_age.stairs(hist_counts_age, self.bin_edges_age,
                                                 color='r', lw=2,
                                                 label='Carnivore')
-        self.ax_age.set_ylim([0, y_max_age])
+
         # weight Frequency Graph
-        bin_max_weight = 80  # histogram spans [0, bin_max]
-        bin_width_weight = 5  # width of individual bin
-        y_max_weight = 5000
+        bin_max_weight = self.hist_specs["weight"]["max"]  # histogram spans [0, bin_max]
+        bin_width_weight = self.hist_specs["weight"]["delta"]  # width of individual bin
         self.bin_edges_weight = np.arange(0, bin_max_weight + bin_width_weight / 2,
                                           bin_width_weight)
         hist_counts_weight = np.zeros_like(self.bin_edges_weight[:-1], dtype=float)
@@ -220,17 +211,16 @@ class Visualization:
         self.weight_hist_carn = self.ax_weight.stairs(hist_counts_weight, self.bin_edges_weight,
                                                       color='r', lw=2,
                                                       label='Carnivore')
-        self.ax_weight.set_ylim([0, y_max_weight])
 
     def draw_heatmap(self):
 
         self.herb_hm_axis = self.ax_hm_herb.imshow(self.pop_matrix_herb, interpolation='nearest',
-                                                   cmap='viridis', vmin=0, vmax=150)
+                                                   cmap='viridis', vmin=0, vmax=self.cmax["Herbivore"])
         plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical',
                      fraction=0.028, )
 
         self.carn_hm_axis = self.ax_hm_carn.imshow(self.pop_matrix_carn, interpolation='nearest',
-                                                   cmap='plasma', vmin=0, vmax=60)
+                                                   cmap='plasma', vmin=0, vmax=self.cmax["Carnivore"])
         plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', fraction=0.028)
 
     def update_plot(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
@@ -256,7 +246,7 @@ class Visualization:
                                  step_size=step_size, current_year=current_year)
         self.update_frequency_graphs()
         self.update_heatmap()
-        plt.pause(0.1)
+        plt.pause(0.05)
 
     def update_animal_count(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0):
 
@@ -270,31 +260,42 @@ class Visualization:
         carn_ydata[idx] = pop_carn
         self.carn_line.set_ydata(carn_ydata)
 
+        temp_ymax = max(pop_herb, pop_carn)
+        if temp_ymax > self.ymax:
+            self.ymax = temp_ymax
+        self.ax_animal_count.set_ylim([0, (self.ymax * 1.2)])
+
     def update_frequency_graphs(self):
 
         fitness_hist_counts_herb, _ = np.histogram(self.fitness_herb_list, self.bin_edges_fitness)
         self.fitness_hist_herb.set_data(fitness_hist_counts_herb)
         fitness_hist_counts_carn, _ = np.histogram(self.fitness_carn_list, self.bin_edges_fitness)
         self.fitness_hist_carn.set_data(fitness_hist_counts_carn)
+        y_max_fitness = max(max(fitness_hist_counts_herb), max(fitness_hist_counts_carn))
+        self.ax_fitness.set_ylim([0, (y_max_fitness * 1.2)])
 
         age_hist_counts_herb, _ = np.histogram(self.age_herb_list, self.bin_edges_age)
         self.age_hist_herb.set_data(age_hist_counts_herb)
         age_hist_counts_carn, _ = np.histogram(self.age_carn_list, self.bin_edges_age)
         self.age_hist_carn.set_data(age_hist_counts_carn)
+        y_max_age = max(max(age_hist_counts_herb), max(age_hist_counts_carn))
+        self.ax_age.set_ylim([0, (y_max_age * 1.2)])
 
         weight_hist_counts_herb, _ = np.histogram(self.weight_herb_list, self.bin_edges_weight)
         self.weight_hist_herb.set_data(weight_hist_counts_herb)
         weight_hist_counts_carn, _ = np.histogram(self.weight_carn_list, self.bin_edges_weight)
         self.weight_hist_carn.set_data(weight_hist_counts_carn)
+        y_max_weight = max(max(weight_hist_counts_herb), max(weight_hist_counts_carn))
+        self.ax_weight.set_ylim([0, (y_max_weight * 1.2)])
 
     def update_heatmap(self):
         self.herb_hm_axis.set_data(self.pop_matrix_herb)
         self.carn_hm_axis.set_data(self.pop_matrix_carn)
 
-    def save_graphics(self,step):
+    def save_graphics(self, step):
         """Saves graphics to file if file name given."""
 
-        if self.img_base is None or step % self.img_year!=0:
+        if self.img_base is None or step % self.img_year != 0:
             return
 
         plt.savefig('{base}_{num:05d}.{type}'.format(base=self.img_base,
@@ -302,4 +303,3 @@ class Visualization:
                                                      type=self.img_fmt))
 
         self.img_ctr += 1
-

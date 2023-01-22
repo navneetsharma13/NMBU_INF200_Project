@@ -20,13 +20,12 @@ _MAGICK_BINARY = 'magick'
 _DEFAULT_GRAPHICS_DIR = os.path.join('../', 'data')
 _DEFAULT_GRAPHICS_NAME = 'dv'
 _DEFAULT_IMG_FORMAT = 'png'
-_DEFAULT_MOVIE_FORMAT = 'mp4'   # alternatives: mp4, gif
+_DEFAULT_MOVIE_FORMAT = 'mp4'  # alternatives: mp4, gif
 
 
 # The material in this file is licensed under the BSD 3-clause license
 # https://opensource.org/licenses/BSD-3-Clause
 # (C) Copyright 2023 Hans Ekkehard Plesser / NMBU
-
 
 
 class BioSim:
@@ -36,8 +35,8 @@ class BioSim:
 
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
-                 img_years=None, img_dir=None, img_base=None, img_fmt=None,img_name=None,
-                 plot_graph=True, total_years=0,log_file=None):
+                 img_years=None, img_dir=None, img_base=None, img_fmt=None, img_name=None,
+                 plot_graph=True, total_years=0):
 
         """
         Parameters
@@ -64,8 +63,6 @@ class BioSim:
             Beginning of file name for figures
         img_fmt : str
             File type for figures, e.g. 'png' or 'pdf'
-        log_file : str
-            If given, write animal counts to this file
 
         Notes
         -----
@@ -119,20 +116,18 @@ class BioSim:
         self.img_years = img_years
 
         if img_dir is None:
-            self.img_dir=_DEFAULT_GRAPHICS_DIR
+            self.img_dir = _DEFAULT_GRAPHICS_DIR
         else:
             self.img_dir = img_dir
 
         if img_name is None:
-            img_name= _DEFAULT_GRAPHICS_NAME
+            img_name = _DEFAULT_GRAPHICS_NAME
 
-        if self.img_dir is not None:
-            self.img_base = os.path.join(self.img_dir,img_name)
+        if self.img_dir is None:
+            self.img_base = img_base
 
-        # if img_base is None:
-        #     self.img_base = None
-        # else:
-        #     self.img_base = img_base
+        else:
+            self.img_base = os.path.join(self.img_dir, img_name)
 
         self.img_fmt = img_fmt if img_fmt is not None else _DEFAULT_IMG_FORMAT
 
@@ -157,7 +152,8 @@ class BioSim:
                                            hist_specs=self.hist_specs,
                                            total_years=total_years,
                                            pop_matrix_herb=self.map.get_pop_matrix_herb(),
-                                           pop_matrix_carn=self.map.get_pop_matrix_carn(),img_base=self.img_base,img_fmt=self.img_fmt)
+                                           pop_matrix_carn=self.map.get_pop_matrix_carn(),
+                                           img_base=self.img_base, img_fmt=self.img_fmt)
             self.visualize.draw_layout()
 
     def set_animal_parameters(self, species, params):
@@ -227,17 +223,17 @@ class BioSim:
                                            age_list=self.age_animals_per_species(),
                                            fitness_list=self.fitness_animals_per_species())
 
-            if self.img_base is not None:
-                        if self.img_years is None:
-                            if self.year_num % self.vis_years == 0:
-                                self.visualize.save_graphics(self.year_num)
-                        else:
-                            if self.year_num % self.img_years == 0:
-                                self.visualize.save_graphics(self.year_num)
+            # if self.img_base is not None:
+            #     if self.img_years is None:
+            #         if self.year_num % self.vis_years == 0:
+            #             self.visualize.save_graphics(self.year_num)
+            #     else:
+            #         if self.year_num % self.img_years == 0:
+            #             self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
 
-        self.make_movie()
+        # self.make_movie()
 
     def add_population(self, population):
         """
@@ -281,7 +277,7 @@ class BioSim:
         return {'Herbivore': self.map.get_pop_fitness_herb(),
                 'Carnivore': self.map.get_pop_fitness_carn()}
 
-    def make_movie(self,movie_fmt=None):
+    def make_movie(self, movie_fmt=None):
         """Create MPEG4 movie from visualization images saved.
         .. :note:
             Requires ffmpeg for MP4 and magick for GIF
@@ -319,8 +315,6 @@ class BioSim:
                 raise RuntimeError('ERROR: convert failed with: {}'.format(err))
         else:
             raise ValueError('Unknown movie format: ' + movie_fmt)
-
-
 
     def run(self, cycles, report_cycles=1, return_counts=False):
         """
