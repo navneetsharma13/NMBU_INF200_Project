@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import matplotlib
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
 
 
@@ -180,11 +180,9 @@ class Visualization:
         hist_counts_fitness = np.zeros_like(self.bin_edges_fitness[:-1], dtype=float)
         self.fitness_hist_herb = self.ax_fitness.stairs(hist_counts_fitness, self.bin_edges_fitness,
                                                         color='b',
-                                                        lw=2,
                                                         label='Herbivore')
         self.fitness_hist_carn = self.ax_fitness.stairs(hist_counts_fitness, self.bin_edges_fitness,
                                                         color='r',
-                                                        lw=2,
                                                         label='Carnivore')
 
         # age Frequency Graph
@@ -193,10 +191,10 @@ class Visualization:
         self.bin_edges_age = np.arange(0, bin_max_age + bin_width_age / 2, bin_width_age)
         hist_counts_age = np.zeros_like(self.bin_edges_age[:-1], dtype=float)
         self.age_hist_herb = self.ax_age.stairs(hist_counts_age, self.bin_edges_age,
-                                                color='b', lw=2,
+                                                color='b',
                                                 label='Herbivore')
         self.age_hist_carn = self.ax_age.stairs(hist_counts_age, self.bin_edges_age,
-                                                color='r', lw=2,
+                                                color='r',
                                                 label='Carnivore')
 
         # weight Frequency Graph
@@ -206,22 +204,31 @@ class Visualization:
                                           bin_width_weight)
         hist_counts_weight = np.zeros_like(self.bin_edges_weight[:-1], dtype=float)
         self.weight_hist_herb = self.ax_weight.stairs(hist_counts_weight, self.bin_edges_weight,
-                                                      color='b', lw=2,
+                                                      color='b',
                                                       label='Herbivore')
         self.weight_hist_carn = self.ax_weight.stairs(hist_counts_weight, self.bin_edges_weight,
-                                                      color='r', lw=2,
+                                                      color='r',
                                                       label='Carnivore')
 
     def draw_heatmap(self):
 
+
         self.herb_hm_axis = self.ax_hm_herb.imshow(self.pop_matrix_herb, interpolation='nearest',
                                                    cmap='viridis', vmin=0, vmax=self.cmax["Herbivore"])
+
+        divider = make_axes_locatable(self.ax_hm_herb)
+        cax = divider.append_axes("right", size="5%", pad=0.1)
+
         plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical',
-                     fraction=0.028, )
+                     cax=cax)
 
         self.carn_hm_axis = self.ax_hm_carn.imshow(self.pop_matrix_carn, interpolation='nearest',
                                                    cmap='plasma', vmin=0, vmax=self.cmax["Carnivore"])
-        plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', fraction=0.028)
+
+        divider = make_axes_locatable(self.ax_hm_carn)
+        cax = divider.append_axes("right", size="5%", pad=0.1)
+
+        plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', cax=cax)
 
     def update_plot(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
                     pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
