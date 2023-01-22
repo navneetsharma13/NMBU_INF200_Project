@@ -82,7 +82,7 @@ class Visualization:
 
     def draw_layout(self):
 
-        fig = plt.figure(constrained_layout=True)  # Setup pyplot
+        fig = plt.figure(figsize=(12, 8), constrained_layout=True)  # Setup pyplot
 
         plt.get_current_fig_manager().full_screen_toggle()  # maximizing plot size to fullscreen
 
@@ -174,7 +174,6 @@ class Visualization:
         # fitness Frequency Graph
         bin_max_fitness = self.hist_specs["fitness"]["max"]  # histogram spans [0, bin_max]
         bin_width_fitness = self.hist_specs["fitness"]["delta"]  # width of individual bin
-        y_max_fitness = 5000
         self.bin_edges_fitness = np.arange(0, bin_max_fitness + bin_width_fitness / 2,
                                            bin_width_fitness)
         hist_counts_fitness = np.zeros_like(self.bin_edges_fitness[:-1], dtype=float)
@@ -186,12 +185,10 @@ class Visualization:
                                                         color='r',
                                                         lw=2,
                                                         label='Carnivore')
-        self.ax_fitness.set_ylim([0, y_max_fitness])
 
         # age Frequency Graph
         bin_max_age = self.hist_specs["age"]["max"]  # histogram spans [0, bin_max]
         bin_width_age = self.hist_specs["age"]["delta"]  # width of individual bin
-        y_max_age = 5000
         self.bin_edges_age = np.arange(0, bin_max_age + bin_width_age / 2, bin_width_age)
         hist_counts_age = np.zeros_like(self.bin_edges_age[:-1], dtype=float)
         self.age_hist_herb = self.ax_age.stairs(hist_counts_age, self.bin_edges_age,
@@ -200,11 +197,10 @@ class Visualization:
         self.age_hist_carn = self.ax_age.stairs(hist_counts_age, self.bin_edges_age,
                                                 color='r', lw=2,
                                                 label='Carnivore')
-        self.ax_age.set_ylim([0, y_max_age])
+
         # weight Frequency Graph
         bin_max_weight = self.hist_specs["weight"]["max"]  # histogram spans [0, bin_max]
         bin_width_weight = self.hist_specs["weight"]["delta"]  # width of individual bin
-        y_max_weight = 5000
         self.bin_edges_weight = np.arange(0, bin_max_weight + bin_width_weight / 2,
                                           bin_width_weight)
         hist_counts_weight = np.zeros_like(self.bin_edges_weight[:-1], dtype=float)
@@ -214,7 +210,6 @@ class Visualization:
         self.weight_hist_carn = self.ax_weight.stairs(hist_counts_weight, self.bin_edges_weight,
                                                       color='r', lw=2,
                                                       label='Carnivore')
-        self.ax_weight.set_ylim([0, y_max_weight])
 
     def draw_heatmap(self):
 
@@ -248,7 +243,7 @@ class Visualization:
                                  step_size=step_size, current_year=current_year)
         self.update_frequency_graphs()
         self.update_heatmap()
-        plt.pause(0.1)
+        plt.pause(0.05)
 
     def update_animal_count(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0):
 
@@ -268,20 +263,22 @@ class Visualization:
         self.fitness_hist_herb.set_data(fitness_hist_counts_herb)
         fitness_hist_counts_carn, _ = np.histogram(self.fitness_carn_list, self.bin_edges_fitness)
         self.fitness_hist_carn.set_data(fitness_hist_counts_carn)
-        y_max_fitness = max(max(fitness_hist_counts_herb), max(fitness_hist_counts_carn)) +20
+        y_max_fitness = max(max(fitness_hist_counts_herb), max(fitness_hist_counts_carn)) + 20
         self.ax_fitness.set_ylim([0, y_max_fitness])
 
         age_hist_counts_herb, _ = np.histogram(self.age_herb_list, self.bin_edges_age)
         self.age_hist_herb.set_data(age_hist_counts_herb)
         age_hist_counts_carn, _ = np.histogram(self.age_carn_list, self.bin_edges_age)
         self.age_hist_carn.set_data(age_hist_counts_carn)
-        self.ax_fitness.set_ylim([0, y_max_fitness])
+        y_max_age = max(max(age_hist_counts_herb), max(age_hist_counts_carn)) + 20
+        self.ax_age.set_ylim([0, y_max_age])
 
         weight_hist_counts_herb, _ = np.histogram(self.weight_herb_list, self.bin_edges_weight)
         self.weight_hist_herb.set_data(weight_hist_counts_herb)
         weight_hist_counts_carn, _ = np.histogram(self.weight_carn_list, self.bin_edges_weight)
         self.weight_hist_carn.set_data(weight_hist_counts_carn)
-        self.ax_fitness.set_ylim([0, y_max_fitness])
+        y_max_weight = max(max(weight_hist_counts_herb), max(weight_hist_counts_carn)) + 20
+        self.ax_weight.set_ylim([0, y_max_weight])
 
     def update_heatmap(self):
         self.herb_hm_axis.set_data(self.pop_matrix_herb)
