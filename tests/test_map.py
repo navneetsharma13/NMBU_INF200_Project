@@ -34,8 +34,7 @@ def geo_list(island_map):
            WWWWWDDDDDDDD"""])
 def test_check_invalid_boundaries(map_str):
     with pytest.raises(ValueError):
-        m = Map(map_str)
-        # assert err.type is ValueError
+        Map(map_str)
 
 
 @pytest.mark.parametrize('map_str', ["""\
@@ -50,7 +49,7 @@ def test_check_invalid_boundaries(map_str):
            WWWWW"""])
 def test_check_invalid_line_length(map_str):
     with pytest.raises(ValueError):
-        m = Map(map_str)
+        Map(map_str)
 
 
 @pytest.mark.parametrize('map_str', ["""\
@@ -65,7 +64,7 @@ def test_check_invalid_line_length(map_str):
            WWWWWDDDDDDDD"""])
 def test_check_invalid_character(map_str):
     with pytest.raises(ValueError):
-        m = Map(map_str)
+        Map(map_str)
 
 
 @pytest.fixture(autouse=True)
@@ -74,7 +73,7 @@ def test_cell_list():
                WWW
                WLW
                WWW"""
-    m = Map(island_maps)
+    Map(island_maps)
     list_of_cells = geo_list(island_maps)
     assert list_of_cells[1][1] is 'L'
 
@@ -130,7 +129,8 @@ def test_age_weight_stored(create_map_for_test):
 def test_get_population_numbers(create_map_for_test):
     t_sim, loc = create_map_for_test
 
-    assert t_sim.map.get_pop_tot_num_herb() + t_sim.map.get_pop_tot_num_carn() == t_sim.map.get_pop_tot_num()
+    assert t_sim.map.get_pop_tot_num_herb() + \
+           t_sim.map.get_pop_tot_num_carn() == t_sim.map.get_pop_tot_num()
 
 
 def test_pop_matrix_herbivore(create_map_for_test):
