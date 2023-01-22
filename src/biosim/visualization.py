@@ -5,12 +5,13 @@ import numpy as np
 class Visualization:
 
     def __init__(self, island_map=None, cmax=None, ymax=None, hist_specs=None, total_years=None,
-                 pop_matrix_herb=None, pop_matrix_carn=None):
+                 pop_matrix_herb=None, pop_matrix_carn=None,img_base=None,img_fmt=None):
 
         self.island_map = island_map
-        self.img_base = None
+        self.img_base = img_base
         self.img_ctr = 0
-        self._img_year = 1
+        self.img_year = 1
+        self.img_fmt=img_fmt
         self.total_years = None
         self.y_herb = None
         self.y_carn = None
@@ -82,9 +83,14 @@ class Visualization:
         else:
             self.hist_specs = hist_specs
 
+
+
     def draw_layout(self):
 
         fig = plt.figure(constrained_layout=True)  # Setup pyplot
+
+        plt.get_current_fig_manager().full_screen_toggle() # maximizing plot size to fullscreen
+
         gs = fig.add_gridspec(5, 7)
 
         self.ax_lg = fig.add_subplot(gs[0, 0])  # Add map legend subplot
@@ -281,3 +287,16 @@ class Visualization:
     def update_heatmap(self):
         self.herb_hm_axis.set_data(self.pop_matrix_herb)
         self.carn_hm_axis.set_data(self.pop_matrix_carn)
+
+    def save_graphics(self,step):
+        """Saves graphics to file if file name given."""
+
+        if self.img_base is None or step % self.img_year!=0:
+            return
+
+        plt.savefig('{base}_{num:05d}.{type}'.format(base=self.img_base,
+                                                     num=self.img_ctr,
+                                                     type=self.img_fmt))
+
+        self.img_ctr += 1
+

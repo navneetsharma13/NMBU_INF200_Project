@@ -34,7 +34,7 @@ sim = BioSim(island_map=geogr, ini_pop=ini_herbs, plot_graph=False,
              hist_specs={'fitness': {'max': 1.0, 'delta': 0.05},
                          'age': {'max': 60.0, 'delta': 2},
                          'weight': {'max': 60, 'delta': 2}},
-             vis_years=0, total_years=201)
+             vis_years=1, total_years=201)
 
 sim.set_animal_parameters('Herbivore', {'zeta': 3.2, 'xi': 1.8})
 sim.set_animal_parameters('Carnivore', {'a_half': 70, 'phi_age': 0.5,

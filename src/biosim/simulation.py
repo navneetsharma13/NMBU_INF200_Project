@@ -1,16 +1,32 @@
 import random
+import os
 from .map import Map
 import numpy as np
+import subprocess
 from src.biosim.visualization import Visualization
 
 """
 Template for BioSim class.
 """
 
+# Update these variables to point to your ffmpeg and convert binaries
+# If you installed ffmpeg using conda or installed both softwares in
+# standard ways on your computer, no changes should be required.
+_FFMPEG_BINARY = 'ffmpeg'
+_MAGICK_BINARY = 'magick'
+
+# update this to the directory and file-name beginning
+# for the graphics files
+_DEFAULT_GRAPHICS_DIR = os.path.join('../', 'data')
+_DEFAULT_GRAPHICS_NAME = 'dv'
+_DEFAULT_IMG_FORMAT = 'png'
+_DEFAULT_MOVIE_FORMAT = 'mp4'   # alternatives: mp4, gif
+
 
 # The material in this file is licensed under the BSD 3-clause license
 # https://opensource.org/licenses/BSD-3-Clause
 # (C) Copyright 2023 Hans Ekkehard Plesser / NMBU
+
 
 
 class BioSim:
@@ -20,8 +36,8 @@ class BioSim:
 
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
-                 img_years=None, img_dir=None, img_base=None, img_fmt='png',
-                 plot_graph=True, total_years=0):
+                 img_years=None, img_dir=None, img_base=None, img_fmt=None,img_name=None,
+                 plot_graph=True, total_years=0,log_file=None):
 
         """
         Parameters
@@ -98,10 +114,32 @@ class BioSim:
         self.plot_bool = plot_graph
         self.hist_specs = hist_specs
 
-        if img_base is None:
-            self.img_base = None
+        #######################################
+        self.vis_years = vis_years
+        self.img_years = img_years
+
+        if img_dir is None:
+            self.img_dir=_DEFAULT_GRAPHICS_DIR
         else:
-            self.img_base = img_base
+            self.img_dir = img_dir
+
+        if img_name is None:
+            img_name= _DEFAULT_GRAPHICS_NAME
+
+        if self.img_dir is not None:
+            self.img_base = os.path.join(self.img_dir,img_name)
+
+        # if img_base is None:
+        #     self.img_base = None
+        # else:
+        #     self.img_base = img_base
+
+        self.img_fmt = img_fmt if img_fmt is not None else _DEFAULT_IMG_FORMAT
+
+        self.img_ctr = 0
+        self.img_step = 1
+
+        #################################################
 
         if ymax_animals is None:
             self.ymax_animals = None
@@ -119,7 +157,7 @@ class BioSim:
                                            hist_specs=self.hist_specs,
                                            total_years=total_years,
                                            pop_matrix_herb=self.map.get_pop_matrix_herb(),
-                                           pop_matrix_carn=self.map.get_pop_matrix_carn())
+                                           pop_matrix_carn=self.map.get_pop_matrix_carn(),img_base=self.img_base,img_fmt=self.img_fmt)
             self.visualize.draw_layout()
 
     def set_animal_parameters(self, species, params):
@@ -158,7 +196,7 @@ class BioSim:
         """
         self.map.set_parameters(landscape, params)
 
-    def simulate(self, num_years, vis_years=1, img_years=None):
+    def simulate(self, num_years):
         """
         Run simulation while visualizing the result.
 
@@ -166,17 +204,13 @@ class BioSim:
         ----------
         num_years : int
             Number of years to simulate
-        vis_years : interval between visualization updates
-        img_years: interval between visualizations saved to files
-                          (default: vis_years)
-
         .. note:: Image files will be numbered consecutively.
         """
 
-        if img_years is None:
-            img_years = vis_years
+        if self.img_years is None:
+            self.img_years = self.vis_years
 
-        if img_years % vis_years != 0:
+        if self.img_years % self.vis_years != 0:
             raise ValueError('img_years must be multiple of vis_years')
 
         self.final_year = self.year_num + num_years
@@ -194,15 +228,17 @@ class BioSim:
                                            age_list=self.age_animals_per_species(),
                                            fitness_list=self.fitness_animals_per_species())
 
-            # if self.img_base is not None:
-            #     if img_years is None:
-            #         if self.year_num % vis_years==0:
-            #             self.plot.save_graphics(self.img_base,self.img_fmt)
-            #     else:
-            #         if self.year_num % img_years ==0:
-            #             self.plot.save_graphics(self.img_base,self.img_fmt)
+            if self.img_base is not None:
+                        if self.img_years is None:
+                            if self.year_num % self.vis_years == 0:
+                                self.visualize.save_graphics(self.year_num)
+                        else:
+                            if self.year_num % self.img_years == 0:
+                                self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
+
+        self.make_movie()
 
     def add_population(self, population):
         """
@@ -246,8 +282,46 @@ class BioSim:
         return {'Herbivore': self.map.get_pop_fitness_herb(),
                 'Carnivore': self.map.get_pop_fitness_carn()}
 
-    def make_movie(self):
-        """Create MPEG4 movie from visualization images saved."""
+    def make_movie(self,movie_fmt=None):
+        """Create MPEG4 movie from visualization images saved.
+        .. :note:
+            Requires ffmpeg for MP4 and magick for GIF
+
+        The movie is stored as img_base + movie_fmt
+        """
+
+        if self.img_base is None:
+            raise RuntimeError("No filename defined.")
+
+        if movie_fmt is None:
+            movie_fmt = _DEFAULT_MOVIE_FORMAT
+
+        if movie_fmt == 'mp4':
+            try:
+                # Parameters chosen according to http://trac.ffmpeg.org/wiki/Encode/H.264,
+                # section "Compatibility"
+                subprocess.check_call([_FFMPEG_BINARY,
+                                       '-i', '{}_%05d.png'.format(self.img_base),
+                                       '-y',
+                                       '-profile:v', 'baseline',
+                                       '-level', '3.0',
+                                       '-pix_fmt', 'yuv420p',
+                                       '{}.{}'.format(self.img_base, movie_fmt)])
+            except subprocess.CalledProcessError as err:
+                raise RuntimeError('ERROR: ffmpeg failed with: {}'.format(err))
+        elif movie_fmt == 'gif':
+            try:
+                subprocess.check_call([_MAGICK_BINARY,
+                                       '-delay', '1',
+                                       '-loop', '0',
+                                       '{}_*.png'.format(self.img_base),
+                                       '{}.{}'.format(self.img_base, movie_fmt)])
+            except subprocess.CalledProcessError as err:
+                raise RuntimeError('ERROR: convert failed with: {}'.format(err))
+        else:
+            raise ValueError('Unknown movie format: ' + movie_fmt)
+
+
 
     def run(self, cycles, report_cycles=1, return_counts=False):
         """
