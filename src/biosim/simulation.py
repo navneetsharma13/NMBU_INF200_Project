@@ -1,7 +1,5 @@
 import random
 from .map import Map
-import sys
-import csv
 import numpy as np
 from src.biosim.visualization import Visualization
 
@@ -186,7 +184,7 @@ class BioSim:
         while self.year_num <= self.final_year:
             self.map.yearly_cycle()
             if self.plot_bool:
-                self.visualize.update_plot_population(pop_herb=self.map.get_pop_tot_num_herb(),
+                self.visualize.update_plot(pop_herb=self.map.get_pop_tot_num_herb(),
                                            pop_carn=self.map.get_pop_tot_num_carn(),
                                            step_size=1,
                                            current_year=self.year_num,
@@ -203,7 +201,6 @@ class BioSim:
             #     else:
             #         if self.year_num % img_years ==0:
             #             self.plot.save_graphics(self.img_base,self.img_fmt)
-
 
             self.year_num += 1
 

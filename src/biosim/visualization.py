@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import random
-from src.biosim.map import Map
 
 
 class Visualization:
@@ -229,15 +227,16 @@ class Visualization:
 
         self.herb_hm_axis = self.ax_hm_herb.imshow(self.pop_matrix_herb, interpolation='nearest',
                                                    cmap='viridis', vmin=0, vmax=150)
-        plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical', fraction=0.028,)
+        plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical',
+                     fraction=0.028, )
 
         self.carn_hm_axis = self.ax_hm_carn.imshow(self.pop_matrix_carn, interpolation='nearest',
                                                    cmap='plasma', vmin=0, vmax=60)
         plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', fraction=0.028)
 
-    def update_plot_population(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
-                               pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
-                               age_list=None, fitness_list=None):
+    def update_plot(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
+                    pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
+                    age_list=None, fitness_list=None):
 
         self.fitness_herb_list = fitness_list['Herbivore']
         self.age_herb_list = age_list['Herbivore']

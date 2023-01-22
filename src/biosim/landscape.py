@@ -1,5 +1,4 @@
-
-from biosim.fauna import *
+import random
 
 
 class Landscape:

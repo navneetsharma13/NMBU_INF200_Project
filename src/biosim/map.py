@@ -1,7 +1,7 @@
 import textwrap
-import collections
 from biosim.landscape import Lowland, Highland, Desert, Water
 from biosim.fauna import Herbivore, Carnivore
+
 
 class Map:
     landscape_classes = {
@@ -30,28 +30,36 @@ class Map:
 
     def check_invalid_map(self):
 
-        rows,cols=len(self.cell_list),len(self.cell_list[0])
+        rows, cols = len(self.cell_list), len(self.cell_list[0])
 
         for i in range(rows):
 
-            if len(self.cell_list[i])!=cols:
+            if len(self.cell_list[i]) != cols:
                 raise ValueError("The given Map is not Valid,The row length is not equal.")
 
             for k in range(len(self.cell_list[i])):
                 if self.cell_list[i][k] not in self.landscape_classes.keys():
-                    raise ValueError("Invalid Character in the Map at pos:"+str(i+1)+','+str(k+1))
+                    raise ValueError(
+                        "Invalid Character in the Map at pos:" + str(i + 1) + ',' + str(k + 1))
 
-            if self.cell_list[i][0]!='W':
-                raise ValueError("The given Map is not Valid,The edges of Map has to be Water at pos :"+str(i+1)+','+str(1))
+            if self.cell_list[i][0] != 'W':
+                raise ValueError(
+                    "The given Map is not Valid,The edges of Map has to be Water at pos :" + str(
+                        i + 1) + ',' + str(1))
 
-            if self.cell_list[i][cols-1]!='W':
-                raise ValueError("The given Map is not Valid,The edges of Map has to be Water at pos :"+str(i+1)+','+str(cols))
+            if self.cell_list[i][cols - 1] != 'W':
+                raise ValueError(
+                    "The given Map is not Valid,The edges of Map has to be Water at pos :" + str(
+                        i + 1) + ',' + str(cols))
 
-            if i==0 or i==rows-1:
-                cell_l=(self.cell_list[i][:cols])
+            if i == 0 or i == rows - 1:
+                cell_l = (self.cell_list[i][:cols])
                 for j in range(len(cell_l)):
-                    if cell_l[j]!='W':
-                        raise ValueError("The given Map is not Valid,The edges of Map has to be Water at pos :"+str(i+1)+','+str(j+1))
+                    if cell_l[j] != 'W':
+                        raise ValueError(
+                            "The given Map is not Valid,The edges of Map has to be Water at pos :"
+                            + str(
+                                i + 1) + ',' + str(j + 1))
 
     @staticmethod
     def check_dict_type(ar):
@@ -110,7 +118,6 @@ class Map:
         own_loc = []
         neighbours = []
         for loc, _ in self.cells_dict.items():
-
             own_loc.append(loc)
             neighbour_pos = [(loc[0], loc[1] - 1), (loc[0] - 1, loc[1]),
                              (loc[0] + 1, loc[1]), (loc[0], loc[1] + 1)]
