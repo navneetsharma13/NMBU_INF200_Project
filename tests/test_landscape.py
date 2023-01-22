@@ -4,7 +4,7 @@ This is the geography pytest package which is a test package for the  BioSim pac
 """
 
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
-__email__ = "navneet.sharma@nmbu.no and sushant.kumar.sirvastava@nmbu.no"
+__email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
 
 import random
 import textwrap

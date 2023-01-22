@@ -204,12 +204,6 @@ class BioSim:
 
             self.year_num += 1
 
-    def plot_show_sim(self):
-        self.visualize.show_plot()
-
-    def plot_close_sim(self):
-        self.visualize.close_plot()
-
     def add_population(self, population):
         """
         Add a population to the island

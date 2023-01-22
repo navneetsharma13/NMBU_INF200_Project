@@ -109,23 +109,15 @@ class Visualization:
         self.ax_weight.set_title('Weight Frequency')
 
     def draw_map(self):
-        """Author: Hans E. Plasser
-
-                :param island_str: Multi-line string containing letters symbolizing the landscape
-                :type island_str: str
-
-        Parameters
-        ----------
-        island_str
-                """
+        """Author: Hans E. Plasser"""
 
         rgb_value = {
             #      R    G    B
             "W": (0.0, 0.0, 1.0),  # blue
             "L": (0.0, 0.6, 0.0),  # dark green
             "H": (0.5, 1.0, 0.5),  # light green
-            "D": (1.0, 1.0, 0.5),
-        }  # light yellow
+            "D": (1.0, 1.0, 0.5),  # light yellow
+            }
 
         plot_rgb = [[rgb_value[column] for column in row.strip()] for row in
                     self.island_map.splitlines()]
