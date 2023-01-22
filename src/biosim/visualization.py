@@ -62,7 +62,7 @@ class Visualization:
             self.total_years = total_years
 
         if ymax is None:
-            self.ymax = 20000
+            self.ymax = 0
         else:
             self.ymax = ymax
 
@@ -92,7 +92,7 @@ class Visualization:
         self.ax_im = fig.add_subplot(gs[0:2, 1:3])
         self.ax_animal_count = fig.add_subplot(gs[0:2, 3:])
         self.ax_hm_herb = fig.add_subplot(gs[2:4, 1:3])
-        self.axt = fig.add_subplot(gs[0, 4])
+        self.axt = fig.add_subplot(gs[2, 5])
         self.ax_hm_carn = fig.add_subplot(gs[2:4, 3:5])
         self.ax_fitness = fig.add_subplot(gs[4:, 1:3])
         self.ax_age = fig.add_subplot(gs[4:, 3:5])
@@ -144,15 +144,15 @@ class Visualization:
 
         self.axt.axis('off')
         self.template = 'Year: {:5d}'
-        self.txt = self.axt.text(0.5, 0.5, self.template.format(0), horizontalalignment='center',
-                                 verticalalignment='center', transform=self.axt.transAxes)
+        self.txt = self.axt.text(1.3, 0.1, self.template.format(0), horizontalalignment='center',
+                                 verticalalignment='center', transform=self.axt.transAxes,
+                                 fontsize=20)
 
     def draw_animal_count_plot(self):
 
         num_years = self.total_years
         self.ax_animal_count.set_title("Animal Count")
         self.ax_animal_count.set_xlim(0, num_years)
-        self.ax_animal_count.set_ylim([0, self.ymax])
 
         step_size = 1
         linestyle = 'b-'
@@ -257,28 +257,33 @@ class Visualization:
         carn_ydata[idx] = pop_carn
         self.carn_line.set_ydata(carn_ydata)
 
+        temp_ymax = max(pop_herb, pop_carn)
+        if temp_ymax > self.ymax:
+            self.ymax = temp_ymax
+        self.ax_animal_count.set_ylim([0, (self.ymax * 1.2)])
+
     def update_frequency_graphs(self):
 
         fitness_hist_counts_herb, _ = np.histogram(self.fitness_herb_list, self.bin_edges_fitness)
         self.fitness_hist_herb.set_data(fitness_hist_counts_herb)
         fitness_hist_counts_carn, _ = np.histogram(self.fitness_carn_list, self.bin_edges_fitness)
         self.fitness_hist_carn.set_data(fitness_hist_counts_carn)
-        y_max_fitness = max(max(fitness_hist_counts_herb), max(fitness_hist_counts_carn)) + 20
-        self.ax_fitness.set_ylim([0, y_max_fitness])
+        y_max_fitness = max(max(fitness_hist_counts_herb), max(fitness_hist_counts_carn))
+        self.ax_fitness.set_ylim([0, (y_max_fitness * 1.2)])
 
         age_hist_counts_herb, _ = np.histogram(self.age_herb_list, self.bin_edges_age)
         self.age_hist_herb.set_data(age_hist_counts_herb)
         age_hist_counts_carn, _ = np.histogram(self.age_carn_list, self.bin_edges_age)
         self.age_hist_carn.set_data(age_hist_counts_carn)
-        y_max_age = max(max(age_hist_counts_herb), max(age_hist_counts_carn)) + 20
-        self.ax_age.set_ylim([0, y_max_age])
+        y_max_age = max(max(age_hist_counts_herb), max(age_hist_counts_carn))
+        self.ax_age.set_ylim([0, (y_max_age * 1.2)])
 
         weight_hist_counts_herb, _ = np.histogram(self.weight_herb_list, self.bin_edges_weight)
         self.weight_hist_herb.set_data(weight_hist_counts_herb)
         weight_hist_counts_carn, _ = np.histogram(self.weight_carn_list, self.bin_edges_weight)
         self.weight_hist_carn.set_data(weight_hist_counts_carn)
-        y_max_weight = max(max(weight_hist_counts_herb), max(weight_hist_counts_carn)) + 20
-        self.ax_weight.set_ylim([0, y_max_weight])
+        y_max_weight = max(max(weight_hist_counts_herb), max(weight_hist_counts_carn))
+        self.ax_weight.set_ylim([0, (y_max_weight * 1.2)])
 
     def update_heatmap(self):
         self.herb_hm_axis.set_data(self.pop_matrix_herb)

@@ -224,13 +224,13 @@ class BioSim:
                                            age_list=self.age_animals_per_species(),
                                            fitness_list=self.fitness_animals_per_species())
 
-            if self.img_base is not None:
-                if self.img_years is None:
-                    if self.year_num % self.vis_years == 0:
-                        self.visualize.save_graphics(self.year_num)
-                else:
-                    if self.year_num % self.img_years == 0:
-                        self.visualize.save_graphics(self.year_num)
+            # if self.img_base is not None:
+            #     if self.img_years is None:
+            #         if self.year_num % self.vis_years == 0:
+            #             self.visualize.save_graphics(self.year_num)
+            #     else:
+            #         if self.year_num % self.img_years == 0:
+            #             self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
 
