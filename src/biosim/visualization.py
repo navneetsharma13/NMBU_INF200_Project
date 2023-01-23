@@ -31,9 +31,11 @@ class Visualization:
         self.template = None
         self.herb_fitness_list = None
         self.carn_fitness_list = None
+        self.fig = None
         self.axt = None
         self.ax_main = None
         self.ax_animal_count = None
+        self.ax_animal_count_flag = False
         self.ax_weight = None
         self.ax_fitness = None
         self.ax_age = None
@@ -81,34 +83,36 @@ class Visualization:
         else:
             self.hist_specs = hist_specs
 
-    def draw_layout(self):
+    def draw_layout(self, final_year):
 
-        fig = plt.figure(figsize=(12, 8), constrained_layout=True)  # Setup pyplot
+        if self.fig is None:
+            self.fig = plt.figure(figsize=(12, 8), constrained_layout=True)  # Setup pyplot
 
-        plt.get_current_fig_manager().full_screen_toggle()  # maximizing plot size to fullscreen
+            gs = self.fig.add_gridspec(5, 7)
 
-        gs = fig.add_gridspec(5, 7)
+            self.ax_lg = self.fig.add_subplot(gs[0, 0])
+            self.ax_im = self.fig.add_subplot(gs[0:2, 1:3])
+            self.ax_animal_count = self.fig.add_subplot(gs[0:2, 3:])
+            self.ax_hm_herb = self.fig.add_subplot(gs[2:4, 1:3])
+            self.axt = self.fig.add_subplot(gs[2, 5])
+            self.ax_hm_carn = self.fig.add_subplot(gs[2:4, 3:5])
+            self.ax_fitness = self.fig.add_subplot(gs[4:, 1:3])
+            self.ax_age = self.fig.add_subplot(gs[4:, 3:5])
+            self.ax_weight = self.fig.add_subplot(gs[4:, 5:])
 
-        self.ax_lg = fig.add_subplot(gs[0, 0])  # Add map legend subplot
-        self.ax_im = fig.add_subplot(gs[0:2, 1:3])
-        self.ax_animal_count = fig.add_subplot(gs[0:2, 3:])
-        self.ax_hm_herb = fig.add_subplot(gs[2:4, 1:3])
-        self.axt = fig.add_subplot(gs[2, 5])
-        self.ax_hm_carn = fig.add_subplot(gs[2:4, 3:5])
-        self.ax_fitness = fig.add_subplot(gs[4:, 1:3])
-        self.ax_age = fig.add_subplot(gs[4:, 3:5])
-        self.ax_weight = fig.add_subplot(gs[4:, 5:])
+            self.draw_map()
+            self.draw_frequency_graphs()
+            self.draw_heatmap()
 
-        self.draw_map()
-        self.draw_animal_count_plot()
-        self.draw_frequency_graphs()
-        self.draw_heatmap()
+            self.ax_hm_herb.set_title('Herbivore Distribution')
+            self.ax_hm_carn.set_title('Carnivore Distribution')
+            self.ax_fitness.set_title('Fitness Frequency')
+            self.ax_age.set_title('Age Frequency')
+            self.ax_weight.set_title('Weight Frequency')
 
-        self.ax_hm_herb.set_title('Herbivore Distribution')
-        self.ax_hm_carn.set_title('Carnivore Distribution')
-        self.ax_fitness.set_title('Fitness Frequency')
-        self.ax_age.set_title('Age Frequency')
-        self.ax_weight.set_title('Weight Frequency')
+        # plt.get_current_fig_manager().full_screen_toggle()  # maximizing plot size to fullscreen
+
+        self.draw_animal_count_plot(final_year)
 
     def draw_map(self):
         """Author: Hans E. Plasser"""
@@ -149,26 +153,46 @@ class Visualization:
                                  verticalalignment='center', transform=self.axt.transAxes,
                                  fontsize=20)
 
-    def draw_animal_count_plot(self):
+    def draw_animal_count_plot(self, final_year=0):
 
-        num_years = self.total_years
-        self.ax_animal_count.set_title("Animal Count")
-        self.ax_animal_count.set_xlim(0, num_years)
+        self.ax_animal_count.set_xlim(0, (final_year + 1))
 
-        step_size = 1
-        linestyle = 'b-'
-        animal_xdata = np.arange(0, num_years, step_size)
-        self.herb_line = self.ax_animal_count.plot(animal_xdata,
-                                                   np.full_like(animal_xdata,
-                                                                np.nan, dtype=float), linestyle)[0]
-        self.carn_line = self.ax_animal_count.plot(animal_xdata,
-                                                   np.full_like(animal_xdata,
-                                                                np.nan, dtype=float),
-                                                   linestyle, color='r')[0]
+        if self.ax_animal_count_flag is False:
 
-        self.ax_animal_count.legend(["Herbivore Count", "Carnivore Count"])
-        self.ax_animal_count.set_xlabel("Simulation Year")
-        self.ax_animal_count.set_ylabel("Herbivore and Carnivore Count")
+            self.ax_animal_count_flag = True
+
+            self.ax_animal_count.set_title("Animal Count")
+            self.ax_animal_count.legend(["Herbivore Count", "Carnivore Count"])
+            self.ax_animal_count.set_xlabel("Simulation Year")
+            self.ax_animal_count.set_ylabel("Herbivore and Carnivore Count")
+
+            num_years = final_year + 1
+            step_size = 1
+            linestyle = 'b-'
+            animal_xdata = np.arange(0, num_years, step_size)
+            self.herb_line = self.ax_animal_count.plot(animal_xdata,
+                                                       np.full_like(animal_xdata,
+                                                                    np.nan, dtype=float), linestyle)[0]
+            self.carn_line = self.ax_animal_count.plot(animal_xdata,
+                                                       np.full_like(animal_xdata,
+                                                                    np.nan, dtype=float),
+                                                       linestyle, color='r')[0]
+
+        else:
+            herb_x_data, herb_y_data = self.herb_line.get_data()
+            carn_x_data, carn_y_data = self.carn_line.get_data()
+
+            herb_x_new = np.arange(herb_x_data[-1] + 1, final_year + 1)
+            if len(herb_x_new) > 0:
+                herb_y_new = np.full(herb_x_new.shape, np.nan)
+                self.herb_line.set_data(np.hstack((herb_x_data, herb_x_new)),
+                                        np.hstack((herb_y_data, herb_y_new)))
+
+            carn_x_new = np.arange(carn_x_data[-1] + 1, final_year+1)
+            if len(carn_x_new) > 0:
+                carn_y_new = np.full(carn_x_new.shape, np.nan)
+                self.carn_line.set_data(np.hstack((carn_x_data, carn_x_new)),
+                                        np.hstack((carn_y_data, carn_y_new)))
 
     def draw_frequency_graphs(self):
 
@@ -235,7 +259,7 @@ class Visualization:
 
     def update_plot(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
                     pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
-                    age_list=None, fitness_list=None):
+                    age_list=None, fitness_list=None, final_year=0):
 
         self.fitness_herb_list = fitness_list['Herbivore']
         self.age_herb_list = age_list['Herbivore']
@@ -251,12 +275,14 @@ class Visualization:
         self.txt.set_text(self.template.format(current_year))
 
         self.update_animal_count(pop_herb=pop_herb, pop_carn=pop_carn,
-                                 step_size=step_size, current_year=current_year)
+                                 step_size=step_size, current_year=current_year,
+                                 final_year=final_year)
         self.update_frequency_graphs()
         self.update_heatmap()
         plt.pause(0.05)
 
-    def update_animal_count(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0):
+    def update_animal_count(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
+                            final_year=0):
 
         n = current_year
         idx = n // step_size

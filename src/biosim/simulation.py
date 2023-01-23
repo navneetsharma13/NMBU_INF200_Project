@@ -36,7 +36,7 @@ class BioSim:
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
                  img_years=None, img_dir=None, img_base=None, img_fmt=None, img_name=None,
-                 plot_graph=True, total_years=0):
+                 plot_graph=True):
 
         """
         Parameters
@@ -146,15 +146,7 @@ class BioSim:
         else:
             self.cmax_animals = cmax_animals
 
-        if self.plot_bool:
-            self.visualize = Visualization(self.island_map, cmax=self.cmax_animals,
-                                           ymax=self.ymax_animals,
-                                           hist_specs=self.hist_specs,
-                                           total_years=total_years,
-                                           pop_matrix_herb=self.map.get_pop_matrix_herb(),
-                                           pop_matrix_carn=self.map.get_pop_matrix_carn(),
-                                           img_base=self.img_base, img_fmt=self.img_fmt)
-            self.visualize.draw_layout()
+        self.visualize = None
 
     def set_animal_parameters(self, species, params):
         """
@@ -202,6 +194,16 @@ class BioSim:
             Number of years to simulate
         .. note:: Image files will be numbered consecutively.
         """
+
+        if self.plot_bool and self.visualize is None:
+            self.visualize = Visualization(self.island_map, cmax=self.cmax_animals,
+                                           ymax=self.ymax_animals,
+                                           hist_specs=self.hist_specs,
+                                           total_years=num_years,
+                                           pop_matrix_herb=self.map.get_pop_matrix_herb(),
+                                           pop_matrix_carn=self.map.get_pop_matrix_carn(),
+                                           img_base=self.img_base, img_fmt=self.img_fmt)
+
         if self.img_years is None:
             self.img_years = self.vis_years
 
@@ -209,6 +211,9 @@ class BioSim:
             raise ValueError('img_years must be multiple of vis_years')
 
         self.final_year = self.year_num + num_years
+
+        if self.plot_bool:
+            self.visualize.draw_layout(self.final_year)
 
         while self.year_num <= self.final_year:
             self.map.yearly_cycle()
@@ -221,7 +226,8 @@ class BioSim:
                                            pop_matrix_carn=self.map.get_pop_matrix_carn(),
                                            weight_list=self.weight_animals_per_species(),
                                            age_list=self.age_animals_per_species(),
-                                           fitness_list=self.fitness_animals_per_species())
+                                           fitness_list=self.fitness_animals_per_species(),
+                                           final_year=self.final_year)
 
             # if self.img_base is not None:
             #     if self.img_years is None:
@@ -232,8 +238,6 @@ class BioSim:
             #             self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
-
-        # self.make_movie()
 
     def add_population(self, population):
         """
