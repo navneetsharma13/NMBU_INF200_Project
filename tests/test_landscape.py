@@ -257,7 +257,7 @@ def test_migration():
     geogr = """\
                        WWWWW
                        WLLLW
-                       WHLHW
+                       WHLWW
                        WDDDW
                        WWWWW"""
     geogr = textwrap.dedent(geogr)
@@ -271,9 +271,8 @@ def test_migration():
 
     seed = 123213
     t_sim = BioSim(geogr, ini_herbs, seed)
-    loc = (1, 1)
 
-    neighbours = t_sim.map.neighbours_dict[loc]
+    neighbours = t_sim.map.neighbours_dict[(2, 2)]
 
     print(neighbours)
 
