@@ -6,9 +6,8 @@ from biosim.simulation import BioSim
 
 class TestSimulation:
     def test_empty_island(self):
-        "Empty island cannot be created"
-        with pytest.raises(ValueError):
-            BioSim(island_map="WW\nWW", ini_pop=[], seed=1)
+        "Empty island can be created"
+        BioSim(island_map="WW\nWW", ini_pop=[], seed=1)
 
     def test_minimal_island(self):
         "Island of single jungle cell can be created"

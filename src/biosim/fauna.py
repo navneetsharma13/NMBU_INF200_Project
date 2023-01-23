@@ -41,6 +41,7 @@ class Fauna:
         self.calculate_fitness()
 
     def calculate_fitness(self):
+
         def fitness_formula(sign, x, x_half, phi_x):
 
             return 1.0 / (1 + math.exp(sign * phi_x * (x - x_half)))
@@ -170,6 +171,7 @@ class Fauna:
 
     @classmethod
     def check_not_defined_params(cls, params):
+
         for p in params.keys():
             if p not in cls.parameters.keys():
                 raise ValueError("Parameter is not defined "+str(p))

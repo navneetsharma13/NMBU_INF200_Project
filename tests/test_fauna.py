@@ -6,6 +6,7 @@ import random
 random.seed(1223)
 
 
+
 class TestFauna:
     @pytest.fixture()
     def create_h_params(self):
@@ -204,8 +205,8 @@ class TestFauna:
 
         weight = weight - self.c_params['eta'] * weight
 
-        exp_phi_age = math.exp(self.h_params["phi_age"] * (age - self.h_params["a_half"]))
-        exp_phi_weight = math.exp(-self.h_params["phi_weight"] * (weight - self.h_params["w_half"]))
+        exp_phi_age = math.exp(self.c_params["phi_age"] * (age - self.c_params["a_half"]))
+        exp_phi_weight = math.exp(-self.c_params["phi_weight"] * (weight - self.c_params["w_half"]))
 
         fitness = (1 / (1 + exp_phi_age) * (1 / (1 + exp_phi_weight)))
 

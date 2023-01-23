@@ -1,6 +1,6 @@
 import random
 import os
-from .map import Map
+from biosim.map import Map
 import numpy as np
 import subprocess
 from biosim.visualization import Visualization
@@ -34,8 +34,7 @@ class BioSim:
     """
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
-                 img_years=None, img_dir=None, img_base=None, img_fmt=None, img_name=None,
-                 plot_graph=True):
+                 img_years=None, img_dir=None, img_base=None, img_fmt=None,plot_graph=True):
 
         """
         Parameters
@@ -111,7 +110,11 @@ class BioSim:
         self.hist_specs = hist_specs
 
         #######################################
-        self.vis_years = vis_years
+        if vis_years==0:
+            self.vis_years = vis_years+1
+        else:
+            self.vis_years = vis_years
+
         self.img_years = img_years
 
         if img_dir is None:
@@ -119,14 +122,12 @@ class BioSim:
         else:
             self.img_dir = img_dir
 
-        if img_name is None:
-            img_name = _DEFAULT_GRAPHICS_NAME
-
-        if self.img_dir is None:
-            self.img_base = img_base
-
+        if img_base is None:
+            self.img_base = _DEFAULT_GRAPHICS_NAME
         else:
-            self.img_base = os.path.join(self.img_dir, img_name)
+            self.img_base= os.path.join(self.img_dir, img_base)
+
+
 
         self.img_fmt = img_fmt if img_fmt is not None else _DEFAULT_IMG_FORMAT
 
@@ -209,6 +210,7 @@ class BioSim:
         if self.img_years % self.vis_years != 0:
             raise ValueError('img_years must be multiple of vis_years')
 
+        self.last_year += num_years
         self.final_year = self.year_num + num_years
 
         if self.plot_bool:
@@ -228,13 +230,13 @@ class BioSim:
                                            fitness_list=self.fitness_animals_per_species(),
                                            final_year=self.final_year)
 
-            # if self.img_base is not None:
-            #     if self.img_years is None:
-            #         if self.year_num % self.vis_years == 0:
-            #             self.visualize.save_graphics(self.year_num)
-            #     else:
-            #         if self.year_num % self.img_years == 0:
-            #             self.visualize.save_graphics(self.year_num)
+            if self.img_base is not None:
+                if self.img_years is None:
+                    if self.year_num % self.vis_years == 0:
+                        self.visualize.save_graphics(self.year_num)
+                else:
+                    if self.year_num % self.img_years == 0:
+                        self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
 

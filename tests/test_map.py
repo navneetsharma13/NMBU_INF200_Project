@@ -1,17 +1,12 @@
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
 __email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
 
-import random
 
-import pytest
-from biosim.simulation import BioSim
-from biosim.map import Map
 import textwrap
 import pytest
 from biosim.simulation import BioSim
 from biosim.map import Map
-from src.biosim.fauna import Herbivore, Carnivore
-from src.biosim.landscape import Landscape
+
 
 
 class TestMap:
