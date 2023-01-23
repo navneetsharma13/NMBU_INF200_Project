@@ -149,7 +149,7 @@ class Landscape:
 
         Parameters
         ----------
-        neighbours : list
+        neighbours : dict
         """
         for migrating_specie, animals in self.initial_population.items():
 

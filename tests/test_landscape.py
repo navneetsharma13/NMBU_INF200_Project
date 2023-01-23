@@ -249,7 +249,33 @@ def test_fauna_weight_after_birth():
 
     assert fauna_weight_after < fauna_weight_before
 
-# Write the test for migration
-# def test_migration():
-#     """This tests the migration method checking if the animals have
-#     moved to the all 4th neighbour cells."""
+
+def test_migration():
+    """This tests the migration method checking if the animals have
+    moved to the all 4th neighbour cells."""
+
+    geogr = """\
+                       WWWWW
+                       WLLLW
+                       WHLHW
+                       WDDDW
+                       WWWWW"""
+    geogr = textwrap.dedent(geogr)
+    ini_herbs = [
+        {
+            "loc": (3, 3),
+            "pop": [{"species": "Herbivore", "age": 5, "weight": 30}
+                    for _ in range(150)
+                    ],
+        }]
+
+    seed = 123213
+    t_sim = BioSim(geogr, ini_herbs, seed)
+    loc = (1, 1)
+
+    neighbours = t_sim.map.neighbours_dict[loc]
+
+    print(neighbours)
+
+
+

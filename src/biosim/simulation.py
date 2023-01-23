@@ -1,3 +1,4 @@
+
 import random
 import os
 from biosim.map import Map
@@ -203,6 +204,7 @@ class BioSim:
                                            ymax=self.ymax_animals,
                                            hist_specs=self.hist_specs,
                                            total_years=num_years,
+                                           step_size=self.vis_years,
                                            pop_matrix_herb=self.map.get_pop_matrix_herb(),
                                            pop_matrix_carn=self.map.get_pop_matrix_carn(),
                                            img_base=self.img_base, img_fmt=self.img_fmt)
@@ -221,10 +223,10 @@ class BioSim:
 
         while self.year_num <= self.final_year:
             self.map.yearly_cycle()
-            if self.plot_bool:
+            if self.plot_bool and self.year_num % self.vis_years == 0:
+
                 self.visualize.update_plot(pop_herb=self.map.get_pop_tot_num_herb(),
                                            pop_carn=self.map.get_pop_tot_num_carn(),
-                                           step_size=1,
                                            current_year=self.year_num,
                                            pop_matrix_herb=self.map.get_pop_matrix_herb(),
                                            pop_matrix_carn=self.map.get_pop_matrix_carn(),
@@ -234,12 +236,8 @@ class BioSim:
                                            final_year=self.final_year)
 
                 if self.img_base is not None:
-                    if self.img_years is None:
-                        if self.year_num % self.vis_years == 0:
-                            self.visualize.save_graphics(self.year_num)
-                    else:
-                        if self.year_num % self.img_years == 0:
-                            self.visualize.save_graphics(self.year_num)
+                    if self.year_num % self.img_years == 0:
+                        self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
 
@@ -323,53 +321,53 @@ class BioSim:
                 raise RuntimeError('ERROR: convert failed with: {}'.format(err))
         else:
             raise ValueError('Unknown movie format: ' + movie_fmt)
-
-    def run(self, cycles, report_cycles=1, return_counts=False):
-        """
-        Run simulation for given number of cycles.
-
-        Parameters
-        ----------
-        cycles : int
-            number of cycles to simulate
-        report_cycles : int
-            interval between status information updates (== 0: no output)
-        return_counts : int
-            if True, return population counts
-        Returns
-        -------
-        None or tuple
-            If return of counts is requested, a tuple (cycle, Herb Count, Carn Count)
-        """
-        disp = report_cycles > 0
-        ret = return_counts
-
-        if ret:
-            data = np.empty((cycles + 1, 3))
-            data[:, 0] = range(cycles + 1)
-            data[1] = self.map.get_pop_tot_num_herb()
-            data[2] = self.map.get_pop_tot_num_carn()
-        else:
-            data = None
-
-        if disp:
-            print('Start: Herbivores', self.map.get_pop_tot_num_herb())
-            print('Start: Carnivores', self.map.get_pop_tot_num_carn())
-
-        for cycle in range(cycles):
-            self.map.yearly_cycle()
-            disp_this_cycle = disp and cycle % report_cycles == 0
-
-            if ret or disp_this_cycle:
-                n_a, n_b = self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()
-                if ret:
-                    data[cycle + 1, 1:] = n_a, n_b
-                if disp_this_cycle:
-                    print(n_a, n_b)
-
-        if disp:
-            print('End: Herbivore', self.map.get_pop_tot_num_herb())
-            print('End: Carnivore', self.map.get_pop_tot_num_carn())
-
-        if ret:
-            return data
+    #
+    # def run(self, cycles, report_cycles=1, return_counts=False):
+    #     """
+    #     Run simulation for given number of cycles.
+    #
+    #     Parameters
+    #     ----------
+    #     cycles : int
+    #         number of cycles to simulate
+    #     report_cycles : int
+    #         interval between status information updates (== 0: no output)
+    #     return_counts : int
+    #         if True, return population counts
+    #     Returns
+    #     -------
+    #     None or tuple
+    #         If return of counts is requested, a tuple (cycle, Herb Count, Carn Count)
+    #     """
+    #     disp = report_cycles > 0
+    #     ret = return_counts
+    #
+    #     if ret:
+    #         data = np.empty((cycles + 1, 3))
+    #         data[:, 0] = range(cycles + 1)
+    #         data[1] = self.map.get_pop_tot_num_herb()
+    #         data[2] = self.map.get_pop_tot_num_carn()
+    #     else:
+    #         data = None
+    #
+    #     if disp:
+    #         print('Start: Herbivores', self.map.get_pop_tot_num_herb())
+    #         print('Start: Carnivores', self.map.get_pop_tot_num_carn())
+    #
+    #     for cycle in range(cycles):
+    #         self.map.yearly_cycle()
+    #         disp_this_cycle = disp and cycle % report_cycles == 0
+    #
+    #         if ret or disp_this_cycle:
+    #             n_a, n_b = self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()
+    #             if ret:
+    #                 data[cycle + 1, 1:] = n_a, n_b
+    #             if disp_this_cycle:
+    #                 print(n_a, n_b)
+    #
+    #     if disp:
+    #         print('End: Herbivore', self.map.get_pop_tot_num_herb())
+    #         print('End: Carnivore', self.map.get_pop_tot_num_carn())
+    #
+    #     if ret:
+    #         return data

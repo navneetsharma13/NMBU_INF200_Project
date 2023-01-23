@@ -1,3 +1,4 @@
+
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
@@ -6,7 +7,7 @@ import numpy as np
 class Visualization:
 
     def __init__(self, island_map=None, cmax=None, ymax=None, hist_specs=None, total_years=None,
-                 pop_matrix_herb=None, pop_matrix_carn=None, img_base=None, img_fmt=None):
+                 pop_matrix_herb=None, pop_matrix_carn=None, img_base=None, img_fmt=None, step_size=1):
 
         self.island_map = island_map
         self.img_base = img_base
@@ -14,6 +15,7 @@ class Visualization:
         self.img_year = 1
         self.img_fmt = img_fmt
         self.total_years = None
+        self.step_size = step_size
         self.y_herb = None
         self.y_carn = None
         self.herb_line = None
@@ -167,9 +169,8 @@ class Visualization:
             self.ax_animal_count.set_ylabel("Herbivore and Carnivore Count")
 
             num_years = final_year + 1
-            step_size = 1
             linestyle = 'b-'
-            animal_xdata = np.arange(0, num_years, step_size)
+            animal_xdata = np.arange(0, num_years, self.step_size)
             self.herb_line = self.ax_animal_count.plot(animal_xdata,
                                                        np.full_like(animal_xdata,
                                                                     np.nan, dtype=float), linestyle)[0]
@@ -257,7 +258,7 @@ class Visualization:
 
         plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', cax=cax)
 
-    def update_plot(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
+    def update_plot(self, pop_herb=0, pop_carn=0, current_year=0,
                     pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
                     age_list=None, fitness_list=None, final_year=0):
 
@@ -274,18 +275,17 @@ class Visualization:
 
         self.txt.set_text(self.template.format(current_year))
 
-        self.update_animal_count(pop_herb=pop_herb, pop_carn=pop_carn,
-                                 step_size=step_size, current_year=current_year,
+        self.update_animal_count(pop_herb=pop_herb, pop_carn=pop_carn, current_year=current_year,
                                  final_year=final_year)
         self.update_frequency_graphs()
         self.update_heatmap()
         plt.pause(0.05)
 
-    def update_animal_count(self, pop_herb=0, pop_carn=0, step_size=1, current_year=0,
+    def update_animal_count(self, pop_herb=0, pop_carn=0, current_year=0,
                             final_year=0):
 
         n = current_year
-        idx = n // step_size
+        idx = n // self.step_size
         herb_ydata = self.herb_line.get_ydata()  # plotting of ydata for herb
         herb_ydata[idx] = pop_herb
         self.herb_line.set_ydata(herb_ydata)
