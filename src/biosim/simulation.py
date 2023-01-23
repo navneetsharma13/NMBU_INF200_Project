@@ -108,12 +108,15 @@ class BioSim:
         self.herbivore_line = None
         self.plot_bool = plot_graph
         self.hist_specs = hist_specs
+        self.vis_years=vis_years
 
         #######################################
+
         if vis_years==0:
-            self.vis_years = vis_years+1
+            self.plot_bool=False
         else:
             self.vis_years = vis_years
+
 
         self.img_years = img_years
 
@@ -203,12 +206,12 @@ class BioSim:
                                            pop_matrix_herb=self.map.get_pop_matrix_herb(),
                                            pop_matrix_carn=self.map.get_pop_matrix_carn(),
                                            img_base=self.img_base, img_fmt=self.img_fmt)
+        if self.plot_bool:
+            if self.img_years is None:
+                self.img_years = self.vis_years
 
-        if self.img_years is None:
-            self.img_years = self.vis_years
-
-        if self.img_years % self.vis_years != 0:
-            raise ValueError('img_years must be multiple of vis_years')
+            if self.img_years % self.vis_years != 0:
+                raise ValueError('img_years must be multiple of vis_years')
 
         self.last_year += num_years
         self.final_year = self.year_num + num_years
@@ -230,13 +233,13 @@ class BioSim:
                                            fitness_list=self.fitness_animals_per_species(),
                                            final_year=self.final_year)
 
-            if self.img_base is not None:
-                if self.img_years is None:
-                    if self.year_num % self.vis_years == 0:
-                        self.visualize.save_graphics(self.year_num)
-                else:
-                    if self.year_num % self.img_years == 0:
-                        self.visualize.save_graphics(self.year_num)
+                if self.img_base is not None:
+                    if self.img_years is None:
+                        if self.year_num % self.vis_years == 0:
+                            self.visualize.save_graphics(self.year_num)
+                    else:
+                        if self.year_num % self.img_years == 0:
+                            self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
 
