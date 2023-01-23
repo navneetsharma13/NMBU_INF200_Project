@@ -92,11 +92,11 @@ class Fauna:
 
     def birth_prob(self, animal_number):
 
-        # zeta = self.parameters['zeta']
-        # w_birth = self.parameters['w_birth']
-        # sigma_birth = self.parameters['sigma_birth']
+        zeta = self.parameters['zeta']
+        w_birth = self.parameters['w_birth']
+        sigma_birth = self.parameters['sigma_birth']
         gamma = self.parameters['gamma']
-        # result = zeta * (w_birth + sigma_birth)
+        result = zeta * (w_birth + sigma_birth)
         if animal_number == 1:
             prob = 0
 
@@ -104,7 +104,7 @@ class Fauna:
             val1 = gamma * self.fitness * (animal_number - 1)
             prob = min(1, val1)
 
-        return random.random() < prob
+        return random.random() < prob and self.weight >= result
 
     def die(self):
 

@@ -123,7 +123,7 @@ class Landscape:
 
             carnivore.weight_increase_on_eat(food_intake)
 
-    def add_newborn(self, weight_required_for_birth):
+    def add_newborn(self):
 
         """This method extend a newborn animal population for each specie by adding their
         offspring.
@@ -131,12 +131,12 @@ class Landscape:
         for specie_type, animals in self.initial_population.items():
             newborns = []
             for animal in animals:
-                weight_condition = (animal.weight >= weight_required_for_birth[specie_type])
-                if weight_condition:
-                    if animal.birth_prob(len(animals)):
-                        newborn = type(animal)()
-                        if animal.weight_decrease_on_birth(newborn):
-                            newborns.append(newborn)
+                # weight_condition = (animal.weight >= weight_required_for_birth[specie_type])
+                # if weight_condition:
+                if animal.birth_prob(len(animals)):
+                    newborn = type(animal)()
+                    if animal.weight_decrease_on_birth(newborn):
+                        newborns.append(newborn)
             self.initial_population[specie_type].extend(newborns)
 
     def reset_animals(self):

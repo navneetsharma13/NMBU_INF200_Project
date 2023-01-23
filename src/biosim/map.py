@@ -23,7 +23,7 @@ class Map:
         self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
         self.cells_dict = self.create_cells()
         self.neighbours_dict = self.create_neighbours_dict()
-        self.animal_weight_requirement_for_birth = self.calculate_weight_required_for_birth()
+        # self.animal_weight_requirement_for_birth = self.calculate_weight_required_for_birth()
 
     def geo_list(self):
         cells_list = textwrap.dedent(str(self.island_map)).splitlines()
@@ -127,21 +127,21 @@ class Map:
 
         return dict(zip(own_loc, neighbours))
 
-    @staticmethod
-    def calculate_weight_required_for_birth():
-
-        minimum_weight = {'Herbivore': 0, 'Carnivore': 0}
-        h_zeta = Herbivore.parameters['zeta']
-        h_w_birth = Herbivore.parameters['w_birth']
-        h_sigma_birth = Herbivore.parameters['sigma_birth']
-        minimum_weight['Herbivore'] = h_zeta * (h_w_birth + h_sigma_birth)
-
-        c_zeta = Carnivore.parameters['zeta']
-        c_w_birth = Carnivore.parameters['w_birth']
-        c_sigma_birth = Carnivore.parameters['sigma_birth']
-        minimum_weight['Carnivore'] = c_zeta * (c_w_birth + c_sigma_birth)
-
-        return minimum_weight
+    # @staticmethod
+    # def calculate_weight_required_for_birth():
+    #
+    #     minimum_weight = {'Herbivore': 0, 'Carnivore': 0}
+    #     h_zeta = Herbivore.parameters['zeta']
+    #     h_w_birth = Herbivore.parameters['w_birth']
+    #     h_sigma_birth = Herbivore.parameters['sigma_birth']
+    #     minimum_weight['Herbivore'] = h_zeta * (h_w_birth + h_sigma_birth)
+    #
+    #     c_zeta = Carnivore.parameters['zeta']
+    #     c_w_birth = Carnivore.parameters['w_birth']
+    #     c_sigma_birth = Carnivore.parameters['sigma_birth']
+    #     minimum_weight['Carnivore'] = c_zeta * (c_w_birth + c_sigma_birth)
+    #
+    #     return minimum_weight
 
     def add_population(self, given_population):
 
@@ -158,7 +158,7 @@ class Map:
     def yearly_cycle(self):
 
         for loc, loc_object in self.livable_cell_calculate().items():
-            loc_object.add_newborn(self.animal_weight_requirement_for_birth)
+            loc_object.add_newborn()
             loc_object.fodder_grow_and_feeding()
             loc_object.animal_migrate(self.neighbours_dict[loc])
         for loc, loc_object in self.livable_cell_calculate().items():
