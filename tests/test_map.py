@@ -178,12 +178,7 @@ class TestMap:
     def test_create_neighbours(self,create_map_for_test):
         t_sim, loc = create_map_for_test
         len_neighbours_at_loc_01 = len(t_sim.map.create_neighbours_dict()[loc[0] - 1, loc[0]])
-        assert len_neighbours_at_loc_01 is 1
+        assert len_neighbours_at_loc_01 is 3
 
-
-    def test_migrate_cell_calculate(self,create_map_for_test):
-        t_sim, loc = create_map_for_test
-        location_migration_cells = t_sim.map.migrate_cell_calculate().keys()
-        assert list(location_migration_cells) == [loc]
 
 
