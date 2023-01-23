@@ -109,6 +109,7 @@ class BioSim:
         self.plot_bool = plot_graph
         self.hist_specs = hist_specs
         self.vis_years = vis_years
+        self.visualize = None
 
         #######################################
 
@@ -145,8 +146,6 @@ class BioSim:
             self.cmax_animals = None
         else:
             self.cmax_animals = cmax_animals
-
-        self.visualize = None
 
     def set_animal_parameters(self, species, params):
         """
@@ -231,9 +230,9 @@ class BioSim:
                                            fitness_list=self.fitness_animals_per_species(),
                                            final_year=self.final_year)
 
-                if self.img_base is not None:
-                    if self.year_num % self.img_years == 0:
-                        self.visualize.save_graphics(self.year_num)
+                # if self.img_base is not None:
+                #     if self.year_num % self.img_years == 0:
+                #         self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
 

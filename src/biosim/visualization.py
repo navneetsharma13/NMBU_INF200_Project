@@ -164,7 +164,6 @@ class Visualization:
             self.ax_animal_count_flag = True
 
             self.ax_animal_count.set_title("Animal Count")
-            self.ax_animal_count.legend(["Herbivore Count", "Carnivore Count"])
             self.ax_animal_count.set_xlabel("Simulation Year")
             self.ax_animal_count.set_ylabel("Herbivore and Carnivore Count")
 
@@ -194,6 +193,8 @@ class Visualization:
                 carn_y_new = np.full(carn_x_new.shape, np.nan)
                 self.carn_line.set_data(np.hstack((carn_x_data, carn_x_new)),
                                         np.hstack((carn_y_data, carn_y_new)))
+
+        self.ax_animal_count.legend(["Herbivore Count", "Carnivore Count"])
 
     def draw_frequency_graphs(self):
 
