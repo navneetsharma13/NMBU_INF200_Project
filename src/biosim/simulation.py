@@ -1,8 +1,6 @@
-
 import random
 import os
 from biosim.map import Map
-import numpy as np
 import subprocess
 from biosim.visualization import Visualization
 
@@ -33,9 +31,10 @@ class BioSim:
     """
     Top-level interface to BioSim package.
     """
+
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
-                 img_years=None, img_dir=None, img_base=None, img_fmt=None,plot_graph=True):
+                 img_years=None, img_dir=None, img_base=None, img_fmt=None, plot_graph=True):
 
         """
         Parameters
@@ -109,15 +108,14 @@ class BioSim:
         self.herbivore_line = None
         self.plot_bool = plot_graph
         self.hist_specs = hist_specs
-        self.vis_years=vis_years
+        self.vis_years = vis_years
 
         #######################################
 
-        if vis_years==0:
-            self.plot_bool=False
+        if vis_years == 0:
+            self.plot_bool = False
         else:
             self.vis_years = vis_years
-
 
         self.img_years = img_years
 
@@ -129,9 +127,7 @@ class BioSim:
         if img_base is None:
             self.img_base = _DEFAULT_GRAPHICS_NAME
         else:
-            self.img_base= os.path.join(self.img_dir, img_base)
-
-
+            self.img_base = os.path.join(self.img_dir, img_base)
 
         self.img_fmt = img_fmt if img_fmt is not None else _DEFAULT_IMG_FORMAT
 
@@ -321,53 +317,3 @@ class BioSim:
                 raise RuntimeError('ERROR: convert failed with: {}'.format(err))
         else:
             raise ValueError('Unknown movie format: ' + movie_fmt)
-    #
-    # def run(self, cycles, report_cycles=1, return_counts=False):
-    #     """
-    #     Run simulation for given number of cycles.
-    #
-    #     Parameters
-    #     ----------
-    #     cycles : int
-    #         number of cycles to simulate
-    #     report_cycles : int
-    #         interval between status information updates (== 0: no output)
-    #     return_counts : int
-    #         if True, return population counts
-    #     Returns
-    #     -------
-    #     None or tuple
-    #         If return of counts is requested, a tuple (cycle, Herb Count, Carn Count)
-    #     """
-    #     disp = report_cycles > 0
-    #     ret = return_counts
-    #
-    #     if ret:
-    #         data = np.empty((cycles + 1, 3))
-    #         data[:, 0] = range(cycles + 1)
-    #         data[1] = self.map.get_pop_tot_num_herb()
-    #         data[2] = self.map.get_pop_tot_num_carn()
-    #     else:
-    #         data = None
-    #
-    #     if disp:
-    #         print('Start: Herbivores', self.map.get_pop_tot_num_herb())
-    #         print('Start: Carnivores', self.map.get_pop_tot_num_carn())
-    #
-    #     for cycle in range(cycles):
-    #         self.map.yearly_cycle()
-    #         disp_this_cycle = disp and cycle % report_cycles == 0
-    #
-    #         if ret or disp_this_cycle:
-    #             n_a, n_b = self.map.get_pop_tot_num_herb(), self.map.get_pop_tot_num_carn()
-    #             if ret:
-    #                 data[cycle + 1, 1:] = n_a, n_b
-    #             if disp_this_cycle:
-    #                 print(n_a, n_b)
-    #
-    #     if disp:
-    #         print('End: Herbivore', self.map.get_pop_tot_num_herb())
-    #         print('End: Carnivore', self.map.get_pop_tot_num_carn())
-    #
-    #     if ret:
-    #         return data
