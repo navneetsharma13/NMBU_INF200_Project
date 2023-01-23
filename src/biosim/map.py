@@ -31,7 +31,7 @@ class Map:
     def check_invalid_map(self):
 
         rows, cols = len(self.cell_list), len(self.cell_list[0])
-
+        empty_island_flag=True
         for i in range(rows):
 
             if len(self.cell_list[i]) != cols:
@@ -41,6 +41,9 @@ class Map:
                 if self.cell_list[i][k] not in self.landscape_classes.keys():
                     raise ValueError(
                         "Invalid Character in the Map at pos:" + str(i + 1) + ',' + str(k + 1))
+
+                if self.cell_list[i][k]!='W':
+                    empty_island_flag=False
 
             if self.cell_list[i][0] != 'W':
                 raise ValueError(
@@ -60,6 +63,10 @@ class Map:
                             "The given Map is not Valid,The edges of Map has to be Water at pos :"
                             + str(
                                 i + 1) + ',' + str(j + 1))
+
+        if empty_island_flag is True:
+                raise ValueError("The Given Map is Empty!!")
+
 
     @staticmethod
     def check_dict_type(ar):

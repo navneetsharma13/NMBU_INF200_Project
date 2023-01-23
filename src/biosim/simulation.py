@@ -32,7 +32,6 @@ class BioSim:
     """
     Top-level interface to BioSim package.
     """
-
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
                  img_years=None, img_dir=None, img_base=None, img_fmt=None, img_name=None,
