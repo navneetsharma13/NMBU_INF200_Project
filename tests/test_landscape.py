@@ -9,8 +9,8 @@ __email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
 import random
 import textwrap
 import pytest
-from src.biosim.landscape import Lowland, Highland
-from src.biosim.simulation import BioSim
+from biosim.landscape import Lowland, Highland
+from biosim.simulation import BioSim
 
 
 def test_verify_unknown_parameters():
@@ -49,7 +49,7 @@ def test_string_parameters():
 @pytest.mark.parametrize("age, weight", [(5, 40), (10, 20), (30, 50), (20, 50)])
 class TestLandscape:
 
-    @pytest.fixture(autouse=True)
+    @pytest.mark.parametrize("age, weight", [(5, 40), (10, 20), (30, 50), (20, 50)])
     def create_map_for_test(self, age, weight):
         geogr = """\
                    WWW
@@ -161,7 +161,11 @@ class TestLandscape:
 
     def test_fauna_weight_loss(self, age, weight):
         """Test if the method 'age_increase()' correctly increases in 1 year all
-            the animal_objects stored in a specific geo_object"""
+            the animal_objects stored in a specific geo_object
+
+        Parameters
+        ----------
+        weight : object"""
         ini_herbs = [
             {
                 "loc": (2, 2),

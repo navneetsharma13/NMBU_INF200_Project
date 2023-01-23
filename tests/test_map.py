@@ -8,8 +8,8 @@ from biosim.simulation import BioSim
 from biosim.map import Map
 import textwrap
 import pytest
-from src.biosim.simulation import BioSim
-from src.biosim.map import Map
+from biosim.simulation import BioSim
+from biosim.map import Map
 from src.biosim.fauna import Herbivore, Carnivore
 from src.biosim.landscape import Landscape
 

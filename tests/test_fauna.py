@@ -1,5 +1,5 @@
 import pytest
-from src.biosim.fauna import Carnivore, Herbivore
+from biosim.fauna import Carnivore, Herbivore
 import math
 import random
 

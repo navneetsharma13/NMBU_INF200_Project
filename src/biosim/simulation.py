@@ -3,7 +3,7 @@ import os
 from .map import Map
 import numpy as np
 import subprocess
-from src.biosim.visualization import Visualization
+from biosim.visualization import Visualization
 
 """
 Template for BioSim class.
@@ -242,7 +242,7 @@ class BioSim:
         """
         Add a population to the island
 
-        Parametersu
+        Parameters
         ----------
         population : List of dictionaries
             See BioSim Task Description, Sec 3.3.3 for details.

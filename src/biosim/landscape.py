@@ -146,6 +146,10 @@ class Landscape:
     def animal_migrate(self, neighbours):
         """ This method iterates through each animal in the cell and runs migrate process.
         Animals will only migrate once per year using the flag `has_migrated` property.
+
+        Parameters
+        ----------
+        neighbours : list
         """
         for migrating_specie, animals in self.initial_population.items():
 

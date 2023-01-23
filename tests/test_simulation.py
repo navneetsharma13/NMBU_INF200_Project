@@ -1,6 +1,6 @@
 import pytest
 
-from src.biosim.simulation import BioSim
+from biosim.simulation import BioSim
 
 # Should add fixture to remove generated image and movie files.
 
