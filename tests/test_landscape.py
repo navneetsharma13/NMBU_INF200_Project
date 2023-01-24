@@ -1,6 +1,7 @@
+
 """
-This is the Map model which functions with the Biosim package written for
-the INF200 project January 2023.
+This is the Test Landscape file which tests all the functionalities with the Biosim package written
+for the INF200 project January 2023.
 """
 
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
@@ -15,7 +16,8 @@ from biosim.simulation import BioSim
 
 def test_verify_unknown_parameters():
     """Test method 'verify_parameters()' if it does not identify the given parameter as incorrect
-     and return ValueError"""
+     and return ValueError.
+     """
     with pytest.raises(ValueError):
         Lowland.verify_parameters(params={'f_min': 100})
         Highland.verify_parameters(params={'f_min': 100})
@@ -23,14 +25,16 @@ def test_verify_unknown_parameters():
 
 def test_verify_known_parameters():
     """Test method 'verify_parameters()' if it does not identify the given parameter are correct and
-     returns ValueError"""
+     returns ValueError.
+     """
     Lowland.verify_parameters(params={'f_max': 100})
     Highland.verify_parameters(params={'f_max': 100})
 
 
 def test_negative_parameters():
     """Test method 'verify_non_valid_parameters(param_key, params)' if it identifies the
-    negative value of a given parameter and returns ValueError"""
+    negative value of a given parameter and returns ValueError.
+    """
     param_key, params = 'f_max', {'f_max': -344}
     with pytest.raises(ValueError):
         Lowland.verify_non_valid_parameters(param_key, params)
@@ -39,7 +43,8 @@ def test_negative_parameters():
 
 def test_string_parameters():
     """Test method 'verify_non_valid_parameters(param_key, params)' if it identifies the
-    negative value of a given parameter and returns ValueError"""
+    negative value of a given parameter and returns ValueError.
+    """
     param_key, params = 'f_max', {'f_max': "text"}
     with pytest.raises(ValueError):
         Lowland.verify_non_valid_parameters(param_key, params)
@@ -51,6 +56,21 @@ class TestLandscape:
 
     @pytest.mark.parametrize("age, weight", [(5, 40), (10, 20), (30, 50), (20, 50)])
     def create_map_for_test(self, age, weight):
+        """
+        This method returns the map with adding population to run tests with pytest.fixture.
+
+        Parameters
+        ----------
+        age : int
+        weight : int
+
+        Returns
+        -------
+
+        t_sim : BioSim object
+        loc : location of the Lowland class
+
+        """
         geogr = """\
                    WWW
                    WLW
@@ -70,7 +90,8 @@ class TestLandscape:
 
     def test_fauna_aging(self, age, weight):
         """Test if the method 'age_increase()' correctly increases in 1 year all
-            the animal_objects stored in a specific geo_object"""
+        the animal_objects stored in a specific geo_object.
+        """
 
         t_sim, loc = self.create_map_for_test(age, weight)
         loc_object = t_sim.map.livable_cell_calculate()[loc]
@@ -82,10 +103,12 @@ class TestLandscape:
             assert herb_age_after is (herb_age_before + 1)
 
     def test_herbivore_feeding(self, age, weight):
-        """This test method verifies different cases for the feed_herbivore():
-            a.) To check if the fodder reduces when an animal eats it.
-            b.) To check if the weight of the animal increases after eat.
-            c.) To check if the fitness of the animal gets updated after feeding is done.
+        """This test method verifies different cases for the feed_herbivore()
+
+        a.) To check if the fodder reduces when an animal eats it
+        b.) To check if the weight of the animal increases after eat
+        c.) To check if the fitness of the animal gets updated after feeding is done
+
         """
         t_sim, loc = self.create_map_for_test(age, weight)
         loc_object = t_sim.map.livable_cell_calculate()[loc]
@@ -103,13 +126,13 @@ class TestLandscape:
         assert old_herb_fitness != updated_herb_fitness
 
     def test_carnivore_feeding(self, age, weight, mocker):
-        mocker.patch('random.random', return_value=0.00115)
+        """This test method verifies different cases for the feed_carnivore()
 
-        """This test method verifies different cases for the feed_herbivore():
-            a.) To check if the fodder reduces when an animal eats it.
-            b.) To check if the weight of the animal increases after eat.
-            c.) To check if the fitness of the animal gets updated after feeding is done.
+        a.) To check if the fodder reduces when an animal eats it
+        b.) To check if the weight of the animal increases after eat
+        c.) To check if the fitness of the animal gets updated after feeding is done
         """
+        mocker.patch('random.random', return_value=0.00115)
         ini_carns = [
             {
                 "loc": (2, 2),
@@ -127,10 +150,8 @@ class TestLandscape:
         assert old_carn_weight < updated_carn_weight
 
     def test_fauna_death(self, age, weight, mocker):
-        """This test method verifies different cases for the feed_herbivore():
-            a.) To check if the fodder reduces when an animal eats it.
-            b.) To check if the weight of the animal increases after eat.
-            c.) To check if the fitness of the animal gets updated after feeding is done.
+        """This test method verifies different cases for the animal death.
+
         """
         mocker.patch('random.random', return_value=0.00001)
         ini_carns = [
@@ -159,12 +180,15 @@ class TestLandscape:
         assert len(loc_object.initial_population["Herbivore"]) < 151
 
     def test_fauna_weight_loss(self, age, weight):
-        """Test if the method 'age_increase()' correctly increases in 1 year all
+        """Test if the method 'weight_decrease()' correctly reduces the weight for all
             the animal_objects stored in a specific geo_object
 
         Parameters
         ----------
-        weight : object"""
+        age : int
+        weight :  int
+
+        """
         ini_herbs = [
             {
                 "loc": (2, 2),
@@ -214,7 +238,7 @@ def test_fauna_count_after_birth():
 
 
 def test_fauna_weight_after_birth():
-    """This test that the number of animals in the cell increases after birth or not.
+    """This test that the weight of the animals in the cell increases after birth or not.
     """
     geogr = """\
                        WWW
@@ -252,7 +276,7 @@ def test_fauna_weight_after_birth():
 @pytest.mark.parametrize("age, weight", [(5, 40), (10, 20), (30, 50), (20, 50)])
 def test_migration(age, weight):
     """This tests the migration method checking if the animals have
-    moved to the all 4th neighbour cells."""
+    moved to the all four neighbour cells."""
 
     geogr = """\
                        WWWWW
@@ -298,38 +322,46 @@ class TestHighland:
 
     @pytest.fixture
     def highland_object(self):
-        """Create basic Highland instance for testing
+        """This method creates the Highland cell object for testing further.
+
+        Returns
+        -------
+        Highland : Object
+
         """
         highland_object = Highland()
         return highland_object
 
     def test_highland_f_max(self, highland_object):
-        """
-        :property: Highland.params
-        Test that highland parameters are correct
+        """ This method tests the f_max value for Highland cell.
+
+        Parameters
+        ----------
+        highland_object : landscape object
         """
         assert highland_object.parameters['f_max'] == 300.0
 
     def test_highland_fodder(self, highland_object):
-        """
-        :cls property: Highland._fodder
-        Fodder attribute of instance can be accessed and has the right value
+        """ This method tests the initial fodder value in the highland cell.
+
+        Parameters
+        ----------
+        highland_object : landscape object
         """
         assert highland_object.fodder == highland_object.parameters['f_max']
 
     def test_fodder_setter(self, highland_object):
-        """
-        :setter: LandscapeCell.fodder
-        :property: Highland._fodder
-        Fodder attribute of instance can be accessed and has the right value
+        """ Tests if it is possible to change the fodder value of the Highland cell.
+
+        Parameters
+        ----------
+        highland_object : landscape object
         """
         highland_object.fodder = 200.0
         assert highland_object.fodder == 200.0
 
     def test_migrate_flag(self):
-        """
-        Test that shuffle method shuffles herbivores list
-
+        """This method tests the has_migrated value and reset_animals() function for migration.
         """
 
         geogr = """\
@@ -362,23 +394,3 @@ class TestHighland:
         for _ in range(len(loc_object.initial_population['Herbivore'])):
             herb_object = loc_object.initial_population['Herbivore'][_]
             assert herb_object.has_migrated is False
-
-
-class TestLowland:
-    @pytest.fixture
-    def lowland_cell(self):
-        """Create basic Lowland instance"""
-        return Lowland()
-
-    def test_lowland_f_max(self, lowland_cell):
-        """
-        :cls property: Lowland.params
-        Check that f_max is correct
-        """
-        assert lowland_cell.parameters['f_max'] == 800.0
-
-    def test_lowland_fodder(self, lowland_cell):
-        """
-        Fodder attribute of instance can be accessed and has the right value
-        """
-        assert lowland_cell.fodder == lowland_cell.parameters['f_max']

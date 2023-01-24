@@ -1,6 +1,7 @@
+
 """
-This is the Map model which functions with the Biosim package written for
-the INF200 project January 2023.
+This is the Test Fauna file which tests if all the functions in fauna.py runs properly with the
+Biosim package written for the INF200 project January 2023.
 """
 
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
@@ -18,7 +19,7 @@ class TestFauna:
     @pytest.fixture()
     def create_h_params(self):
         """This method creates various parameters for herbivores and returns a dict of parameters
-         as key  and their values
+         as key  and their values.
 
         Returns:
         ----------
@@ -48,7 +49,7 @@ class TestFauna:
     @pytest.fixture()
     def create_c_params(self=None):
         """This method creates various parameters for carnivores and returns a dict of parameters
-        as key and their values
+        as key and their values.
 
         Returns:
         ----------
@@ -80,7 +81,13 @@ class TestFauna:
     def test_fitness_herbivore(self, age, weight, create_h_params):
         """Test if the method 'calculate_fitness()' correctly communicates to
         the method 'fit_formula()' and returns the correct fitness of the
-        animal (pop_object)'
+        animal (pop_object)'.
+
+        Parameters
+        ----------
+        create_h_params : method
+        weight : int
+        age : int
         """
 
         self.herbivore = Herbivore(age=age, weight=weight)
@@ -94,7 +101,8 @@ class TestFauna:
     def test_fitness_carnivore(self, age, weight, create_c_params):
         """Test if the method 'calculate_fitness()' correctly communicates to
         the method 'fit_formula()' and returns the correct fitness of the
-        animal (pop_object)'"""
+        animal (pop_object)'.
+        """
 
         self.carnivore = Carnivore(age=age, weight=weight)
         self.carnivore.calculate_fitness()
@@ -104,7 +112,7 @@ class TestFauna:
         assert self.carnivore.fitness == fitness
 
     def test_animal(self):
-        """Test if animals are getting created with correct initialization values
+        """Test if animals are getting created with correct initialization values.
         """
         self.h = Herbivore()
         self.c = Carnivore()
@@ -114,7 +122,7 @@ class TestFauna:
 
     @pytest.mark.parametrize('weight', [10, 20])
     def test_herbivore_non_negative_weight(self, weight):
-        """Test if animal age is  non-negative
+        """Test if animal age is  non-negative.
         """
         self.h = Herbivore(weight=weight)
         # c = Carnivore(weight=weight)
@@ -123,7 +131,7 @@ class TestFauna:
 
     @pytest.mark.parametrize('weight', [10, 20])
     def test_carnivore_non_negative_weight(self, weight):
-        """Test if animal age is  non-negative
+        """Test if animal age is  non-negative.
         """
         self.c = Carnivore(weight=weight)
         # c = Carnivore(weight=weight)
@@ -133,7 +141,7 @@ class TestFauna:
     #
     @pytest.mark.parametrize("age,weight", [(10, 20), (0, 10), (100, 80)])
     def test_herbivore_aging(self, age, weight):
-        """Test every year animal age updates
+        """Test every year animal age updates.
         """
         self.herb = Herbivore(age, weight)
         n = 100
@@ -143,7 +151,7 @@ class TestFauna:
 
     @pytest.mark.parametrize("age,weight", [(10, 20), (0, 10), (100, 80)])
     def test_carnivore_aging(self, age, weight):
-        """Test every year animal age updates
+        """Test every year animal age updates.
         """
         self.carn = Carnivore(age, weight)
         n = 100
@@ -154,7 +162,7 @@ class TestFauna:
     #
     @pytest.mark.parametrize('weight', [0, 10, 20, 30, 40, 60, 70])
     def test_herbivore_weight_loss(self, weight, create_h_params):
-        """Test if animal loses weight
+        """Test if animal loses weight.
         """
         self.h_params = create_h_params
         self.herb = Herbivore(weight=weight)
@@ -167,7 +175,7 @@ class TestFauna:
 
     @pytest.mark.parametrize('weight', [0, 10, 20, 30, 40, 60, 70])
     def test_carnivore_weight_loss(self, weight, create_c_params):
-        """Test if animal looses weight
+        """Test if animal looses weight.
         """
         self.c_params = create_c_params
         self.carn = Carnivore(weight=weight)
@@ -181,7 +189,7 @@ class TestFauna:
     #
     @pytest.mark.parametrize("age,weight", [(10, 20), (0, 0), (100, 80), (200, 200)])
     def test_fitness_range(self, age, weight):
-        """Test fitness value is between 0 and 1
+        """Test fitness value is between 0 and 1.
         """
         self.herb = Herbivore(age, weight)
         self.carn = Carnivore(age, weight)
@@ -191,7 +199,7 @@ class TestFauna:
     #
     @pytest.mark.parametrize("age,weight", [(10, 20), (100, 80), (200, 200)])
     def test_fitness_update_herb(self, age, weight, create_h_params):
-        """Test fitness is updated when weight is changed
+        """Test fitness is updated when weight is changed.
         """
         self.h_params = create_h_params
         self.herb = Herbivore(age, weight)
@@ -211,7 +219,7 @@ class TestFauna:
 
     @pytest.mark.parametrize("age,weight", [(10, 20), (100, 80), (200, 200)])
     def test_fitness_update_carn(self, age, weight, create_c_params):
-        """Test fitness is updated when weight is changed
+        """Test fitness is updated when weight is changed.
         """
         self.c_params = create_c_params
         self.carn = Carnivore(age, weight)

@@ -1,6 +1,7 @@
+
 """
-This is the Map model which functions with the Biosim package written for
-the INF200 project January 2023.
+This is the Test Map file which tests if all the functions in map.py runs properly with the
+Biosim package written for the INF200 project January 2023.
 """
 
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
@@ -38,7 +39,8 @@ class TestMap:
                WWWWWDDDDDDDD"""])
     def test_check_invalid_boundaries(self, map_str):
         """Test if the method 'check_invalid_maps()' identifies
-        a different boundary for island_maps than only 'Water'"""
+        a different boundary for island_maps than only 'Water'.
+        """
         with pytest.raises(ValueError):
             Map(map_str)
 
@@ -54,7 +56,8 @@ class TestMap:
                WWWWW"""])
     def test_check_invalid_line_length(self, map_str):
         """Test if the method 'check_invalid_maps()' identifies
-        a different line length for island_maps."""
+        a different line length for island_maps.
+        """
         with pytest.raises(ValueError):
             Map(map_str)
 
@@ -70,14 +73,16 @@ class TestMap:
                WWWWWDDDDDDDD"""])
     def test_check_invalid_character(self, map_str):
         """Test if the method 'check_invalid_maps()' identifies
-        an invalid character for island_maps other than landscape cells."""
+        an invalid character for island_maps other than landscape cells.
+        """
         with pytest.raises(ValueError):
             Map(map_str)
 
     # @pytest.fixture(autouse=True)
     def test_cell_list(self):
         """Test if the method 'geo_list()' generates a
-        correct list of geographies with the correct coordinates."""
+        correct list of geographies with the correct coordinates.
+        """
         island_maps = """\
                    WWW
                    WLW
@@ -123,7 +128,8 @@ class TestMap:
 
     def test_age_weight_stored(self, create_map_for_test):
         """Test if the method 'def add_population()' correctly store the age
-        and weight on animal_object"""
+        and weight on animal_object.
+        """
         t_sim, loc = create_map_for_test
         h1_age = t_sim.map.livable_cell_calculate()[loc].initial_population['Herbivore'][0].age
         h1_age_compare = t_sim.map.get_pop_age_herb()[0]
@@ -145,7 +151,8 @@ class TestMap:
 
     def test_get_population_numbers(self, create_map_for_test):
         """Test if the method 'get_pop_tot_num_herb()' and 'get_pop_tot_num_carn()' correctly
-        gets the entire population number by comparing it with get_pop_tot_num."""
+        gets the entire population number by comparing it with get_pop_tot_num.
+        """
         t_sim, loc = create_map_for_test
         assert t_sim.map.get_pop_tot_num_herb() + \
                t_sim.map.get_pop_tot_num_carn() == t_sim.map.get_pop_tot_num()
@@ -179,7 +186,8 @@ class TestMap:
             t_sim.map.unique_columns())
 
     def test_add_population(self, create_map_for_test):
-        """Test if the animal count is getting updated after adding population."""
+        """Test if the animal count is getting updated after adding population.
+        """
         t_sim, loc = create_map_for_test
         pop_before_herb = t_sim.map.get_pop_tot_num_herb()
         ini_herbs_1 = [
@@ -204,7 +212,8 @@ class TestMap:
         assert pop_after_carn is pop_before_carn + 1
 
     def test_create_neighbours(self, create_map_for_test):
-        """Test if the correct no of neighbours are getting created for a given location"""
+        """Test if the correct no of neighbours are getting created for a given location.
+        """
         t_sim, loc = create_map_for_test
         len_neighbours_at_loc_01 = len(t_sim.map.create_neighbours_dict()[loc[0] - 1, loc[0]])
         assert len_neighbours_at_loc_01 == 3
