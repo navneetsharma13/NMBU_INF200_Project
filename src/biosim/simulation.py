@@ -156,6 +156,7 @@ class BioSim:
             self.cmax_animals = cmax_animals
 
         self.remove_files()
+
     def set_animal_parameters(self, species, params):
         """
         Set parameters for animal species.
@@ -239,8 +240,7 @@ class BioSim:
                                            pop_matrix_carn=self.map.get_pop_matrix_carn(),
                                            weight_list=self.weight_animals_per_species(),
                                            age_list=self.age_animals_per_species(),
-                                           fitness_list=self.fitness_animals_per_species(),
-                                           final_year=self.final_year)
+                                           fitness_list=self.fitness_animals_per_species())
 
                 if self.img_base is not None:
                     if self.year_num % self.img_years == 0:
@@ -331,9 +331,9 @@ class BioSim:
 
     def remove_files(self):
 
-        fbase=self.img_base
-        img_fmt=self.img_fmt
-        for f in glob.glob(f"{fbase}_0*."+str(img_fmt)):
+        fbase = self.img_base
+        img_fmt = self.img_fmt
+        for f in glob.glob(f"{fbase}_0*." + str(img_fmt)):
             os.remove(f)
         for f in glob.glob(f"{fbase}*.mp4"):
             os.remove(f)

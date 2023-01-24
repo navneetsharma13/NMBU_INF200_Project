@@ -14,8 +14,10 @@ import numpy as np
 
 class Visualization:
 
-    def __init__(self, island_map=None, cmax=None, ymax=None, hist_specs=None, total_years=None,
-                 pop_matrix_herb=None, pop_matrix_carn=None, img_base=None, img_fmt=None, step_size=1):
+    def __init__(self, island_map=None, cmax=None, ymax=None,
+                 hist_specs=None, total_years=None,
+                 pop_matrix_herb=None, pop_matrix_carn=None,
+                 img_base=None, img_fmt=None, step_size=1):
 
         self.island_map = island_map
         self.img_base = img_base
@@ -180,7 +182,8 @@ class Visualization:
             animal_xdata = np.arange(0, num_years, self.step_size)
             self.herb_line = self.ax_animal_count.plot(animal_xdata,
                                                        np.full_like(animal_xdata,
-                                                                    np.nan, dtype=float), linestyle)[0]
+                                                                    np.nan, dtype=float),
+                                                       linestyle)[0]
             self.carn_line = self.ax_animal_count.plot(animal_xdata,
                                                        np.full_like(animal_xdata,
                                                                     np.nan, dtype=float),
@@ -271,7 +274,7 @@ class Visualization:
 
     def update_plot(self, pop_herb=0, pop_carn=0, current_year=0,
                     pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
-                    age_list=None, fitness_list=None, final_year=0):
+                    age_list=None, fitness_list=None):
 
         self.fitness_herb_list = fitness_list['Herbivore']
         self.age_herb_list = age_list['Herbivore']
@@ -286,15 +289,13 @@ class Visualization:
 
         self.txt.set_text(self.template.format(current_year))
 
-        self.update_animal_count(pop_herb=pop_herb, pop_carn=pop_carn, current_year=current_year,
-                                 final_year=final_year)
+        self.update_animal_count(pop_herb=pop_herb, pop_carn=pop_carn, current_year=current_year)
         self.update_frequency_graphs()
         self.update_heatmap()
         self.fig.canvas.flush_events()
         plt.pause(1e-5)
 
-    def update_animal_count(self, pop_herb=0, pop_carn=0, current_year=0,
-                            final_year=0):
+    def update_animal_count(self, pop_herb=0, pop_carn=0, current_year=0):
 
         n = current_year
         idx = n // self.step_size

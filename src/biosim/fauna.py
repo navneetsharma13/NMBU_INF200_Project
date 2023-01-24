@@ -1,4 +1,3 @@
-
 """
 This is the Fauna model which functions with the Biosim package written for
 the INF200 project January 2023.
@@ -60,7 +59,6 @@ class Fauna:
                      fit_formula(-'weight', 'weight_1/2', 'phi_weight')
         """
 
-
         def fitness_formula(sign, x, x_half, phi_x):
             """This method returns the fitness formula used to calculate the physical condition
             (fitness) of an animal (pop_object).
@@ -99,10 +97,9 @@ class Fauna:
                            fitness_formula(-1, self.weight, self.parameters['w_half'],
                                            self.parameters['phi_weight'])
 
-
     def weight_default(self):
-        """This method calculates the default weight of the animal based on lognormvariate by taking in
-        the parameters such as mu and sigma.
+        """This method calculates the default weight of the animal based on lognormvariate by
+        taking in the parameters such as mu and sigma.
 
         Formula and conditions:
         -----------------------
@@ -302,7 +299,7 @@ class Fauna:
         """
         for p in params.keys():
             if p not in cls.parameters.keys():
-                raise ValueError("Parameter is not defined "+str(p))
+                raise ValueError("Parameter is not defined " + str(p))
 
     @classmethod
     def set_parameters(cls, params):

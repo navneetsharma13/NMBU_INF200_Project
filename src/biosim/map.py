@@ -15,9 +15,6 @@ from biosim.fauna import Herbivore, Carnivore
 class Map:
     """The Map object collects all landscape cells in the map and keeps track of animals.
 
-    :param map_str: The representation of cell types in the simulation
-    :type map_str: str
-
     :Example:
         .. code-block:: python
 
@@ -48,14 +45,14 @@ class Map:
     def __init__(self, island_map):
         """Constructor for Map class"""
         self.island_map = island_map  # save island_map_str as property
-        self.cell_list = self.geo_list()  # storing the island_map str converted to list with element of each cell
+        self.cell_list = self.geo_list()  # storing the island_map str converted to list
         self.check_invalid_map()  # checking for all types of invalid map given as input.
         self.herb_pop_matrix = [[0 for _ in self.unique_columns()] for _ in
                                 self.unique_rows()]  # Herbivore population matrix
         self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in
                                 self.unique_rows()]  # Carnivore population matrix
-        self.cells_dict = self.create_cells()  # storing the dict with coordinates and landscape cell objects
-        self.neighbours_dict = self.create_neighbours_dict()  # storing the dict with neighbours on each coordinates as key
+        self.cells_dict = self.create_cells()  # storing the dict with coordinates and cells
+        self.neighbours_dict = self.create_neighbours_dict()  # storing the dict with neighbours
 
     def geo_list(self):
         """This method converts island_map str into list with each element corresponding to

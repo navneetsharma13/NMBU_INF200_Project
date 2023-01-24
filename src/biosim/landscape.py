@@ -45,8 +45,8 @@ class Landscape:
 
     @classmethod
     def verify_non_valid_parameters(cls, param_key, params):
-        """This method verifies for any invalid parameters passed by the user and raises a ValueError,
-         if required.
+        """This method verifies for any invalid parameters passed by the user and raises
+        a ValueError, if required.
 
         Parameters:
         ------------
