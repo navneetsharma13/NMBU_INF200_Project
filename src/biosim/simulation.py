@@ -25,7 +25,7 @@ _MAGICK_BINARY = 'magick'
 
 # update this to the directory and file-name beginning
 # for the graphics files
-_DEFAULT_GRAPHICS_DIR = 'results'
+_DEFAULT_GRAPHICS_DIR = '../results'
 _DEFAULT_GRAPHICS_NAME = 'dv'
 _DEFAULT_IMG_FORMAT = 'png'
 _DEFAULT_MOVIE_FORMAT = 'mp4'  # alternatives: mp4, gif
@@ -112,7 +112,7 @@ class BioSim:
         self.last_year = 0
         self.year_num = 0
         self.img_no = 0
-        self.final_year = None
+        self.final_year = 0
         self.img_fmt = img_fmt
         self.fig = None
         self.img_axis = None
@@ -133,7 +133,7 @@ class BioSim:
         if img_dir is None:
             self.img_dir = _DEFAULT_GRAPHICS_DIR
         else:
-            self.img_dir = img_dir
+            self.img_dir = '../' + img_dir
 
         if img_base is None:
             self.img_base = os.path.join(self.img_dir, _DEFAULT_GRAPHICS_NAME)
