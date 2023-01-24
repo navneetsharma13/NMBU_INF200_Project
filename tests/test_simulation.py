@@ -1,8 +1,15 @@
+"""
+This is the Map model which functions with the Biosim package written for
+the INF200 project January 2023.
+"""
+
+__author__ = "Navneet Sharma and Sushant Kumar Srivastava"
+__email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
+
 import pytest
 
 from biosim.simulation import BioSim
 
-# Should add fixture to remove generated image and movie files.
 
 class TestSimulation:
     def test_empty_island(self):
@@ -124,5 +131,7 @@ class TestSimulation:
     def test_multi_simulate(self,basic_sim):
         basic_sim.simulate(num_years=10)
         basic_sim.simulate(num_years=10)
+
+
 
 
