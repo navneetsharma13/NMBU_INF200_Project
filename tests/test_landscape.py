@@ -1,6 +1,6 @@
 """
 This is the geography pytest package which is a test package for the  BioSim packages written for
- the INF200 project January 2022.
+ the INF200 project January 2023.
 """
 
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"

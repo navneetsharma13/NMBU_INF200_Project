@@ -1,5 +1,14 @@
+"""
+This is the simulation model which functions with the Biosim package written for
+the INF200 project January 2023.
+"""
+
+__author__ = "Navneet Sharma and Sushant Kumar Srivastava"
+__email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
+
 import random
 import os
+import glob
 from biosim.map import Map
 import subprocess
 from biosim.visualization import Visualization
@@ -61,6 +70,9 @@ class BioSim:
             Beginning of file name for figures
         img_fmt : str
             File type for figures, e.g. 'png' or 'pdf'
+        plot_graph : boolean
+            True if plot is required.
+            False if plot is not required
 
         Notes
         -----
@@ -111,8 +123,6 @@ class BioSim:
         self.vis_years = vis_years
         self.visualize = None
 
-        #######################################
-
         if vis_years == 0:
             self.plot_bool = False
         else:
@@ -135,7 +145,6 @@ class BioSim:
         self.img_ctr = 0
         self.img_step = 1
 
-        #################################################
 
         if ymax_animals is None:
             self.ymax_animals = None
@@ -147,6 +156,7 @@ class BioSim:
         else:
             self.cmax_animals = cmax_animals
 
+        self.remove_files()
     def set_animal_parameters(self, species, params):
         """
         Set parameters for animal species.
@@ -230,9 +240,9 @@ class BioSim:
                                            fitness_list=self.fitness_animals_per_species(),
                                            final_year=self.final_year)
 
-                # if self.img_base is not None:
-                #     if self.year_num % self.img_years == 0:
-                #         self.visualize.save_graphics(self.year_num)
+                if self.img_base is not None:
+                    if self.year_num % self.img_years == 0:
+                        self.visualize.save_graphics(self.year_num)
 
             self.year_num += 1
 
@@ -316,3 +326,9 @@ class BioSim:
                 raise RuntimeError('ERROR: convert failed with: {}'.format(err))
         else:
             raise ValueError('Unknown movie format: ' + movie_fmt)
+
+    def remove_files(self):
+
+        fbase=self.img_base
+        for f in glob.glob(f"{fbase}_0*.png"):
+            os.remove(f)

@@ -1,3 +1,11 @@
+"""
+This is the visualization model which functions with the Biosim package written for
+the INF200 project January 2023.
+"""
+
+__author__ = "Navneet Sharma and Sushant Kumar Srivastava"
+__email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
+
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable

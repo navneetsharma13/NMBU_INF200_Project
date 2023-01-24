@@ -1,3 +1,15 @@
+"""
+This is the landscape model which functions with the Biosim package written for
+the INF200 project January 2023.
+"""
+
+__author__ = "Navneet Sharma and Sushant Kumar Srivastava"
+__email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
+
+
+
+
+
 import random
 
 
@@ -25,6 +37,10 @@ class Landscape:
         ----------
             params: list
                 List with the landscape's parameters.
+
+        Raises:
+        ----------
+        ValueError
         """
         for parameter in params.keys():
             if parameter not in cls.parameters.keys():
@@ -33,6 +49,20 @@ class Landscape:
 
     @classmethod
     def verify_non_valid_parameters(cls, param_key, params):
+        """This method verifies for any invalid parameters passed by the user and raises a ValueError,
+         if required.
+
+        Parameters:
+        ----------
+            params: list
+                    List with the landscape's parameters.
+                    str
+                    Param_key.
+
+        Raises:
+        ----------
+        ValueError
+        """
         if isinstance(params[param_key], str) or params[param_key] < 0:
             raise ValueError("The parameter *{}* must be "
                              "non-negative and also not string".format(param_key))
@@ -55,11 +85,11 @@ class Landscape:
 
                 Applied Formulas & Conditions:
                 ----------
-                    -> 'F': Animal's Capacity to eat;
-                    -> 'f': Available amount of fodder.
-                    -> if 'F' <= 'f', then the animal eats 'F';
-                    -> elif 0 < 'f' < 'F', then the animal eats 'f';
-                    -> elif 'f' = 0, then the animal does not eat.
+                    'F': Animal's Capacity to eat;
+                    'f': Available amount of fodder.
+                    if 'F' <= 'f', then the animal eats 'F';
+                    elif 0 < 'f' < 'F', then the animal eats 'f';
+                    elif 'f' = 0, then the animal does not eat.
                 """
         random.shuffle(self.initial_population['Herbivore'])
         for herbivore in self.initial_population['Herbivore']:
@@ -85,17 +115,17 @@ class Landscape:
 
                 Formula and conditions:
                 ----------------------
-                    -> Carnivores prey on herbivores on Lowland, Highland and
+                    Carnivores prey on herbivores on Lowland, Highland and
                        Desert landscapes, and do not prey on each other;
-                    -> One carnivore tries to kill one herbivore per time, beginning
+                    One carnivore tries to kill one herbivore per time, beginning
                        with the herbivore with the lowest fitness, and then to the
                        next herbivore until has eaten an amount 'F' of herbivore weight;
-                    -> The probability to kill a herbivore is given by the method
+                    The probability to kill a herbivore is given by the method
                        'kill_prob()';
-                    -> The carnivore weight increases by the method 'weight_increase_on_eat()'
+                    The carnivore weight increases by the method 'weight_increase_on_eat()'
                     which also updates its fitness;
-                    -> Every herbivore killed is removed from the population
-                       by the python's built-in method '.remove()'.
+                    Every herbivore killed is removed from the population
+                    by the python's built-in method '.remove()'.
                 """
         self.initial_population['Carnivore'].sort(key=lambda h: h.fitness, reverse=True)
 
@@ -140,6 +170,8 @@ class Landscape:
             self.initial_population[specie_type].extend(newborns)
 
     def reset_animals(self):
+        """This method resets the migration flag after a cycle of one year.
+        """
         for species in self.initial_population.values():
             for animals in species:
                 animals.has_migrated = False
@@ -182,16 +214,22 @@ class Landscape:
             self.after_migration_population[specie_type] = []
 
     def age_increase(self):
+        """This method increase the age of all animals after a cycle of one year.
+        """
         for species in self.initial_population.values():
             for animal in species:
                 animal.age_increase()
 
     def weight_decrease(self):
+        """This method decreases the weight all animals after a cycle of one year.
+        """
         for species in self.initial_population.values():
             for animal in species:
                 animal.weight_decrease()
 
     def animal_die(self):
+        """This method only keeps the animal which can survive for next year on the basis of die probability.
+        """
         for specie_type in self.initial_population.keys():
             living_animal = []
             for animal in self.initial_population[specie_type]:
@@ -213,6 +251,24 @@ class Lowland(Landscape):
         self.fodder = self.parameters['f_max']
 
     def fodder_grow_and_feeding(self):
+        """This method increases the amount of fodder growth from the
+        previous year to now and then calls the methods
+        'feed_herbivore()' and 'feed_carnivore()', respectively,
+        in order to execute the animals eating conditions and rules.
+
+        Formula and conditions:
+        ----------
+            -> The yearly amount of fodder in the Lowland landscape
+               cells is always restored to the max ('f_max'):
+
+        'f' = 'f_max'
+
+        where :
+            -> 'f_max': The maximum possible amount of fodder in
+                        the landscape;
+            -> 'f':     The remainder available amount of fodder
+                        from previous year.
+        """
         self.fodder = self.parameters['f_max']
         self.feed_herbivore()
         self.feed_carnivore()
@@ -229,6 +285,24 @@ class Highland(Landscape):
         self.fodder = self.parameters['f_max']
 
     def fodder_grow_and_feeding(self):
+        """This method increases the amount of fodder growth from the
+        previous year to now and then calls the methods
+        'feed_herbivore()' and 'feed_carnivore()', respectively,
+        in order to execute the animals eating conditions and rules.
+
+        Formula and conditions:
+        ----------
+            -> The yearly amount of fodder in the Lowland landscape
+               cells is always restored to the max ('f_max'):
+
+        'f' = 'f_max'
+
+        where :
+            -> 'f_max': The maximum possible amount of fodder in
+                        the landscape;
+            -> 'f':     The remainder available amount of fodder
+                        from previous year.
+        """
         self.fodder = self.parameters['f_max']
         self.feed_herbivore()
         self.feed_carnivore()

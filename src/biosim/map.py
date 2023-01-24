@@ -1,35 +1,86 @@
+
+"""
+This is the Map model which functions with the Biosim package written for
+the INF200 project January 2023.
+"""
+
+__author__ = "Navneet Sharma and Sushant Kumar Srivastava"
+__email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
+
+
+
 import textwrap
 from biosim.landscape import Lowland, Highland, Desert, Water
 from biosim.fauna import Herbivore, Carnivore
 
 
 class Map:
+    """The Map object collects all landscape cells in the map and keeps track of animals.
+
+    :param map_str: The representation of cell types in the simulation
+    :type map_str: str
+
+    :Example:
+        .. code-block:: python
+
+            example_map = '''WWWW
+                             WLDW
+                             WHDW
+                             WWWW'''
+
+    .. note::
+
+        - Only H, L, D and W cell representation are accepted.
+        - All map rows need to be the same length.
+    """
+
+    #Dict consisting of landscape classes used for migration.
     landscape_classes = {
         'H': Highland,
         'L': Lowland,
         'D': Desert,
         'W': Water
     }
+    #Dict consisting of animal classes used for adding population
     animal_classes = {'Carnivore': Carnivore, 'Herbivore': Herbivore
                       }
+    #Dict consisting of landscape classes in which animal can live
     livable_cells = {'H': Highland, 'L': Lowland, 'D': Desert}
 
     def __init__(self, island_map):
-
-        self.island_map = island_map
-        self.cell_list = self.geo_list()
-        self.check_invalid_map()
-        self.herb_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
-        self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]
-        self.cells_dict = self.create_cells()
-        self.neighbours_dict = self.create_neighbours_dict()
+        """Constructor for Map class"""
+        self.island_map = island_map #save island_map_str as property
+        self.cell_list = self.geo_list()#storing the island_map str converted to list with element of each cell
+        self.check_invalid_map()#checking for all types of invalid map given as input.
+        self.herb_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]#Herbivore population matrix
+        self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]#Carnivore population matrix
+        self.cells_dict = self.create_cells()#storing the dict with coordinates and landscape cell objects
+        self.neighbours_dict = self.create_neighbours_dict()#storing the dict with neighbours on each coordinates as key
         # self.animal_weight_requirement_for_birth = self.calculate_weight_required_for_birth()
 
     def geo_list(self):
+        """This method converts island_map str into list with each element corresponding to
+        each cell element in the map
+
+        Returns:
+        ----------
+        List with element as each cell element in map.
+        """
         cells_list = textwrap.dedent(str(self.island_map)).splitlines()
         return [list(row.strip()) for row in cells_list]
 
     def check_invalid_map(self):
+        """This method check for various invalid map types given as str
+
+        Checks for Invalid line lengths.
+        Checks for Invalid character.
+        Checks for Invalid Edges : has to be water surrounding the map.
+
+        Raises:
+        ----------
+        ValueError if conditions are met.
+        """
+
 
         rows, cols = len(self.cell_list), len(self.cell_list[0])
         for i in range(rows):
@@ -63,23 +114,37 @@ class Map:
 
     @staticmethod
     def check_dict_type(ar):
+        """This method checks if the argument given by the user is a
+        dictionary and raises a TypeError if necessary.
+
+        Parameters:
+        ----------
+            argument: str
+        """
         if not isinstance(ar, dict):
             raise TypeError("The Argument is not a dict " + str(ar))
 
     def set_parameters(self, key, params):
+        """This method sets the parameter for the landscapes and animals.
 
+        Parameter:
+        ----------
+            param_key: str
+
+            params: list
+        """
         self.check_dict_type(params)
         combined_dict = dict(**self.animal_classes, **self.landscape_classes)
         combined_dict[key].set_parameters(params)
 
-    def check_invalid_character(self, cell_l):
-        for line in cell_l:
-            for letter in line:
-                if letter not in self.landscape_classes.keys():
-                    raise ValueError("Invalid Character in the Map!!")
-
     def create_cells(self):
+        """This method creates a dictionary with the coordinates on
+        keys and landscape objects on values.
 
+        Returns:
+        ----------
+        dict
+        """
         pos = [(i, j) for i in range(len(self.cell_list))
                for j in range(len(self.cell_list[0]))]
         geo = [self.landscape_classes[geo]() for k in range(len(self.cell_list))
@@ -87,6 +152,7 @@ class Map:
         return dict(zip(pos, geo))
 
     def find_cell_object(self):
+
         loc = []
         loc_object = []
 
@@ -104,17 +170,38 @@ class Map:
         return dict(zip(loc, loc_object)), dict(zip(m_loc, migrate_loc_object))
 
     def livable_cell_calculate(self):
+        """This method creates a dictionary with only the coordinates
+        that are livable and store the coordinates on keys and
+        landscape objects on values.
 
+        Returns:
+        ----------
+            dict
+        """
         livable_cells, _ = self.find_cell_object()
         return livable_cells
 
     def migrate_cell_calculate(self):
+        """This method creates a dictionary with only the coordinates
+        where migration is possible and store the coordinates on keys and
+        landscape objects on values.
 
+        Returns:
+        ----------
+            List of coordinates where migration is possible.
+        """
         _, migrate_cells = self.find_cell_object()
         return migrate_cells
 
     def create_neighbours_dict(self):
+        """This method localizes the neighbour cells (north, south,
+        west and east), checks if they are livable and returns a
+        location of landscape objects.
 
+        Returns:
+        ----------
+            Dict with neighbours loc as values given for a given loc as key.
+        """
         own_loc = []
         neighbours = []
         for loc, _ in self.cells_dict.items():
@@ -144,7 +231,13 @@ class Map:
     #     return minimum_weight
 
     def add_population(self, given_population):
+        """This method creates the population objects inside the
+        cells.
 
+        Parameter:
+        ----------
+            given_pop: list
+        """
         for population in given_population:
 
             location = (int(population['loc'][0]) - 1, int(population['loc'][1]) - 1)
@@ -156,7 +249,17 @@ class Map:
                 loc_object.initial_population[type(pop_object).__name__].append(pop_object)
 
     def yearly_cycle(self):
+        """This method calls, in order, the methods that compound
+        the yearly cycle dynamics of the island, such that:
 
+            1. Animal's birth;
+            2. Animal's feeding;
+            3. Animal's migration;
+            4. Animal's migration;
+            5. Animal's aging;
+            6. Animal's weight loss;
+            7. Animal's death.
+        """
         for loc, loc_object in self.livable_cell_calculate().items():
             loc_object.add_newborn()
             loc_object.fodder_grow_and_feeding()
@@ -168,6 +271,13 @@ class Map:
             loc_object.animal_die()
 
     def calculate_animal_count(self):
+        """This method calculates the distribution of the Herbivore and Carnivore
+        and stores into dict along with row and column no.
+
+        Returns:
+        ----------
+        Dict
+        """
 
         pop = {'Row_no': [], 'Col_no': [], 'Herbivore': [],
                'Carnivore': []}
@@ -183,27 +293,76 @@ class Map:
         return pop
 
     def get_pop_tot_num_herb(self):
+        """This method calculates the total no of herbivores on an island.
+
+        Returns:
+        ----------
+        int
+        """
 
         pop = self.calculate_animal_count()
         return sum(pop["Herbivore"])
 
     def get_pop_tot_num_carn(self):
+        """This method calculates the total no of carnivores on an island.
+
+        Returns:
+        ----------
+        int
+        """
 
         pop = self.calculate_animal_count()
         return sum(pop["Carnivore"])
 
     def get_pop_tot_num(self):
+        """This method calculates the total no of animals on an island.
+
+        Returns:
+        ----------
+        int
+        """
 
         pop = self.calculate_animal_count()
         return sum(pop["Carnivore"]) + sum(pop["Herbivore"])
 
     def unique_rows(self):
+        """Return unique row values.
+
+        Returns:
+        ----------
+        list : Row coordinate values
+
+        """
         return list(set([loc[0] for loc in self.create_cells()]))
 
     def unique_columns(self):
+        """Return unique column values.
+
+        Returns:
+        ----------
+        list : column coordinate values
+
+        """
         return list(set([loc[1] for loc in self.create_cells()]))
 
     def get_pop_matrix_herb(self):
+        """Update the population matrices of herbivore for heatmap.
+
+        :Example:
+
+            .. code-block:: python
+
+                example_matrix = [
+                    [0, 0, 0],
+                    [0, 221, 0],
+                    [0, 0, 0],
+                ]
+
+        Returns:
+        ----------
+        List of list
+
+        """
         pos = 0
         for row in (self.unique_rows()):
             for col in (self.unique_columns()):
@@ -213,6 +372,23 @@ class Map:
         return self.herb_pop_matrix
 
     def get_pop_matrix_carn(self):
+        """Update the population matrices of carnivore for heatmap.
+
+        :Example:
+
+            .. code-block:: python
+
+                example_matrix = [
+                    [0, 0, 0],
+                    [0, 221, 0],
+                    [0, 0, 0],
+                ]
+
+        Returns:
+        ----------
+        List of list
+
+        """
         pos = 0
         for row in (self.unique_rows()):
             for col in (self.unique_columns()):
@@ -222,6 +398,14 @@ class Map:
         return self.carn_pop_matrix
 
     def get_pop_age_herb(self):
+
+        """This method return the list of all herbivore age used for histogram plot
+
+        Returns:
+        ----------
+        List
+
+        """
         herb_age = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Herbivore']:
@@ -229,6 +413,13 @@ class Map:
         return herb_age
 
     def get_pop_age_carn(self):
+        """This method return the list of all carnivore age used for histogram plot
+
+        Returns:
+        ----------
+        List
+
+        """
         carn_age = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Carnivore']:
@@ -236,6 +427,13 @@ class Map:
         return carn_age
 
     def get_pop_weight_herb(self):
+        """This method return the list of all herbivore weight used for histogram plot
+
+        Returns:
+        ----------
+        List
+
+        """
         herb_weight = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Herbivore']:
@@ -243,6 +441,13 @@ class Map:
         return herb_weight
 
     def get_pop_weight_carn(self):
+        """This method return the list of all carnivore weight used for histogram plot
+
+        Returns:
+        ----------
+        List
+
+        """
         carn_weight = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Carnivore']:
@@ -250,6 +455,13 @@ class Map:
         return carn_weight
 
     def get_pop_fitness_herb(self):
+        """This method return the list of all herbivore fitness used for histogram plot
+
+        Returns:
+        ----------
+        List
+
+        """
         herb_fitness = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Herbivore']:
@@ -258,6 +470,13 @@ class Map:
         return herb_fitness
 
     def get_pop_fitness_carn(self):
+        """This method return the list of all carnivore fitness used for histogram plot
+
+        Returns:
+        ----------
+        List
+
+        """
         carn_fitness = []
         for loc, loc_object in self.cells_dict.items():
             for animal in loc_object.initial_population['Carnivore']:
