@@ -35,7 +35,9 @@ class TestSimulation:
                    WLWWWLLLLLLLL
                    WWWWWDDDDDDDD"""])
     def test_check_invalid_boundaries(self,map_str):
-            with pytest.raises(ValueError):
+        """Test if the method 'check_invalid_maps()' identifies
+        a different boundary for island_maps than only 'Water'"""
+        with pytest.raises(ValueError):
                 BioSim(island_map=map_str, ini_pop=[], seed=1)
 
 
@@ -50,6 +52,8 @@ class TestSimulation:
                    WLWWW
                    WWWWW"""])
     def test_check_invalid_line_length(self,map_str):
+        """Test if the method 'check_invalid_maps()' identifies
+        a different line length for island_maps."""
         with pytest.raises(ValueError):
             BioSim(island_map=map_str, ini_pop=[], seed=1)
 
@@ -65,6 +69,8 @@ class TestSimulation:
                    WLWWWLL?LLLLL
                    WWWWWDDDDDDDD"""])
     def test_check_invalid_character(self,map_str):
+        """Test if the method 'check_invalid_maps()' identifies
+        an invalid character for island_maps other than landscape cells."""
         with pytest.raises(ValueError):
             BioSim(island_map=map_str, ini_pop=[], seed=1)
 
@@ -75,9 +81,11 @@ class TestSimulation:
         return BioSim(island_map="WWWW\nWHLW\nWWWW", ini_pop=[], seed=1)
 
     def test_simulate(self,basic_sim):
+        """Test that simulation can be called with visualization step values"""
         basic_sim.simulate(num_years=10)
 
     def test_add_population(self,basic_sim):
+        """Test if the method add_population() is working correctly."""
         basic_sim.add_population([
                 {
                     "loc": (1, 2),
@@ -95,19 +103,21 @@ class TestSimulation:
                 },
             ])
     def test_get_years(self,basic_sim):
-
+        """Test that number of years simulated is available"""
         self.test_add_population(basic_sim)
         basic_sim.simulate(num_years=2)
         assert basic_sim.year == 2
 
     def test_get_total_fauna(self,basic_sim):
+        """Test that total number of animals is available"""
         assert basic_sim.num_animals == 0
 
     def test_get_fauna_by_species(self,basic_sim):
+        """Test that total number of animals per species is available"""
         assert basic_sim.num_animals_per_species=={"Herbivore": 0,
             "Carnivore": 0}
     def test_fauna_distribution(self,basic_sim):
-
+        """Test that animal distribution is correctly updated at locations after adding population"""
         self.test_add_population(basic_sim)
 
         herb_matrix=basic_sim.map.get_pop_matrix_herb()
@@ -120,8 +130,8 @@ class TestSimulation:
         assert carn_matrix[1-1][3-1] is 1
 
     def test_set_fig_limit(self):
-
-         BioSim(
+        """Test that y-axis and color limits for plots can be set."""
+        BioSim(
             island_map="WWWW\nWHLW\nWWWW",
             ini_pop=[],
             seed=1,
@@ -129,6 +139,7 @@ class TestSimulation:
             cmax_animals={"Herbivore": 10, "Carnivore": 20},
         )
     def test_multi_simulate(self,basic_sim):
+        """Test that simulation can be called repeatedly"""
         basic_sim.simulate(num_years=10)
         basic_sim.simulate(num_years=10)
 

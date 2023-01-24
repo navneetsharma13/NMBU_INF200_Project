@@ -11,6 +11,7 @@ import textwrap
 import pytest
 from biosim.simulation import BioSim
 from biosim.map import Map
+from biosim.fauna import Herbivore,Carnivore
 
 
 
@@ -190,7 +191,7 @@ class TestMap:
 
 
     def test_add_population(self,create_map_for_test):
-        """Test after adding """
+        """Test if the animal count is getting updated after adding population."""
         t_sim, loc = create_map_for_test
         pop_before_herb = t_sim.map.get_pop_tot_num_herb()
         ini_herbs_1 = [
@@ -216,9 +217,12 @@ class TestMap:
 
 
     def test_create_neighbours(self,create_map_for_test):
+        """Test if the correct no of neighbours are getting created for a given location"""
         t_sim, loc = create_map_for_test
         len_neighbours_at_loc_01 = len(t_sim.map.create_neighbours_dict()[loc[0] - 1, loc[0]])
         assert len_neighbours_at_loc_01 is 3
+
+
 
 
 

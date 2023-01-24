@@ -127,13 +127,12 @@ class TestLandscape:
         assert old_carn_weight < updated_carn_weight
 
     def test_fauna_death(self, age, weight, mocker):
-        mocker.patch('random.random', return_value=0.00001)
-
         """This test method verifies different cases for the feed_herbivore():
             a.) To check if the fodder reduces when an animal eats it.
             b.) To check if the weight of the animal increases after eat.
             c.) To check if the fitness of the animal gets updated after feeding is done.
         """
+        mocker.patch('random.random', return_value=0.00001)
         ini_carns = [
             {
                 "loc": (2, 2),
