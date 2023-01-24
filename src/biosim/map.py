@@ -1,13 +1,11 @@
 
 """
-This is the Map model which functions with the Biosim package written for
-the INF200 project January 2023.
+This is the Map model which functions with the Biosim package written for the INF200 project
+January 2023.
 """
 
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
 __email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
-
-
 
 import textwrap
 from biosim.landscape import Lowland, Highland, Desert, Water
@@ -34,29 +32,30 @@ class Map:
         - All map rows need to be the same length.
     """
 
-    #Dict consisting of landscape classes used for migration.
+    # Dict consisting of landscape classes used for migration.
     landscape_classes = {
         'H': Highland,
         'L': Lowland,
         'D': Desert,
         'W': Water
     }
-    #Dict consisting of animal classes used for adding population
+    # Dict consisting of animal classes used for adding population
     animal_classes = {'Carnivore': Carnivore, 'Herbivore': Herbivore
                       }
-    #Dict consisting of landscape classes in which animal can live
+    # Dict consisting of landscape classes in which animal can live
     livable_cells = {'H': Highland, 'L': Lowland, 'D': Desert}
 
     def __init__(self, island_map):
         """Constructor for Map class"""
-        self.island_map = island_map #save island_map_str as property
-        self.cell_list = self.geo_list()#storing the island_map str converted to list with element of each cell
-        self.check_invalid_map()#checking for all types of invalid map given as input.
-        self.herb_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]#Herbivore population matrix
-        self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in self.unique_rows()]#Carnivore population matrix
-        self.cells_dict = self.create_cells()#storing the dict with coordinates and landscape cell objects
-        self.neighbours_dict = self.create_neighbours_dict()#storing the dict with neighbours on each coordinates as key
-        # self.animal_weight_requirement_for_birth = self.calculate_weight_required_for_birth()
+        self.island_map = island_map  # save island_map_str as property
+        self.cell_list = self.geo_list()  # storing the island_map str converted to list with element of each cell
+        self.check_invalid_map()  # checking for all types of invalid map given as input.
+        self.herb_pop_matrix = [[0 for _ in self.unique_columns()] for _ in
+                                self.unique_rows()]  # Herbivore population matrix
+        self.carn_pop_matrix = [[0 for _ in self.unique_columns()] for _ in
+                                self.unique_rows()]  # Carnivore population matrix
+        self.cells_dict = self.create_cells()  # storing the dict with coordinates and landscape cell objects
+        self.neighbours_dict = self.create_neighbours_dict()  # storing the dict with neighbours on each coordinates as key
 
     def geo_list(self):
         """This method converts island_map str into list with each element corresponding to
@@ -70,7 +69,7 @@ class Map:
         return [list(row.strip()) for row in cells_list]
 
     def check_invalid_map(self):
-        """This method check for various invalid map types given as str
+        """This method check for various invalid map types given as str.
 
         Checks for Invalid line lengths.
         Checks for Invalid character.
@@ -80,7 +79,6 @@ class Map:
         ----------
         ValueError if conditions are met.
         """
-
 
         rows, cols = len(self.cell_list), len(self.cell_list[0])
         for i in range(rows):
@@ -118,7 +116,7 @@ class Map:
         dictionary and raises a TypeError if necessary.
 
         Parameters:
-        ----------
+        ------------
             argument: str
         """
         if not isinstance(ar, dict):
@@ -129,7 +127,7 @@ class Map:
 
         Parameter:
         ----------
-            param_key: str
+            key: str
 
             params: list
         """
@@ -213,22 +211,6 @@ class Map:
             neighbours.append(neighbours_loc)
 
         return dict(zip(own_loc, neighbours))
-
-    # @staticmethod
-    # def calculate_weight_required_for_birth():
-    #
-    #     minimum_weight = {'Herbivore': 0, 'Carnivore': 0}
-    #     h_zeta = Herbivore.parameters['zeta']
-    #     h_w_birth = Herbivore.parameters['w_birth']
-    #     h_sigma_birth = Herbivore.parameters['sigma_birth']
-    #     minimum_weight['Herbivore'] = h_zeta * (h_w_birth + h_sigma_birth)
-    #
-    #     c_zeta = Carnivore.parameters['zeta']
-    #     c_w_birth = Carnivore.parameters['w_birth']
-    #     c_sigma_birth = Carnivore.parameters['sigma_birth']
-    #     minimum_weight['Carnivore'] = c_zeta * (c_w_birth + c_sigma_birth)
-    #
-    #     return minimum_weight
 
     def add_population(self, given_population):
         """This method creates the population objects inside the

@@ -9,7 +9,7 @@ __email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
 import random
 import textwrap
 import pytest
-from biosim.landscape import Lowland, Highland
+from biosim.landscape import Lowland, Highland, Desert
 from biosim.simulation import BioSim
 
 
@@ -250,31 +250,248 @@ def test_fauna_weight_after_birth():
     assert fauna_weight_after < fauna_weight_before
 
 
-def test_migration():
+@pytest.mark.parametrize("age, weight", [(5, 40), (10, 20), (30, 50), (20, 50)])
+def test_migration(age, weight):
     """This tests the migration method checking if the animals have
     moved to the all 4th neighbour cells."""
 
     geogr = """\
                        WWWWW
                        WLLLW
-                       WHLWW
+                       WHLLW
                        WDDDW
                        WWWWW"""
     geogr = textwrap.dedent(geogr)
     ini_herbs = [
         {
             "loc": (3, 3),
-            "pop": [{"species": "Herbivore", "age": 5, "weight": 30}
+            "pop": [{"species": "Herbivore", "age": age, "weight": weight}
                     for _ in range(150)
                     ],
         }]
 
     seed = 123213
     t_sim = BioSim(geogr, ini_herbs, seed)
-
+    loc = (2, 2)
+    loc_object = t_sim.map.livable_cell_calculate()[loc]
     neighbours = t_sim.map.neighbours_dict[(2, 2)]
+    top_neighbour = neighbours[1]
+    bottom_neighbour = neighbours[2]
+    left_neighbour = neighbours[0]
+    right_neighbour = neighbours[3]
+    assert type(top_neighbour) == Lowland
+    assert type(bottom_neighbour) == Desert
+    assert type(left_neighbour) == Highland
+    assert type(right_neighbour) == Lowland
 
-    print(neighbours)
+    loc_object.animal_migrate(neighbours)
+    top_neighbour_pop = t_sim.map.get_pop_matrix_herb()[1][2]
+    bottom_neighbour_pop = t_sim.map.get_pop_matrix_herb()[3][2]
+    left_neighbour_pop = t_sim.map.get_pop_matrix_herb()[2][1]
+    right_neighbour_pop = t_sim.map.get_pop_matrix_herb()[2][3]
+    assert top_neighbour_pop != 0
+    assert bottom_neighbour_pop != 0
+    assert left_neighbour_pop != 0
+    assert right_neighbour_pop != 0
 
+class TestHighland:
+
+    @pytest.fixture
+    def highland_cell(self):
+        """Create basic Highland instance for testing"""
+        return Highland()
+
+    def test_highland_fmax(self, highland_cell):
+        """
+        :property: Highland.params
+        Test that highland parameters are correct
+        """
+        assert highland_cell.params['f_max'] == 300.0
+
+    def test_highland_mainland(self, highland_cell):
+        """
+        :property: Highland.params
+        Test that is_mainland property is True
+        """
+        assert highland_cell.is_mainland
+
+    def test_highland_fodder(self, highland_cell):
+        """
+        :cls property: Highland._fodder
+        Fodder attribute of instance can be accessed and has the right value
+        """
+        assert highland_cell._fodder == highland_cell.params['f_max']
+
+    def test_fodder_setter(self, highland_cell):
+        """
+        :setter: LandscapeCell.fodder
+        :property: Highland._fodder
+        Fodder attribute of instance can be accessed and has the right value
+        """
+        highland_cell.fodder = 200.0
+        assert highland_cell._fodder == 200.0
+
+    def test_reset_animals(self, highland_cell):
+        """
+        :method: LandscapeCell.add_animal
+        :method: LandscapeCell.reset_animals
+        :property: LandscapeCell.carnivores
+        :property: LandscapeCell.has_moved
+        Test that has_moved property is correctly set and reset
+        """
+        highland_cell.add_animals([Carnivore(), Herbivore()])
+        if highland_cell.carnivores[0].has_moved:
+            highland_cell.reset_animals()
+        assert not highland_cell.carnivores[0].has_moved
+
+    def test_shuffle_herbs(self, highland_cell):
+        """
+        :method: LandscapeCell.add_animals
+        :method: LandscapeCell.randomize_herbs
+        Test that shuffle method shuffles herbivores list
+        """
+        highland_cell.add_animals([Herbivore() for _ in range(1000)])
+        original_herbs = [animal for animal in highland_cell.herbivores]
+        highland_cell.randomize_herbs()
+        assert highland_cell.herbivores != original_herbs
+
+    def test_repr_and_str(self, highland_cell):
+        """
+        Test __repr__ and __str__ dunder methods for Highland cell
+        """
+        assert repr(highland_cell) == str(highland_cell) == 'Highland(f_max: 300.0)'
+
+    def test_set_params(self, highland_cell):
+        """
+        :cls method: Highland.set_params
+        Test that error is raised when invalid key is passed
+        """
+        with pytest.raises(AttributeError):
+            highland_cell.set_params({'ff_maxx': 200.0})
+
+    def test_add_remove_animals(self, highland_cell):
+        """
+        :method: LandscapeCell.add_animals
+        :method: LandscapeCell.remove_animals
+        :property: LandscapeCell.animal_count
+        Test that animals can be added and removed correctly
+        """
+        animals = [Herbivore(), Carnivore(), Herbivore()]
+        highland_cell.add_animals(animals)
+        highland_cell.remove_animals([animals[0], animals[1]])
+        assert highland_cell.herb_count == 1
+
+    @pytest.mark.parametrize('add_remove_func',
+                             ['add', 'remove'])
+    def test_invalid_add_remove_animals(self, highland_cell, add_remove_func):
+        """
+        :method: LandscapeCell.add_animals
+        :method: LandscapeCell.remove_animals
+        Test that error is raised when non-instance objects are passed to methods
+        """
+        with pytest.raises(ValueError):
+            if add_remove_func == 'add':
+                highland_cell.add_animals(['Herbivore'])
+            else:
+                highland_cell.remove_animals(['Carnivore'])
+
+    def test_sorted_herbivores_and_carnivores(self, highland_cell):
+        """
+        :method: LandscapeCell.add_animals
+        :method: LandscapeCell.sorted_herbivores
+        :method: LandscapeCell.sorted_carnivores
+        Check that sorting algorithms sort the lists by fitness
+        """
+        highland_cell.add_animals([Herbivore(weight=50), Herbivore(weight=20)])
+        highland_cell.add_animals([Carnivore(weight=25), Carnivore(weight=40)])
+        sorted_herbivores = list([herb[0] for herb in highland_cell.sorted_herbivores])
+        sorted_carnivores = highland_cell.sorted_carnivores
+
+        assert sorted_herbivores == highland_cell.herbivores[::-1]
+        assert sorted_carnivores == highland_cell.carnivores[::-1]
+
+    def test_is_empty(self, highland_cell):
+        """
+        :setter: LandscapeCell.fodder
+        :property: LandscapeCell.is_empty
+        """
+        highland_cell.fodder = 0
+        assert highland_cell.is_empty
+
+
+class TestLowland:
+    @pytest.fixture
+    def lowland_cell(self):
+        """Create basic Lowland instance"""
+        return Lowland()
+
+    def test_lowland_fmax(self, lowland_cell):
+        """
+        :cls property: Lowland.params
+        Check that f_max is correct
+        """
+        assert lowland_cell.params['f_max'] == 800.0
+
+    def test_lowland_mainland(self, lowland_cell):
+        """
+        :property: LandscapeCell.is_mainland
+        Check that is_mainland returns True
+        """
+        assert lowland_cell.is_mainland
+
+    def test_lowland_fodder(self, lowland_cell):
+        """
+        :property: LandscapeCell.fodder
+        Fodder attribute of instance can be accessed and has the right value
+        """
+        assert lowland_cell.fodder == lowland_cell.params['f_max']
+
+
+class TestDesert:
+    @pytest.fixture
+    def desert_cell(self):
+        """Create basic desert instance"""
+        return Desert()
+
+    def test_desert_fmax(self, desert_cell):
+        """
+        :cls property: Desert.params
+        Test that class parameters are correct
+        """
+        assert desert_cell.params['f_max'] == 0.0
+
+    def test_desert_mainland(self, desert_cell):
+        """
+        :property: LandscapeCell.is_mainland
+        Test that is_mainland returns True
+        """
+        assert desert_cell.is_mainland
+
+    def test_desert_fodder(self, desert_cell):
+        """
+        :property: LandscapeCell._fodder
+        Fodder attribute of instance can be accessed and has the right value
+        """
+        assert desert_cell._fodder == desert_cell.params['f_max']
+
+
+class TestWater:
+
+    def test_water_instance(self):
+        """
+        :cls property: Water.is_mainland
+        Test that is_mainland returns False
+        """
+        water = Water()
+        assert not water.is_mainland
+
+    def test_repr_and_str_water(self):
+        """
+        :method: Water.__repr__
+        :method: Water.__str__
+        Test that dunder methods return correct value
+        """
+        water = Water()
+        assert repr(water) == str(water) == 'Water cell'
 
 

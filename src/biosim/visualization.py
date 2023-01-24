@@ -190,12 +190,14 @@ class Visualization:
             herb_x_data, herb_y_data = self.herb_line.get_data()
             carn_x_data, carn_y_data = self.carn_line.get_data()
 
+            # herb
             herb_x_new = np.arange(herb_x_data[-1] + 1, final_year + 1)
             if len(herb_x_new) > 0:
                 herb_y_new = np.full(herb_x_new.shape, np.nan)
                 self.herb_line.set_data(np.hstack((herb_x_data, herb_x_new)),
                                         np.hstack((herb_y_data, herb_y_new)))
 
+            # carn
             carn_x_new = np.arange(carn_x_data[-1] + 1, final_year+1)
             if len(carn_x_new) > 0:
                 carn_y_new = np.full(carn_x_new.shape, np.nan)
@@ -288,7 +290,8 @@ class Visualization:
                                  final_year=final_year)
         self.update_frequency_graphs()
         self.update_heatmap()
-        plt.pause(0.05)
+        self.fig.canvas.flush_events()
+        plt.pause(1e-5)
 
     def update_animal_count(self, pop_herb=0, pop_carn=0, current_year=0,
                             final_year=0):

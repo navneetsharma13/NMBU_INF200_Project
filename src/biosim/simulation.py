@@ -25,7 +25,7 @@ _MAGICK_BINARY = 'magick'
 
 # update this to the directory and file-name beginning
 # for the graphics files
-_DEFAULT_GRAPHICS_DIR = os.path.join('../', 'data')
+_DEFAULT_GRAPHICS_DIR = 'results'
 _DEFAULT_GRAPHICS_NAME = 'dv'
 _DEFAULT_IMG_FORMAT = 'png'
 _DEFAULT_MOVIE_FORMAT = 'mp4'  # alternatives: mp4, gif
@@ -136,7 +136,7 @@ class BioSim:
             self.img_dir = img_dir
 
         if img_base is None:
-            self.img_base = _DEFAULT_GRAPHICS_NAME
+            self.img_base = os.path.join(self.img_dir, _DEFAULT_GRAPHICS_NAME)
         else:
             self.img_base = os.path.join(self.img_dir, img_base)
 
@@ -144,7 +144,6 @@ class BioSim:
 
         self.img_ctr = 0
         self.img_step = 1
-
 
         if ymax_animals is None:
             self.ymax_animals = None
@@ -213,6 +212,9 @@ class BioSim:
                                            pop_matrix_herb=self.map.get_pop_matrix_herb(),
                                            pop_matrix_carn=self.map.get_pop_matrix_carn(),
                                            img_base=self.img_base, img_fmt=self.img_fmt)
+        if self.plot_bool:
+            self.visualize.draw_layout(self.final_year)
+
         if self.plot_bool:
             if self.img_years is None:
                 self.img_years = self.vis_years
@@ -290,10 +292,10 @@ class BioSim:
 
     def make_movie(self, movie_fmt=None):
         """Create MPEG4 movie from visualization images saved.
-        .. :note:
+            .. :note:
             Requires ffmpeg for MP4 and magick for GIF
 
-        The movie is stored as img_base + movie_fmt
+            The movie is stored as img_base + movie_fmt
         """
 
         if self.img_base is None:

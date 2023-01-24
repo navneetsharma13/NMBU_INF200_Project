@@ -1,3 +1,4 @@
+
 """
 This is the Fauna model which functions with the Biosim package written for
 the INF200 project January 2023.
@@ -5,8 +6,6 @@ the INF200 project January 2023.
 
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
 __email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
-
-
 
 import math
 import random
@@ -27,12 +26,12 @@ class Fauna:
         Defining a constructor for the weight and age of the animals.
         If the weight or age is invalid
 
-
         Parameters:
-        age:int
-        weight:int,float
-        fitness:float
-        has_migrated:boolean
+        ------------
+        age : int
+        weight : int,float
+        fitness : float
+        has_migrated : boolean
         """
         if age is None:
             self.age = 0
@@ -51,12 +50,11 @@ class Fauna:
         self.calculate_fitness()
 
     def calculate_fitness(self):
-        """This method calculates and returns the overall physical
-        condition (fitness) of an animal which is based on age and
-        weight using the function fitness_formula:
+        """This method calculates and returns the overall physical condition (fitness) of an animal
+         which is based on age and weight using the function fitness_formula:
 
         Formula and conditions:
-        ----------
+        ------------------------
             phi = if 'omega' <= 0: 0
                   else: fit_formula('age', 'age_1/2', 'phi_age') X
                      fit_formula(-'weight', 'weight_1/2', 'phi_weight')
@@ -64,15 +62,15 @@ class Fauna:
 
 
         def fitness_formula(sign, x, x_half, phi_x):
-            """This method returns the fitness formula used to calculate
-            the physical condition (fitness) of an animal (pop_object).
+            """This method returns the fitness formula used to calculate the physical condition
+            (fitness) of an animal (pop_object).
 
             Formula and conditions:
-            ----------
+            -------------------------
             1.0 / (1 + \\e^{\\pm * \\phi * (x - x_{1/2} )})
 
             Parameters:
-            ----------
+            -------------
                 sign: int or float
                     The sign with identifies age (+) or weight (-);
 
@@ -107,7 +105,7 @@ class Fauna:
         the parameters such as mu and sigma.
 
         Formula and conditions:
-        ----------
+        -----------------------
             mu=log(w_birth**2/sqrt(w_birth**2+sigma+birth)
             sigma=sqrt(log(1+sigma_birth**2/w_birth**2)
 
@@ -127,15 +125,16 @@ class Fauna:
         self.age += 1
 
     def weight_decrease(self):
-        """This method decreases the weight of the animal, in yearly
-        basis, according to the weight_loss_rate.
+        """This method decreases the weight of the animal, in yearly basis, according to the
+         weight_loss_rate.
 
         Formula and conditions:
-        ----------
+        ------------------------
             weight_loss_rate: 'eta' * 'weight';
             yearly_weight_loss: 'weight' - 'weight_loss_rate';
-            After the weight is decreased, the fitness of the
-               animal is updated by the method 'calculate_fitness()'.
+
+            After the weight is decreased, the fitness of the animal is updated by the method
+            'calculate_fitness()'.
         """
 
         if self.weight > 0:
@@ -148,7 +147,7 @@ class Fauna:
         weight. Then it updates the fitness.
 
         Parameters:
-        ----------
+        ------------
             if weight is decreased: True
             if weight  is not decreased: False
         """
@@ -166,7 +165,7 @@ class Fauna:
         fitness of the animal is calculated.
 
         Parameters:
-        ----------
+        ------------
             amount_eaten: int or float
         """
 
@@ -178,7 +177,7 @@ class Fauna:
         for an animal according to the following conditions:
 
         Formula and conditions:
-        ----------
+        -------------------------
             If the number of animals of a species is 1, then the
             probability is 0;
             If the weight of the animal is less than 'zeta' * ('w_birth' + 'sigma_birth')
@@ -191,7 +190,7 @@ class Fauna:
             if True, there is a offspring, else there is not.
 
         Parameters:
-        ----------
+        -------------
             number_specie_objects: int or float
 
         Returns:
@@ -214,7 +213,7 @@ class Fauna:
         return random.random() < prob and self.weight >= result
 
     def die(self):
-        """This method calculates whether an animal will die if its weight is zero
+        """This method calculates whether an animal will die if its weight is zero.
 
         Returns:
         ----------
@@ -225,14 +224,13 @@ class Fauna:
             return True
 
     def die_prob(self):
-        """An animal dies:
+        """An animal dies with the following conditions.
 
         Formula and conditions:
-        ----------
-            If its fitness is 0, or
-            With probability if 'omega' * (1 - animal_fitness).
-            If np.random.random() number is less than the die
-               probability, then an animal dies, else does not.
+        -------------------------
+            If its fitness is 0, or With probability if 'omega' * (1 - animal_fitness).
+            If np.random.random() number is less than the die probability, then an animal dies,
+            else does not.
 
         Returns
         ----------
@@ -247,24 +245,23 @@ class Fauna:
 
         """This method calculates the probability if a Carnivore will kill an animal (Herbivore)
          according to the following conditions:
-            Conditions:
-            -----------
-                If fitness of the carnivore <= fitness of the herbivore, then p = 0;
-                If 0 < ('fitness of the carnivore' -  'fitness of the
-                   herbivore') < 'DeltaPhiMax', then p = ('fitness of the
-                   carnivore' - 'fitness of the herbivore') / 'DeltaPhiMax';
-                Otherwise: p =   1.
-                The random.random() is used to get a random number and
-                   check if it is less than p, then a herbivore is killed or the herbivore escapes.
+        Conditions:
+        -----------
+            If fitness of the carnivore <= fitness of the herbivore, then p = 0;
+            If 0 < ('fitness of the carnivore' -  'fitness of the herbivore') < 'DeltaPhiMax', then
+            p = ('fitness of the carnivore' - 'fitness of the herbivore') / 'DeltaPhiMax';
+            Otherwise: p =   1.
+            The random.random() is used to get a random number and check if it is less than p, then
+            a herbivore is killed or the herbivore escapes.
 
-            Parameters:
-            ----------
-                target_fitness: int or float
+        Parameters:
+        ------------
+            target_fitness: int or float
 
-            Returns:
-            ----------
-                True if herbivore is killer else False.
-            """
+        Returns:
+        ----------
+            True if herbivore is killer else False.
+        """
         killer_fitness = self.fitness
         killer_target_diff_fitness = killer_fitness - target_fitness
         delta_phi_max = self.parameters['DeltaPhiMax']
@@ -284,12 +281,12 @@ class Fauna:
         the chance of migrating, once a year, to north, south, west and east.
 
         Formula and conditions:
-        ----------
-            -> If random.random() number is less than the migrating
-               probability, then an animal migrates, else does not.
+        -------------------------
+            If random.random() number is less than the migrating probability, then an animal
+             migrates, else does not.
 
         Returns
-        -------
+        ---------
             True if an animal migrates else False.
         """
         return random.random() < self.parameters['mu'] * self.fitness
@@ -300,7 +297,7 @@ class Fauna:
         if necessary.
 
         Parameters:
-        ----------
+        -------------
             params: dict
         """
         for p in params.keys():
@@ -312,7 +309,7 @@ class Fauna:
         """This method sets the parameters for the animals.
 
         Parameters:
-        ----------
+        -------------
             params: dict
         """
         cls.check_not_defined_params(params)
@@ -320,8 +317,8 @@ class Fauna:
 
 
 class Herbivore(Fauna):
-    """The herbivores find fodder in Highland and Lowland, although
-    they can reside in desert also they move with equal probability in all 4 directions
+    """The herbivores find fodder in Highland and Lowland, although they can reside in desert also
+    they move with equal probability in all 4 directions.
     """
     eta = 0.05
     F = 10.0
@@ -345,13 +342,14 @@ class Herbivore(Fauna):
                   }
 
     def __init__(self, age=None, weight=None):
-        """Constructor for Herbivore class"""
+        """Constructor for Herbivore class.
+        """
         super().__init__(age, weight)
 
 
 class Carnivore(Fauna):
-    """The carnivores prey on herbivores in lowland, highland and
-    desert."""
+    """The carnivores prey on herbivores in lowland, highland and desert.
+    """
     eta = 0.125
     F = 50.0
     beta = 0.75
@@ -374,5 +372,6 @@ class Carnivore(Fauna):
                   'xi': xi, 'mu': mu, 'DeltaPhiMax': DeltaPhiMax, 'omega': omega}
 
     def __init__(self, age=None, weight=None):
-        """Constructor for Carnivore class."""
+        """Constructor for Carnivore class.
+        """
         super().__init__(age, weight)
