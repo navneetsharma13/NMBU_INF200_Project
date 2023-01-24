@@ -19,7 +19,7 @@ Template for BioSim class.
 """
 
 # Update these variables to point to your ffmpeg and convert binaries
-# If you installed ffmpeg using conda or installed both softwares in
+# If you installed ffmpeg using conda or installed both software programs in
 # standard ways on your computer, no changes should be required.
 _FFMPEG_BINARY = 'ffmpeg'
 _MAGICK_BINARY = 'magick'

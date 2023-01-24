@@ -149,8 +149,6 @@ class Visualization:
             self.ax_age.set_title('Age Frequency')
             self.ax_weight.set_title('Weight Frequency')
 
-        # plt.get_current_fig_manager().full_screen_toggle()  # maximizing plot size to fullscreen
-
         self.draw_animal_count_plot(final_year)
 
     def draw_map(self):
