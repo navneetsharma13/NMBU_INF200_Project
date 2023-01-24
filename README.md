@@ -87,7 +87,7 @@ Simulation Results:
 ```
 reference_examples/results/
 ```
-![](https://gitlab.com/nmbu.no/emner/inf200/h2022/january-block-teams/a36_navneet_sushant/biosim-a36-navneet-sushant/-/blob/main/Exam/sample.gif)
+![](/Exam/sample.gif)
 
 
 
