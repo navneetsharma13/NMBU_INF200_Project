@@ -1,15 +1,28 @@
+"""
+This is the Map model which functions with the Biosim package written for
+the INF200 project January 2023.
+"""
+
+__author__ = "Navneet Sharma and Sushant Kumar Srivastava"
+__email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
+
+
 import pytest
-from biosim.fauna import Carnivore, Herbivore
 import math
 import random
+from biosim.fauna import Carnivore, Herbivore
 
 random.seed(1223)
-
-
-
 class TestFauna:
     @pytest.fixture()
     def create_h_params(self):
+        """This method creates various parameters for herbivores and returns a dict of parameters as key
+        and their values
+
+        Returns:
+        ----------
+        Dict
+        """
         eta = 0.05
         F = 10.0
         beta = 0.9
@@ -33,6 +46,13 @@ class TestFauna:
 
     @pytest.fixture()
     def create_c_params(self=None):
+        """This method creates various parameters for carnivores and returns a dict of parameters as key
+        and their values
+
+        Returns:
+        ----------
+        Dict
+        """
         eta = 0.125
         F = 50.0
         beta = 0.75
@@ -59,7 +79,8 @@ class TestFauna:
     def test_fitness_herbivore(self, age, weight, create_h_params):
         """Test if the method 'calculate_fitness()' correctly communicates to
         the method 'fit_formula()' and returns the correct fitness of the
-        animal (pop_object)'"""
+        animal (pop_object)'
+        """
 
         self.herbivore = Herbivore(age=age, weight=weight)
         self.herbivore.calculate_fitness()
@@ -82,7 +103,8 @@ class TestFauna:
         assert self.carnivore.fitness == fitness
 
     def test_animal(self):
-        """"""
+        """Test if animals are getting created with correct initialization values
+        """
         self.h = Herbivore()
         self.c = Carnivore()
         for _ in range(100):
@@ -91,8 +113,7 @@ class TestFauna:
 
     @pytest.mark.parametrize('weight', [10, 20])
     def test_herbivore_non_negative_weight(self, weight):
-        """
-        test if animal age is  non-negative
+        """Test if animal age is  non-negative
         """
         self.h = Herbivore(weight=weight)
         # c = Carnivore(weight=weight)
@@ -101,8 +122,7 @@ class TestFauna:
 
     @pytest.mark.parametrize('weight', [10, 20])
     def test_carnivore_non_negative_weight(self, weight):
-        """
-        test if animal age is  non-negative
+        """Test if animal age is  non-negative
         """
         self.c = Carnivore(weight=weight)
         # c = Carnivore(weight=weight)
@@ -112,8 +132,7 @@ class TestFauna:
     #
     @pytest.mark.parametrize("age,weight", [(10, 20), (0, 10), (100, 80)])
     def test_herbivore_aging(self, age, weight):
-        """
-        test every year animal age updates
+        """Test every year animal age updates
         """
         self.herb = Herbivore(age, weight)
         n = 100
@@ -123,8 +142,7 @@ class TestFauna:
 
     @pytest.mark.parametrize("age,weight", [(10, 20), (0, 10), (100, 80)])
     def test_carnivore_aging(self, age, weight):
-        """
-        test every year animal age updates
+        """Test every year animal age updates
         """
         self.carn = Carnivore(age, weight)
         n = 100
@@ -135,8 +153,7 @@ class TestFauna:
     #
     @pytest.mark.parametrize('weight', [0, 10, 20, 30, 40, 60, 70])
     def test_herbivore_weight_loss(self, weight, create_h_params):
-        """
-        Test if animal looses weight
+        """Test if animal loses weight
         """
         self.h_params = create_h_params
         self.herb = Herbivore(weight=weight)
@@ -149,8 +166,7 @@ class TestFauna:
 
     @pytest.mark.parametrize('weight', [0, 10, 20, 30, 40, 60, 70])
     def test_carnivore_weight_loss(self, weight, create_c_params):
-        """
-        Test if animal looses weight
+        """Test if animal looses weight
         """
         self.c_params = create_c_params
         self.carn = Carnivore(weight=weight)
@@ -164,8 +180,7 @@ class TestFauna:
     #
     @pytest.mark.parametrize("age,weight", [(10, 20), (0, 0), (100, 80), (200, 200)])
     def test_fitness_range(self, age, weight):
-        """
-        test fitness value is between 0 and 1
+        """Test fitness value is between 0 and 1
         """
         self.herb = Herbivore(age, weight)
         self.carn = Carnivore(age, weight)
@@ -175,8 +190,7 @@ class TestFauna:
     #
     @pytest.mark.parametrize("age,weight", [(10, 20), (100, 80), (200, 200)])
     def test_fitness_update_herb(self, age, weight, create_h_params):
-        """
-        test fitness is updated when weight is changed
+        """Test fitness is updated when weight is changed
         """
         self.h_params = create_h_params
         self.herb = Herbivore(age, weight)
@@ -196,8 +210,7 @@ class TestFauna:
 
     @pytest.mark.parametrize("age,weight", [(10, 20), (100, 80), (200, 200)])
     def test_fitness_update_carn(self, age, weight, create_c_params):
-        """
-        test fitness is updated when weight is changed
+        """Test fitness is updated when weight is changed
         """
         self.c_params = create_c_params
         self.carn = Carnivore(age, weight)
@@ -214,55 +227,32 @@ class TestFauna:
             fitness = 0
 
         assert self.carn.fitness == fitness
-
-    #
-    # def test_animal_death():
-    #     """
-    #     test that animal dies when fitness is 0 or with
-    #     certain probability omega(1 - fitness)
-    #     """
-    #     herb = Herbivore(10, 50)
-    #     herb.fitness = 0
-    #
-    #     for _ in range(100):
-    #         assert herb.die_prob() is True
-    #
-    #
     @pytest.mark.parametrize("species_count", [2, 3, 4])
     @pytest.mark.parametrize("age,weight, status", [(10, 34, True), (0, 40, True), (10, 50, True)])
     def test_herbivore_birth_probability_success(self, age, weight, status, mocker, species_count):
+        """Test if birth probability of herbivore is True by forcing random.random() to
+        return a fixed value.
+        """
         mocker.patch('random.random', return_value=0.01)
-
         self.herb = Herbivore(age, weight)
         assert self.herb.birth_prob(species_count) == status
 
     @pytest.mark.parametrize("species_count", [2, 3, 4])
     @pytest.mark.parametrize("age,weight, status", [(10, 34, True), (0, 40, True), (10, 50, True)])
     def test_carnivore_birth_probability_success(self, age, weight, status, mocker, species_count):
+        """Test if birth probability of carnivore is True by forcing random.random() to
+        return a fixed value.
+        """
         mocker.patch('random.random', return_value=0.01)
-
         self.carn = Carnivore(age, weight)
         assert self.carn.birth_prob(species_count) == status
-
-    #
-    #
-    # def test_update_weight_after_birth():
-    #     """
-    #     test that the weight of the mother is
-    #     reduced by xi times the weight of the
-    #     baby after reproduction
-    #     """
-    #     herb = Herbivore(20, 40)
-    #     weight_before_birth = herb.weight
-    #     baby = Herbivore(weight=10)
-    #     herb.weight_decrease_on_birth(baby)
-    #     assert herb.weight < weight_before_birth
-    #
     @pytest.mark.parametrize("age,weight, status",
                              [(10, 20, False), (100, 80, False), (200, 200, False)])
     def test_animal_certain_survival(self, age, weight, status, mocker):
+        """Test if die probability of animal is False by forcing random.random() to
+        return a fixed value.
+        """
         mocker.patch('random.random', return_value=0.8)
-
         self.herb = Herbivore(age, weight)
         self.carn = Carnivore(age, weight)
         assert self.herb.die_prob() == status
@@ -271,11 +261,11 @@ class TestFauna:
     @pytest.mark.parametrize("age,weight, status", [(10, 20, True), (100, 80, True),
                                                     (200, 200, True), (0, 0, True)])
     def test_animal_certain_death(self, age, weight, status, mocker):
+        """Test if die probability of animal is True by forcing random.random() to
+        return a fixed value.
+        """
         mocker.patch('random.random', return_value=0.00001)
-
         self.herb = Herbivore(age, weight)
         self.carn = Carnivore(age, weight)
         assert self.herb.die_prob() == status
         assert self.carn.die_prob() == status
-    #
-#

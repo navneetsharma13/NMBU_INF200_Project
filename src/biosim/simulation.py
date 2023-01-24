@@ -332,5 +332,8 @@ class BioSim:
     def remove_files(self):
 
         fbase=self.img_base
-        for f in glob.glob(f"{fbase}_0*.png"):
+        img_fmt=self.img_fmt
+        for f in glob.glob(f"{fbase}_0*."+str(img_fmt)):
+            os.remove(f)
+        for f in glob.glob(f"{fbase}*.mp4"):
             os.remove(f)
