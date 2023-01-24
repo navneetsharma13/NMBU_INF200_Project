@@ -14,12 +14,32 @@ import numpy as np
 
 
 class Visualization:
+    """
+    Visualization is a crucial step in the BioSim Project to see the Animals and their yearly
+    activities on the island. Also, as a requirement for the courses we need to save the graphics
+    and make a movie of the whole simulation.
+    """
 
     def __init__(self, island_map=None, cmax=None, ymax=None,
                  hist_specs=None, total_years=None,
                  pop_matrix_herb=None, pop_matrix_carn=None,
                  img_base=None, img_fmt=None, step_size=1):
+        """
+        This is a constructor for the visualization class that initiates the graphs for simulation.
 
+        Parameters
+        ----------
+        ymax : int
+        hist_specs : dict
+        total_years : int
+        pop_matrix_herb : list of list
+        pop_matrix_carn : list of list
+        img_base : str
+        img_fmt : str
+        step_size : int
+        cmax : dict
+        island_map : str
+        """
         self.island_map = island_map
         self.img_base = img_base
         self.img_ctr = 0
@@ -97,7 +117,13 @@ class Visualization:
             self.hist_specs = hist_specs
 
     def draw_layout(self, final_year):
-
+        """
+        This method sets the figure and prepares the basic layout for plotting and visualization of
+        the simulation.
+        Parameters
+        ----------
+        final_year : int
+        """
         if self.fig is None:
             self.fig = plt.figure(figsize=(12, 8), constrained_layout=True)  # Setup pyplot
 
@@ -128,7 +154,11 @@ class Visualization:
         self.draw_animal_count_plot(final_year)
 
     def draw_map(self):
-        """Author: Hans E. Plasser"""
+        """Author: Hans E. Plasser
+        With this method we design the Island where we are performing the simulation of animals.
+        We have taken this piece of code from Prof. from his lecture content.
+
+        """
 
         rgb_value = {
             #      R    G    B
@@ -167,7 +197,14 @@ class Visualization:
                                  fontsize=20)
 
     def draw_animal_count_plot(self, final_year=0):
+        """
+        This method draws the basic template for the Animal count graph which shows the live animal
+        count lines with the years for the simulation.
 
+        Parameters
+        ----------
+        final_year : int
+        """
         self.ax_animal_count.set_xlim(0, (final_year + 1))
 
         if self.ax_animal_count_flag is False:
@@ -211,6 +248,10 @@ class Visualization:
         self.ax_animal_count.legend(["Herbivore Count", "Carnivore Count"])
 
     def draw_frequency_graphs(self):
+        """
+        This method draws the basic template for the age, weight and fitness distribution graphs
+        which shows the live animal count lines with the years for the simulation.
+        """
 
         # fitness Frequency Graph
         bin_max_fitness = self.hist_specs["fitness"]["max"]  # histogram spans [0, bin_max]
@@ -251,6 +292,10 @@ class Visualization:
                                                       label='Carnivore')
 
     def draw_heatmap(self):
+        """
+        This method draws the basic template for the Carnivore and Herbivore Heatmap graphs
+        which shows the live animal distribution on the island with the years for the simulation.
+        """
 
         self.herb_hm_axis = self.ax_hm_herb.imshow(self.pop_matrix_herb,
                                                    interpolation='nearest',
@@ -276,7 +321,21 @@ class Visualization:
     def update_plot(self, pop_herb=0, pop_carn=0, current_year=0,
                     pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
                     age_list=None, fitness_list=None):
+        """
+        This method is the one that is getting called for every year and updates the plotting values
+        for each year with new data that gets updated with all the yearly seasons on the island.
 
+        Parameters
+        ----------
+        pop_herb : int
+        pop_carn : int
+        current_year : int
+        pop_matrix_herb : list
+        pop_matrix_carn : list
+        weight_list : dict
+        age_list : dict
+        fitness_list : dict
+        """
         self.fitness_herb_list = fitness_list['Herbivore']
         self.age_herb_list = age_list['Herbivore']
         self.weight_herb_list = weight_list['Herbivore']
@@ -297,6 +356,19 @@ class Visualization:
         plt.pause(1e-5)
 
     def update_animal_count(self, pop_herb=0, pop_carn=0, current_year=0):
+        """
+        This method is a sub method that updates the animal count plot with new information for
+        every year.
+        Parameters
+        ----------
+        pop_herb : int
+        pop_carn : int
+        current_year : int
+
+        Returns
+        -------
+
+        """
 
         n = current_year
         idx = n // self.step_size
@@ -314,6 +386,14 @@ class Visualization:
         self.ax_animal_count.set_ylim([0, (self.ymax * 1.2)])
 
     def update_frequency_graphs(self):
+        """
+        This method is a sub method that updates the frequency distributions for age, weight, and
+        fitness with new information for every year.
+
+        Returns
+        -------
+
+        """
 
         fitness_hist_counts_herb, _ = np.histogram(self.fitness_herb_list, self.bin_edges_fitness)
         self.fitness_hist_herb.set_data(fitness_hist_counts_herb)
@@ -337,11 +417,29 @@ class Visualization:
         self.ax_weight.set_ylim([0, (y_max_weight * 1.2)])
 
     def update_heatmap(self):
+        """
+        This method update the heatmaps for Herbivore and Carnivores after each year with the
+        migration. They spread out to the whole island slowly but to Water cells.
+
+        Returns
+        -------
+
+        """
         self.herb_hm_axis.set_data(self.pop_matrix_herb)
         self.carn_hm_axis.set_data(self.pop_matrix_carn)
 
     def save_graphics(self, step):
-        """Saves graphics to file if file name given."""
+        """
+        This method save the graphics to file if file name given.
+
+        Parameters
+        ----------
+        step : int
+
+        Returns
+        -------
+
+        """
 
         if self.img_base is None or step % self.img_year != 0:
             return

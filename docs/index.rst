@@ -4,14 +4,20 @@
    contain the root `toctree` directive.
 
 Welcome to BioSim January Block 2023's documentation!
-=====================================================
+======================================================
+Authors: Navneet Sharma and Sushant Kumar Srivastava
+``````````````````````````````````````````````````````
+
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   simulation_and_map
-   landscape_and_fauna
+   fauna
+   landscape
+   map
+   simulation
+   visualization
 
 Indices and tables
 ==================

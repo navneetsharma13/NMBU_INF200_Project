@@ -240,9 +240,9 @@ class Fauna:
             return random.random() < (self.parameters['omega'] * (1 - self.fitness))
 
     def kill_prob(self, target_fitness):
-
         """This method calculates the probability if a Carnivore will kill an animal (Herbivore)
-         according to the following conditions:
+         according to the following conditions
+
         Conditions:
         -----------
             If fitness of the carnivore <= fitness of the herbivore, then p = 0;
