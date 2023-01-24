@@ -6,18 +6,19 @@ the INF200 project January 2023.
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
 __email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
 
-
 import pytest
 import math
 import random
 from biosim.fauna import Carnivore, Herbivore
 
 random.seed(1223)
+
+
 class TestFauna:
     @pytest.fixture()
     def create_h_params(self):
-        """This method creates various parameters for herbivores and returns a dict of parameters as key
-        and their values
+        """This method creates various parameters for herbivores and returns a dict of parameters
+         as key  and their values
 
         Returns:
         ----------
@@ -46,8 +47,8 @@ class TestFauna:
 
     @pytest.fixture()
     def create_c_params(self=None):
-        """This method creates various parameters for carnivores and returns a dict of parameters as key
-        and their values
+        """This method creates various parameters for carnivores and returns a dict of parameters
+        as key and their values
 
         Returns:
         ----------
@@ -227,6 +228,7 @@ class TestFauna:
             fitness = 0
 
         assert self.carn.fitness == fitness
+
     @pytest.mark.parametrize("species_count", [2, 3, 4])
     @pytest.mark.parametrize("age,weight, status", [(10, 34, True), (0, 40, True), (10, 50, True)])
     def test_herbivore_birth_probability_success(self, age, weight, status, mocker, species_count):
@@ -246,6 +248,7 @@ class TestFauna:
         mocker.patch('random.random', return_value=0.01)
         self.carn = Carnivore(age, weight)
         assert self.carn.birth_prob(species_count) == status
+
     @pytest.mark.parametrize("age,weight, status",
                              [(10, 20, False), (100, 80, False), (200, 200, False)])
     def test_animal_certain_survival(self, age, weight, status, mocker):
