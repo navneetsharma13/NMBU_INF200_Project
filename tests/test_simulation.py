@@ -78,7 +78,7 @@ class TestSimulation:
     @pytest.fixture
     def basic_sim(self):
         """Return a simple island for used in various tests below"""
-        return BioSim(island_map="WWWW\nWHLW\nWWWW", ini_pop=[], seed=1,vis_years=0)
+        return BioSim(island_map="WWWW\nWHLW\nWWWW", ini_pop=[], seed=1, vis_years=0)
 
     def test_simulate(self, basic_sim):
         """Test that simulation can be called with visualization step values"""
