@@ -6,6 +6,7 @@ the INF200 project January 2023.
 __author__ = "Navneet Sharma and Sushant Kumar Srivastava"
 __email__ = "navneet.sharma@nmbu.no and sushant.kumar.srivastava@nmbu.no"
 
+import os
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -344,7 +345,6 @@ class Visualization:
 
         if self.img_base is None or step % self.img_year != 0:
             return
-
         plt.savefig('{base}_{num:05d}.{type}'.format(base=self.img_base,
                                                      num=self.img_ctr,
                                                      type=self.img_fmt))

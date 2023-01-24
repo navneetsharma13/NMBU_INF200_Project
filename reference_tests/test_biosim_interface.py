@@ -22,7 +22,6 @@ import glob
 import os
 import os.path
 import matplotlib.pyplot as plt
-
 from biosim.simulation import BioSim
 
 
@@ -266,6 +265,7 @@ def test_figure_saved(figfile_base):
                  img_base=figfile_base,
                  img_fmt='png')
     sim.simulate(2)
+    print(figfile_base)
 
     assert os.path.isfile(figfile_base + '_00000.png')
     assert os.path.isfile(figfile_base + '_00001.png')

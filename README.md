@@ -3,7 +3,7 @@
 Description about island.
 
 Further details about the project can be found out in:
-[BioSim_sheet]()
+[BioSim_Jan_Sheet](https://gitlab.com/nmbu.no/emner/inf200/h2022/january-block-teams/a36_navneet_sushant/biosim-a36-navneet-sushant/-/blob/main/INF200_H22_BioSimJan_v1.pdf)
 
 Project design:
 ```
