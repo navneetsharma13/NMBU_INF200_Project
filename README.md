@@ -23,8 +23,10 @@ The Exam Sheet containing the details and rules could be found here:
 
 ***Installation***
 ***
+```
 The BioSim project supports python 3.6+.
 It requires some libraries and packages in order to run such as 
+
     *matplotlib
     *numpy
     *os
@@ -32,18 +34,17 @@ It requires some libraries and packages in order to run such as
     *subprocess
     *random
     *mpl_toolkits
+```
+**Notes**
+***
+1. All the test simulations in reference_examples are running as expected
+1. Test files under tests directory are able to check most of the simulation possibilities
+1. Plots are displaying, getting saved and movie is being created successfully
+1. flake8 src tests examples : passed
+1. tox : passed
+1. make html : passed
+1. make epub : passed
 
-To install biosim via pip :
-```
-    pip install biosim-a36-navneet-sushant
-```
-Alternatively,you can manually pull this repository and run setup.py:
-
-```
-git clone git@gitlab.com:nmbu.no/emner/inf200/h2022/january-block-teams/a36_navneet_sushant/biosim-a36-navneet-sushant.git
-cd biosim-a36-navneet-sushant
-python setup.py
-```
 
 ***Contents***
 ***
@@ -66,26 +67,29 @@ python setup.py
     *test_simulation.py
 ```
 
-    
-    
-
 Project design:
 ```
 src/biosim/
-```
-
-Simulation Results:
-```
-reference_examples/results/
 ```
 
 Presentation:
 ```
 Exam/
 ```
-References:
+
+***Simulation Results:***
+***
+```
+reference_examples/results/
+```
+![](/Exam/sample.gif)
+
+***References:***
+***
 
 1. Anders, & Peters. (n.d.). GitHub - pkhetland/BioSim_G03_anders_Petter: Team repository for 
    “Advanced Python Programming” class exam project (Biosimulation).
 2. S, F. (n.d.). GitHub - fabiorodp/NMBU_BioSim_project: Project for the Msc in data analysis, 
    couse INF200, at NMBU University.
+
+
