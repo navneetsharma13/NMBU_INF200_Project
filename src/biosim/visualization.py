@@ -214,30 +214,29 @@ class Visualization:
             self.ax_animal_count.set_ylabel("Herbivore and Carnivore Count")
 
             num_years = final_year + 1
-            linestyle = 'b-'
             animal_xdata = np.arange(0, num_years, self.step_size)
             self.herb_line = self.ax_animal_count.plot(animal_xdata,
                                                        np.full_like(animal_xdata,
                                                                     np.nan, dtype=float),
-                                                       linestyle)[0]
+                                                       color='b')[0]
             self.carn_line = self.ax_animal_count.plot(animal_xdata,
                                                        np.full_like(animal_xdata,
                                                                     np.nan, dtype=float),
-                                                       linestyle, color='r')[0]
+                                                       color='r')[0]
 
         else:
             herb_x_data, herb_y_data = self.herb_line.get_data()
             carn_x_data, carn_y_data = self.carn_line.get_data()
 
             # herb
-            herb_x_new = np.arange(herb_x_data[-1] + 1, final_year + 1)
+            herb_x_new = np.arange(herb_x_data[-1] + 1, final_year + 1, self.step_size)
             if len(herb_x_new) > 0:
                 herb_y_new = np.full(herb_x_new.shape, np.nan)
                 self.herb_line.set_data(np.hstack((herb_x_data, herb_x_new)),
                                         np.hstack((herb_y_data, herb_y_new)))
 
             # carn
-            carn_x_new = np.arange(carn_x_data[-1] + 1, final_year+1)
+            carn_x_new = np.arange(carn_x_data[-1] + 1, final_year + 1, self.step_size)
             if len(carn_x_new) > 0:
                 carn_y_new = np.full(carn_x_new.shape, np.nan)
                 self.carn_line.set_data(np.hstack((carn_x_data, carn_x_new)),
@@ -303,8 +302,8 @@ class Visualization:
         divider = make_axes_locatable(self.ax_hm_herb)
         cax = divider.append_axes("right", size="5%", pad=0.3)
 
-        plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical',
-                     cax=cax)
+        plt.colorbar(self.herb_hm_axis, ax=self.ax_hm_herb, orientation='vertical', cax=cax)
+        self.ax_hm_herb.axis("off")
 
         self.carn_hm_axis = self.ax_hm_carn.imshow(self.pop_matrix_carn,
                                                    interpolation='nearest',
@@ -315,6 +314,7 @@ class Visualization:
         cax = divider.append_axes("right", size="5%", pad=0.3)
 
         plt.colorbar(self.carn_hm_axis, ax=self.ax_hm_carn, orientation='vertical', cax=cax)
+        self.ax_hm_carn.axis("off")
 
     def update_plot(self, pop_herb=0, pop_carn=0, current_year=0,
                     pop_matrix_herb=None, pop_matrix_carn=None, weight_list=None,
