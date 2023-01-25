@@ -90,6 +90,6 @@ reference_examples/results/
 1. Anders, & Peters. (n.d.). GitHub - pkhetland/BioSim_G03_anders_Petter: Team repository for 
    “Advanced Python Programming” class exam project (Biosimulation).
 2. S, F. (n.d.). GitHub - fabiorodp/NMBU_BioSim_project: Project for the Msc in data analysis, 
-   couse INF200, at NMBU University.
+   course INF200, at NMBU University.
 
 
