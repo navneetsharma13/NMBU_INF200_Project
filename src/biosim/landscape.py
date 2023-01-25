@@ -161,8 +161,6 @@ class Landscape:
         for specie_type, animals in self.initial_population.items():
             newborns = []
             for animal in animals:
-                # weight_condition = (animal.weight >= weight_required_for_birth[specie_type])
-                # if weight_condition:
                 if animal.birth_prob(len(animals)):
                     newborn = type(animal)()
                     if animal.weight_decrease_on_birth(newborn):
