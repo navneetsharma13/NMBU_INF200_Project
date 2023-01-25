@@ -8,14 +8,14 @@
 
 ***Background***
 
-The package contains population dynamics simulation on Rossumøya Island's ecosystem.
-The ecosystem contains different landscapes types, such as Lowland,Highland,Desert 
-and Water.The Island's fauna consists of two different species:Herbivores which eat 
-plants and Carnivores who are predators and hunt on herbivores.The Simulation is about
-finding the survival of the species in the long run for a given number of years.During the 
-Simulation one can analyze the number of years that has been simulated along with total 
-number of animals on the island per species,their fitness,age and weight distribution 
-plotted on a histogram and their distribution on the island by heatmaps.
+The package contains population dynamics simulation on Rossumøya Island's ecosystem. The ecosystem contains different 
+landscape types, such as Lowland, Highland, Desert and Water. The Island's fauna consists of two different species: 
+Herbivores (eats fodder) and Carnivores (eats herbivores). The simulation is about finding the survival of the species 
+in the long run for a given number of years. During the simulation, we can analyse the number of years that has been 
+simulated along with total number of animals on the island per specie, and their fitness, age and weight distribution 
+that is plotted on a histogram. The movement of herbivores and carnivores are shown on the heatmaps respectively.
+
+
 
 The Exam Sheet containing the details and rules could be found here:
 [BioSim_Jan_Sheet](https://gitlab.com/nmbu.no/emner/inf200/h2022/january-block-teams/a36_navneet_sushant/biosim-a36-navneet-sushant/-/blob/main/INF200_H22_BioSimJan_v1.pdf)
