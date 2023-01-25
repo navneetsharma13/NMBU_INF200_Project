@@ -13,11 +13,9 @@ Authors: Navneet Sharma and Sushant Kumar Srivastava
    :maxdepth: 2
    :caption: Contents:
 
-   fauna
-   landscape
-   map
-   simulation
-   visualization
+   src_code_doc
+   movie
+   author_info
 
 Indices and tables
 ==================
@@ -25,3 +23,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
