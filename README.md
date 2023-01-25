@@ -1,12 +1,11 @@
 # Simulation of Ecosystem in Rossumøya Island
-***
+
 ## Exam Project Jan 2023 INF200
-***
+
 ### Authors: Navneet Sharma and Sushant Kumar Srivastava
-***
 
 ### Description
-***
+
 ***Background***
 
 The package contains population dynamics simulation on Rossumøya Island's ecosystem.
